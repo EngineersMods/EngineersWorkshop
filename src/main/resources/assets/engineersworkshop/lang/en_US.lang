@@ -1,0 +1,42 @@
+#Blocks
+tile.WorkshopTable.name=Workshop Table
+tile.Barrel.name=Barrel
+
+#Items
+engineersworkshop:upgrade.blank.name=Blank Upgrade
+engineersworkshop:upgrade.auto_crafter.name=Auto Crafter Upgrade
+engineersworkshop:upgrade.storage.name=Storage Upgrade
+engineersworkshop:upgrade.charged.name=Charger Upgrade
+engineersworkshop:upgrade.speed.name=Speed Upgrade
+engineersworkshop:upgrade.queue.name=Queueing Upgrade
+engineersworkshop:upgrade.efficiency.name=Efficiency Upgrade
+engineersworkshop:upgrade.lava.name=Lava Power Upgrade
+engineersworkshop:upgrade.eu.name=EU Acceptor Upgrade
+engineersworkshop:upgrade.tesla.name=Tesla Acceptor Upgrade
+engineersworkshop:upgrade.solar.name=Solar Power Upgrade
+engineersworkshop:upgrade.auto_transfer.name=Auto Transfer Upgrade
+engineersworkshop:upgrade.filter.name=Filter Upgrade
+engineersworkshop:upgrade.transfer.name=Transfer Capacity Upgrade
+
+#Upgrade Descriptions
+engineersworkshop:upgrade.blank.description=Crafting component
+engineersworkshop:upgrade.auto_crafter.description=Convert a crafting table into an auto crafting table
+engineersworkshop:upgrade.storage.description=Adds extra storage
+engineersworkshop:upgrade.charged.description=Let idle components charge up for later
+engineersworkshop:upgrade.speed.description=Increase the production speed
+engineersworkshop:upgrade.queue.description=Adds an input queue
+engineersworkshop:upgrade.efficiency.description=Improves the fuel efficiency of solid fuel types
+engineersworkshop:upgrade.lava.description=Allows lava to be used as fuel
+engineersworkshop:upgrade.tesla.description=Allows tesla to be used as fuel
+engineersworkshop:upgrade.solar.description=Allows sunlight to be used as fuel
+#engineersworkshop:upgrade.eu.description=Allows EU to be used as fuel
+engineersworkshop:upgrade.auto_transfer.description=Enables auto transfer to and from the table
+engineersworkshop:upgrade.filter.description=Enables transfer filters
+engineersworkshop:upgrade.transfer.description=Increases the automatic transfer capacities
+
+#Upgrade
+engineersworkshop:upgrade.unstackable=Doesn't stack very well
+engineersworkshop:upgrade.unstackable=Stacks up to %s
+
+#Creative Tabs
+itemGroup.engineersworkshop=Engineer's Workshop

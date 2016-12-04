@@ -1,0 +1,20 @@
+{
+    "forge_marker": 1,
+    "defaults": {
+        "textures": {
+            "up": "alexsworkshop:blocks/top",
+			"down": "alexsworkshop:blocks/bot",
+			"south": "alexsworkshop:blocks/back",
+			"north": "alexsworkshop:blocks/front",
+			"east": "alexsworkshop:blocks/left",
+			"west": "alexsworkshop:blocks/right"
+        },
+        "model": "cube",
+        "uvlock": true,
+        "transform": "forge:default-block"
+    },
+    "variants": {
+        "normal": [{}],
+        "inventory": [{}]
+    }
+}

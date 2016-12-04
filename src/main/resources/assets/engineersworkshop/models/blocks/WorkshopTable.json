@@ -1,0 +1,11 @@
+{
+  "parent": "block/cube",
+  "textures": {
+  	"top": "engineersworkshop:blocks/top",
+	"bottom": "engineersworkshop:blocks/bot",
+	"south": "engineersworkshop:blocks/back",
+	"north": "engineersworkshop:blocks/front",
+	"east": "engineersworkshop:blocks/left",
+	"west": "engineersworkshop:blocks/right",
+  }
+}
