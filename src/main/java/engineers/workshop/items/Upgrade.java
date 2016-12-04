@@ -58,13 +58,13 @@ public enum Upgrade {
 		return maxCount.getConfigurableMax() == 0 || maxCount.getMax() > 0;
 	}
 
-	 public ItemStack getItemStack() {
-	 return new ItemStack(EngineersWorkshop.Items.upgrade, 1, ordinal());
-	 }
-	
-	 public static ItemStack getInvalidItemStack() {
-	 return new ItemStack(EngineersWorkshop.Items.upgrade, 1, values().length);
-	 }
+	public ItemStack getItemStack() {
+		return new ItemStack(EngineersWorkshop.itemUpgrade, 1, ordinal());
+	}
+
+	public static ItemStack getInvalidItemStack() {
+		return new ItemStack(EngineersWorkshop.itemUpgrade, 1, values().length);
+	}
 
 	public void addInfo(List<String> info) {
 		info.add(I18n.format(description));
@@ -121,7 +121,8 @@ public enum Upgrade {
 				return CRAFTING.isValidParent(item) || SMELTING.isValidParent(item);
 			}
 
-		}, NULL("upgrade.null"){
+		},
+		NULL("upgrade.null") {
 			@Override
 			protected boolean isValidParent(ItemStack item) {
 				return false;

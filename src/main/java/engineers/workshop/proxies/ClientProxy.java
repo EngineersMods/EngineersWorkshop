@@ -12,7 +12,7 @@ public class ClientProxy extends CommonProxy{
 		super.preInit();
 		for (int i = 0; i < Upgrade.values().length; ++i) {
 			Upgrade[] upgrades = Upgrade.values().clone();
-			ModelLoader.setCustomModelResourceLocation(EngineersWorkshop.Items.upgrade, i,
+			ModelLoader.setCustomModelResourceLocation(EngineersWorkshop.itemUpgrade, i,
 					new ModelResourceLocation("engineersworkshop:" + upgrades[i].getName()));
 		}
 

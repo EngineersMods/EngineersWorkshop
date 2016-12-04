@@ -8,12 +8,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ItemUpgrade extends Item {
 
 	public ItemUpgrade() {
-		setCreativeTab(EngineersWorkshop.TabWorkshop);
+		setCreativeTab(EngineersWorkshop.tabWorkshop);
 		setHasSubtypes(true);
+		
+		//Register
+		setRegistryName("engineersworkshop:upgrade");
+		GameRegistry.register(this);
 	}
 
 	@Override
@@ -31,7 +36,7 @@ public class ItemUpgrade extends Item {
 	}
 
 	public Upgrade getUpgrade(ItemStack item) {
-		if (item != null && EngineersWorkshop.Items.upgrade.equals(item.getItem())) {
+		if (item != null && EngineersWorkshop.itemUpgrade.equals(item.getItem())) {
 			return getUpgrade(item.getItemDamage());
 		} else {
 			return null;
