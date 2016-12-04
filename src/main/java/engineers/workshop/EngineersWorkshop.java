@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
@@ -32,6 +33,7 @@ public class EngineersWorkshop {
 		GameRegistry.registerTileEntity(TileTable.class, "engineersworkshop:table");
 		proxy.preInit();
 		
+		FMLInterModComms.sendMessage("Waila", "register", "engineers.workshop.waila.WailaHandler.onWailaCall");
 		Logger.debug("FMLPreInitialization done.");
 	}
 
