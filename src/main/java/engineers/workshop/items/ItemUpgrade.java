@@ -27,7 +27,7 @@ public class ItemUpgrade extends Item {
 		return "engineersworkshop:upgrade." + (upgrade != null ? upgrade.getName() : "unknown");
 	}
 
-	public Upgrade getUpgrade(int dmg) {
+	public static Upgrade getUpgrade(int dmg) {
 		if (dmg >= 0 && dmg < Upgrade.values().length) {
 			return Upgrade.values()[dmg];
 		} else {
@@ -35,7 +35,7 @@ public class ItemUpgrade extends Item {
 		}
 	}
 
-	public Upgrade getUpgrade(ItemStack item) {
+	public static Upgrade getUpgrade(ItemStack item) {
 		if (item != null && EngineersWorkshop.itemUpgrade.equals(item.getItem())) {
 			return getUpgrade(item.getItemDamage());
 		} else {

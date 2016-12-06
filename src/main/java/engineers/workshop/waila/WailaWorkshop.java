@@ -31,8 +31,8 @@ public class WailaWorkshop implements IWailaDataProvider {
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
 			IWailaConfigHandler config) {
-		currenttip.add("Current Tick: " + accessor.getWorld().getWorldTime() % 50);
-		currenttip.add("Updates: " + accessor.getNBTData().getInteger("updates"));
+		currenttip.add("Current Tick: " + accessor.getWorld().getWorldTime() % 20);
+		currenttip.add("Updates: " + accessor.getNBTData().getInteger("power"));
 		return currenttip;
 	}
 
@@ -46,7 +46,7 @@ public class WailaWorkshop implements IWailaDataProvider {
 	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world,
 			BlockPos pos) {
 		TileTable table = (TileTable) te;
-		tag.setInteger("updates", table.getUpdates());
+		tag.setInteger("power", (int)table.getStoredPower());
 		return tag;
 	}
 }
