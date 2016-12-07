@@ -24,6 +24,7 @@ import engineers.workshop.network.LengthCount;
 import engineers.workshop.network.PacketHandler;
 import engineers.workshop.network.PacketId;
 import engineers.workshop.network.data.DataType;
+import engineers.workshop.util.Logger;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
 import net.darkhax.tesla.capability.TeslaCapabilities;
@@ -61,7 +62,7 @@ public class TileTable extends TileEntity
 	private GuiMenu menu;
 
 	private int power;
-	public int max_power = 8000;
+	public int max_power = 2000;
 	public int max_lava = 1000;
 	private SlotFuel fuelSlot;
 
@@ -193,11 +194,19 @@ public class TileTable extends TileEntity
 	private List<EntityPlayer> players = new ArrayList<EntityPlayer>();
 
 	public void addPlayer(EntityPlayer player) {
+		Logger.infof("Trying to add player %s", player.getName());
 		if (!players.contains(player)) {
 			players.add(player);
 			sendAllDataToPlayer(player);
 		} else {
-			System.err.println("Trying to add a listening player: " + player.toString());
+			Logger.error("Trying to add a listening player: " + player.getName());
+		}
+	}
+	
+	public void removePlayer(EntityPlayer player) {
+		Logger.infof("Trying to remove player %s", player.getName());
+		if (!players.remove(player)) {
+			Logger.error("Trying to remove non-listening player: " + player.getName());
 		}
 	}
 
@@ -208,7 +217,7 @@ public class TileTable extends TileEntity
 		}
 		PacketHandler.sendToPlayer(dw, player);
 	}
-
+	
 	public void sendDataToAllPlayer(DataType dataType) {
 		sendDataToAllPlayer(dataType, 0);
 	}
@@ -230,12 +239,6 @@ public class TileTable extends TileEntity
 			if (!player.equals(ignored)) {
 				PacketHandler.sendToPlayer(dw, player);
 			}
-		}
-	}
-
-	public void removePlayer(EntityPlayer player) {
-		if (!players.remove(player)) {
-			System.err.println("Trying to remove non-listening player: " + player.toString());
 		}
 	}
 

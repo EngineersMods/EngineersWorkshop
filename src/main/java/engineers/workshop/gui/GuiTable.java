@@ -14,6 +14,7 @@ import engineers.workshop.network.PacketHandler;
 import engineers.workshop.network.PacketId;
 import engineers.workshop.network.data.DataType;
 import engineers.workshop.table.TileTable;
+import engineers.workshop.util.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
@@ -76,7 +77,7 @@ public class GuiTable extends GuiBase {
 
     @Override
     protected void keyTyped(char c, int k) throws IOException{
-        if (table.getMenu() == null) {
+    	if (table.getMenu() == null) {
             super.keyTyped(c, k);
         }else{
             if (k == 1) {
@@ -220,22 +221,25 @@ public class GuiTable extends GuiBase {
         return String.format("%,d", number).replace((char)160,(char)32);
     }
 
-    private boolean closed;
+    private boolean closed = true;
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-
-        PacketHandler.sendToServer(PacketHandler.getWriter(table, PacketId.CLOSE));
-        closed = true;
+        
+        if(!closed){
+        	PacketHandler.sendToServer(PacketHandler.getWriter(table, PacketId.CLOSE));
+        	closed = true;
+        }
     }
+    
 
     @Override
     public void setWorldAndResolution(Minecraft minecraft, int width, int height) {
         super.setWorldAndResolution(minecraft, width, height);
-
         if (closed) {
+        	closed = false;
+        	
             PacketHandler.sendToServer(PacketHandler.getWriter(table, PacketId.RE_OPEN));
-            closed = false;
         }
     }
 

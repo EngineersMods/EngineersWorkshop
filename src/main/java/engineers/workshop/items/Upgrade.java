@@ -68,6 +68,9 @@ public enum Upgrade {
 
 	public void addInfo(List<String> info) {
 		info.add(I18n.format(description));
+		for (ParentType validParent : validParents) 
+			info.add(validParent.name());
+		
 		if (GuiScreen.isShiftKeyDown()) {
 			if (getMaxCount() == 1)
 				info.add(I18n.format("engineersworkshop:upgrade.unstackable"));

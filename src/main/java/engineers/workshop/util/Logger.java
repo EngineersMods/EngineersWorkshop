@@ -7,6 +7,7 @@ import net.minecraftforge.fml.common.FMLLog;
 public class Logger {
 
 	private Logger() {
+		
 	}
 
 	private static void log(Level logLevel, Object info, Object... data) {
@@ -45,6 +46,14 @@ public class Logger {
 
 	public static void errorf(String info, Object... data) {
 		log(Level.ERROR, info, data);
+	}
+	
+	public static void stacktrace(){
+		try{
+			throw new Exception();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }
