@@ -19,10 +19,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
     container for other classes (interfaces and the current open container a player has for instance) it must still
     extend Container.
  */
+@SuppressWarnings("unused")
 public abstract class ContainerBase extends Container {
     @SideOnly(Side.CLIENT)
     private short transactionID;
-    private int dragMouseButton = -1;
+
+	private int dragMouseButton = -1;
     private int dragMode;
     private final Set<Slot> draggedSlots = new HashSet<Slot>();
 

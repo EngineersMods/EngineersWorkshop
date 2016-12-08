@@ -6,7 +6,6 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraftforge.fluids.FluidContainerRegistry;
 
 public class SlotFuel extends SlotTable {
 	public SlotFuel(TileTable table, Page page, int id, int x, int y) {
@@ -15,8 +14,8 @@ public class SlotFuel extends SlotTable {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		return super.isItemValid(itemstack) && TileEntityFurnace.isItemFuel(itemstack)
-				&& !FluidContainerRegistry.isFilledContainer(itemstack);
+		
+		return super.isItemValid(itemstack) && TileEntityFurnace.isItemFuel(itemstack);
 	}
 
 	@Override

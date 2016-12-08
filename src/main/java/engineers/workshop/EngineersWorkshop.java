@@ -5,6 +5,7 @@ import engineers.workshop.items.ItemUpgrade;
 import engineers.workshop.network.PacketHandler;
 import engineers.workshop.proxies.CommonProxy;
 import engineers.workshop.table.BlockTable;
+import engineers.workshop.util.ConfigHandler;
 import engineers.workshop.util.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -38,10 +39,12 @@ public class EngineersWorkshop {
 	public void preInit(FMLPreInitializationEvent event) {
 
 		packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel("engineersworkshop");
-
 		itemUpgrade = new ItemUpgrade();
 		blockTable = new BlockTable();
+		ConfigHandler.init(event.getSuggestedConfigurationFile());
+		
 		proxy.preInit();
+		
 
 		FMLInterModComms.sendMessage("Waila", "register", "engineers.workshop.waila.WailaHandler.onWailaCall");
 		Logger.debug("FMLPreInitialization done.");

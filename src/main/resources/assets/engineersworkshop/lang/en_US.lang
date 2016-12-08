@@ -16,6 +16,8 @@ engineersworkshop:upgrade.solar.name=Solar Power Upgrade
 engineersworkshop:upgrade.auto_transfer.name=Auto Transfer Upgrade
 engineersworkshop:upgrade.filter.name=Filter Upgrade
 engineersworkshop:upgrade.transfer.name=Transfer Capacity Upgrade
+engineersworkshop:upgrade.max_power.name=Power Capacity Upgrade
+engineersworkshop:upgrade.fuel_delay.name=Fuel Burner Upgrade
 
 #Upgrade Descriptions
 engineersworkshop:upgrade.blank.description=Crafting component
@@ -32,10 +34,12 @@ engineersworkshop:upgrade.solar.description=Allows sunlight to be used as fuel
 engineersworkshop:upgrade.auto_transfer.description=Enables auto transfer to and from the table
 engineersworkshop:upgrade.filter.description=Enables transfer filters
 engineersworkshop:upgrade.transfer.description=Increases the automatic transfer capacities
+engineersworkshop:upgrade.max_power.description=Increases the max power capacities
+engineersworkshop:upgrade.fuel_delay.description=Decreases the time between power consumations
 
 #Upgrade Info
 engineersworkshop:upgrade.unstackable=Doesn't stack very well
-engineersworkshop:upgrade.unstackable=Stacks up to %s
+engineersworkshop:upgrade.stackable=Stacks up to %s
 
 #Creative Tabs
 itemGroup.engineersworkshop=Engineer's Workshop

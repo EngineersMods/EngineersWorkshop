@@ -63,7 +63,8 @@ public class PageUpgrades extends Page {
         return table.getSlots().get(startId + id * SLOT_ROWS * SLOTS_PER_ROW).getStack();
     }
 
-    private Map[] upgrades;
+    @SuppressWarnings("rawtypes")
+	private Map[] upgrades;
 
     public void onUpgradeChange() {
         upgrades = new Map[5];
@@ -79,7 +80,8 @@ public class PageUpgrades extends Page {
     private static final int GLOBAL_ID = 4;
     public int getUpgradeCountRaw(int id, Upgrade upgrade) {
         //noinspection unchecked
-        Map<Upgrade, Integer> map = upgrades[id];
+        @SuppressWarnings("unchecked")
+		Map<Upgrade, Integer> map = upgrades[id];
 
         if (map != null) {
             Integer count = map.get(upgrade);
@@ -125,4 +127,9 @@ public class PageUpgrades extends Page {
         }
         return map;
     }
+
+	@Override
+	public String getDesc() {
+		return "View upgrades";
+	}
 }

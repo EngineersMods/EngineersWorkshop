@@ -14,7 +14,6 @@ import engineers.workshop.network.PacketHandler;
 import engineers.workshop.network.PacketId;
 import engineers.workshop.network.data.DataType;
 import engineers.workshop.table.TileTable;
-import engineers.workshop.util.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
@@ -107,6 +106,9 @@ public class GuiTable extends GuiBase {
 
 
             boolean hover = inBounds(HEADER_X, y, HEADER_FULL_WIDTH, HEADER_HEIGHT, mX, mY);
+            if(hover){//TODO:
+            	drawMouseOver(page.getDesc());
+            }
             int width = hover ? HEADER_FULL_WIDTH : HEADER_WIDTH;
             int offset = HEADER_FULL_WIDTH - width;
 
@@ -207,9 +209,6 @@ public class GuiTable extends GuiBase {
 
         if (hover) {
             String str = color + "Power: " + formatNumber(table.getPower()) + "/" + formatNumber(table.getMaxPower());
-            if (table.getLava() > 0 && table.getUpgradePage().hasGlobalUpgrade(Upgrade.LAVA)) {
-                str += "\n" + TextFormatting.GOLD + "Lava: " + formatNumber(table.getLava()) + "/" + formatNumber(table.getMaxLava());
-            }
             if (table.getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR)) {
                 str += "\n" + TextFormatting.YELLOW + "Solar panel: " + (table.isLitAndCanSeeTheSky() ? "Lit" : TextFormatting.GRAY + "Dark");
             }

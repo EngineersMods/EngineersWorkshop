@@ -24,6 +24,7 @@ public abstract class Page {
     }
 
     public abstract int createSlots(int id);
+    public abstract String getDesc();
 
     protected void addSlot(SlotBase slot) {
         table.addSlot(slot);

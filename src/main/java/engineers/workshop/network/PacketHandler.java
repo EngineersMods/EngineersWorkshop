@@ -2,7 +2,6 @@ package engineers.workshop.network;
 
 import engineers.workshop.gui.container.ContainerTable;
 import engineers.workshop.table.TileTable;
-import engineers.workshop.util.Logger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -14,7 +13,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import scala.actors.Debug;
 
 
 public class PacketHandler {
@@ -30,7 +28,7 @@ public class PacketHandler {
         onPacket(event, ((NetHandlerPlayServer)event.getHandler()).playerEntity, true);
     }
 
-    private void onPacket(FMLNetworkEvent.CustomPacketEvent event, EntityPlayer player, boolean onServer) {
+    private void onPacket(@SuppressWarnings("rawtypes") FMLNetworkEvent.CustomPacketEvent event, EntityPlayer player, boolean onServer) {
         DataReader dr = new DataReader(event.getPacket().payload());
         PacketId id = dr.readEnum(PacketId.class);
         TileTable table = null;

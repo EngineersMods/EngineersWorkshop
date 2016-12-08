@@ -18,13 +18,14 @@ public enum Upgrade {
 	SPEED			(new ConfigurableMax(8),	ParentType.BOTH), 
 	QUEUE			(new MaxCount(3), 			ParentType.SMELTING), 
 	EFFICIENCY		(new ConfigurableMax(4), 	ParentType.GLOBAL),
-	LAVA			(new MaxCount(1), 			ParentType.GLOBAL),
 	TESLA			(new MaxCount(1), 			ParentType.GLOBAL), 
 	SOLAR			(new ConfigurableMax(1),	ParentType.GLOBAL),
 	// EU			(new ConfigurableMax(1), 	ParentType.GLOBAL, "eu"),
 	AUTO_TRANSFER	(new MaxCount(1),			ParentType.GLOBAL),
 	FILTER			(new MaxCount(1),			ParentType.GLOBAL),
-	TRANSFER		(new ConfigurableMax(6, 20),ParentType.GLOBAL);
+	TRANSFER		(new ConfigurableMax(6, 20),ParentType.GLOBAL),
+	MAX_POWER		(new ConfigurableMax(4), 			ParentType.GLOBAL),
+	FUEL_DELAY		(new ConfigurableMax(5), 			ParentType.GLOBAL);
 
 	/**
 	 * PATTERN("Pattern Crafting", "Remembers old recipes", 4,
@@ -68,8 +69,11 @@ public enum Upgrade {
 
 	public void addInfo(List<String> info) {
 		info.add(I18n.format(description));
-		for (ParentType validParent : validParents) 
-			info.add(validParent.name());
+		if(!GuiScreen.isShiftKeyDown())
+			info.add(I18n.format("<hold shift for stack info>"));
+		if(!GuiScreen.isCtrlKeyDown())
+			info.add(I18n.format("<hold control for parent info>"));
+		
 		
 		if (GuiScreen.isShiftKeyDown()) {
 			if (getMaxCount() == 1)
@@ -78,6 +82,15 @@ public enum Upgrade {
 				info.add(I18n.format("engineersworkshop:upgrade.stackable", getMaxCount()));
 			for (ParentType validParent : validParents) {
 				info.add(I18n.format(validParent.description));
+			}
+		}
+		
+		if (GuiScreen.isCtrlKeyDown()) {
+			if (validParents.size() > 0) {
+				info.add("Parents: ");
+				for (ParentType parent : validParents) {
+					info.add(parent.name());
+				}
 			}
 		}
 	}

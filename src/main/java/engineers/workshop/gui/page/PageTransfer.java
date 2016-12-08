@@ -195,8 +195,6 @@ public class PageTransfer extends Page {
     private static final int SIDE_SIZE = 18;
     private static final int SIDE_SRC_X = 0;
     private static final int SIDE_SRC_Y = 166;
-    private static final int SIDE_ITEM_OFFSET = 1;
-
     private static final int SETTING_X = 5;
     private static final int SETTING_Y = 25;
     private static final int SETTING_OFFSET = 20;
@@ -408,4 +406,9 @@ public class PageTransfer extends Page {
     public List<Setting> getSettings() {
         return settings;
     }
+
+	@Override
+	public String getDesc() {
+		return "Configure item movement";
+	}
 }

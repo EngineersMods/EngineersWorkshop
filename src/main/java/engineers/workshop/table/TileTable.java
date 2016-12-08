@@ -24,6 +24,7 @@ import engineers.workshop.network.LengthCount;
 import engineers.workshop.network.PacketHandler;
 import engineers.workshop.network.PacketId;
 import engineers.workshop.network.data.DataType;
+import engineers.workshop.util.ConfigHandler;
 import engineers.workshop.util.Logger;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -42,17 +43,12 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidTankInfo;
-import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraftforge.fml.common.Optional;
 
 @Optional.InterfaceList({ @Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla"),
 		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"), })
 public class TileTable extends TileEntity
-		implements IInventory, ISidedInventory, IFluidHandler, ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
+		implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
 
 	private List<Page> pages;
 	private Page selectedPage;
@@ -62,8 +58,7 @@ public class TileTable extends TileEntity
 	private GuiMenu menu;
 
 	private int power;
-	public int max_power = 2000;
-	public int max_lava = 1000;
+	public int maxPower = ConfigHandler.MIN_POWER;
 	private SlotFuel fuelSlot;
 
 	public int getPower() {
@@ -71,12 +66,13 @@ public class TileTable extends TileEntity
 	}
 	
 	public int getMaxPower(){
-		return max_power;
+		return maxPower;
 	}
 	
-	public int getMaxLava(){
-		return max_lava;
+	public void setMaxPower(int max_power){
+		this.maxPower = max_power;
 	}
+	
 
 	public void setPower(int power) {
 		this.power = power;
@@ -314,13 +310,13 @@ public class TileTable extends TileEntity
 	}
 
 	private int fuelTick = 0;
-	private static final int FUEL_DELAY = 15;
 	private int moveTick = 0;
 	private static final int MOVE_DELAY = 20;
 	private boolean lit;
 	private boolean lastLit;
 	private int slotTick = 0;
 	private static final int SLOT_DELAY = 10;
+	private int fuelDelay;
 
 	@Override
 	public void update() {
@@ -328,7 +324,7 @@ public class TileTable extends TileEntity
 			page.onUpdate();
 		}
 
-		if (!worldObj.isRemote && ++fuelTick >= FUEL_DELAY) {
+		if (!worldObj.isRemote && ++fuelTick >= fuelDelay) {
 			lit = worldObj.getBlockLightOpacity(pos) == 15;
 			if (lastLit != lit) {
 				lastLit = lit;
@@ -486,37 +482,20 @@ public class TileTable extends TileEntity
 		}
 	}
 
-	private int lava;
 	//TODO Upgrades?
-	public static final int MAX_LAVA = 1000;
-	private static final int MAX_LAVA_DRAIN = 50;
-	private static final int LAVA_EFFICIENCY = 12;
-	private static final int SOLAR_GENERATION = 4;
-
 	private int lastPower;
-	private int lastLava;
 
 	private void reloadFuel() {
 
 		if (isLitAndCanSeeTheSky()) {
-			power += SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
-		}
-
-		if (getUpgradePage().hasGlobalUpgrade(Upgrade.LAVA)) {
-			int space = (max_power - power) / LAVA_EFFICIENCY;
-			if (space > 0) {
-				int move = Math.max(0, Math.min(MAX_LAVA_DRAIN, Math.min(space, lava)));
-				power += move * LAVA_EFFICIENCY;
-				lava -= move;
-			}
+			power += ConfigHandler.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
 
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
 			fuelLevel *= 1 + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY) / 4F;
-
-			if (fuelLevel > 0 && fuelLevel + power <= max_power) {
+			if (fuelLevel > 0 && fuelLevel + power <= maxPower) {
 				power += fuelLevel;
 				if (fuel.getItem().hasContainerItem(fuel)) {
 					fuelSlot.putStack(fuel.getItem().getContainerItem(fuel).copy());
@@ -525,18 +504,15 @@ public class TileTable extends TileEntity
 				}
 			}
 		}
-		if (power > max_power) {
-			power = max_power;
+		if (power > maxPower) {
+			power = maxPower;
 		}
 
 		if (power != lastPower) {
 			lastPower = power;
 		}
+		
 		sendDataToAllPlayer(DataType.POWER);
-		if (lava != lastLava) {
-			lastLava = lava;
-		}
-		sendDataToAllPlayer(DataType.LAVA);
 	}
 
 	public boolean isLitAndCanSeeTheSky() {
@@ -558,6 +534,9 @@ public class TileTable extends TileEntity
 		for (UnitCrafting crafting : getMainPage().getCraftingList()) {
 			crafting.onUpgradeChange();
 		}
+		maxPower = (ConfigHandler.MIN_POWER + (ConfigHandler.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
+		fuelDelay = (ConfigHandler.FUEL_DELAY - (ConfigHandler.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
+		sendDataToAllPlayer(DataType.POWER);
 	}
 
 	public void onSideChange() {
@@ -631,61 +610,6 @@ public class TileTable extends TileEntity
 		this.menu = menu;
 	}
 
-	@Override
-	public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-		if (resource != null && resource.getFluid() != null && resource.getFluid().equals(FluidRegistry.LAVA)) {
-			int space = MAX_LAVA - lava;
-			int fill = Math.min(space, resource.amount);
-			if (doFill) {
-				lava += fill;
-			}
-			return fill;
-		}
-		return 0;
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-		if (resource != null && resource.getFluid() != null && resource.getFluid().equals(FluidRegistry.LAVA)) {
-			return drain(from, resource.amount, doDrain);
-		} else {
-			return null;
-		}
-	}
-
-	@Override
-	public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-		int drain = Math.min(maxDrain, lava);
-		if (doDrain) {
-			lava -= drain;
-		}
-
-		return drain == 0 ? null : new FluidStack(FluidRegistry.LAVA, drain);
-	}
-
-	@Override
-	public boolean canFill(EnumFacing from, Fluid fluid) {
-		return fluid != null && fluid.equals(FluidRegistry.LAVA);
-	}
-
-	@Override
-	public boolean canDrain(EnumFacing from, Fluid fluid) {
-		return fluid != null && fluid.equals(FluidRegistry.LAVA);
-	}
-
-	@Override
-	public FluidTankInfo[] getTankInfo(EnumFacing from) {
-		return new FluidTankInfo[] { new FluidTankInfo(new FluidStack(FluidRegistry.LAVA, lava), MAX_LAVA) };
-	}
-
-	public int getLava() {
-		return lava;
-	}
-
-	public void setLava(int lava) {
-		this.lava = lava;
-	}
-
 	public boolean isLit() {
 		return lit;
 	}
@@ -694,16 +618,15 @@ public class TileTable extends TileEntity
 		this.lit = lit;
 	}
 
-	private static final String NBT_ITEMS = "Items";
-	private static final String NBT_UNITS = "Units";
-	private static final String NBT_SETTINGS = "Settings";
-	private static final String NBT_SIDES = "Sides";
-	private static final String NBT_INPUT = "Input";
-	private static final String NBT_OUTPUT = "Output";
-	private static final String NBT_SLOT = "Slot";
-	private static final String NBT_POWER = "Power";
-	private static final String NBT_LAVA = "LavaLevel";
-	private static final String NBT_TESLA = "Tesla";
+	private static final String NBT_ITEMS = "item";
+	private static final String NBT_UNITS = "units";
+	private static final String NBT_SETTINGS = "settings";
+	private static final String NBT_SIDES = "sides";
+	private static final String NBT_INPUT = "input";
+	private static final String NBT_OUTPUT = "output";
+	private static final String NBT_SLOT = "slot";
+	private static final String NBT_POWER = "power";
+	private static final String NBT_MAX_POWER = "max_power";
 	private static final int COMPOUND_ID = 10;
 
 	@Override
@@ -750,9 +673,9 @@ public class TileTable extends TileEntity
 			settingList.appendTag(settingCompound);
 		}
 		compound.setTag(NBT_SETTINGS, settingList);
-		compound.setShort(NBT_POWER, (short) power);
-		compound.setShort(NBT_LAVA, (byte) lava);
-
+		compound.setInteger(NBT_POWER,  power);
+		compound.setInteger(NBT_MAX_POWER,  maxPower);
+		
 		return compound;
 	}
 
@@ -800,12 +723,12 @@ public class TileTable extends TileEntity
 				side.getOutput().readFromNBT(outputCompound);
 			}
 		}
-		power = compound.getShort(NBT_POWER);
-		lava = compound.getShort(NBT_LAVA);
+		power = compound.getInteger(NBT_POWER);
+		maxPower = compound.getInteger(NBT_MAX_POWER);
 
-		onUpgradeChangeDistribute();
-		onSideChange();
-		onUpgradeChange();
+//		onUpgradeChangeDistribute();
+//		onSideChange();
+//		onUpgradeChange();
 	}
 
 	public void spitOutItem(ItemStack item) {
@@ -901,7 +824,7 @@ public class TileTable extends TileEntity
 
 	@Override
 	public long getCapacity() {
-		return max_power;
+		return maxPower;
 	}
 
 	@Override

@@ -31,8 +31,7 @@ public class WailaWorkshop implements IWailaDataProvider {
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor,
 			IWailaConfigHandler config) {
-		currenttip.add("Current Tick: " + accessor.getWorld().getWorldTime() % 20);
-		currenttip.add("Updates: " + accessor.getNBTData().getInteger("power"));
+		currenttip.add(String.format("Power: %s / %s", formatNumber(accessor.getNBTData().getInteger("power")), formatNumber(accessor.getNBTData().getInteger("maxPower"))));
 		return currenttip;
 	}
 
@@ -47,6 +46,11 @@ public class WailaWorkshop implements IWailaDataProvider {
 			BlockPos pos) {
 		TileTable table = (TileTable) te;
 		tag.setInteger("power", (int)table.getStoredPower());
+		tag.setInteger("maxPower", (int)table.getCapacity());
 		return tag;
 	}
+	
+    private String formatNumber(int number) {
+        return String.format("%,d", number).replace((char)160,(char)32);
+    }
 }

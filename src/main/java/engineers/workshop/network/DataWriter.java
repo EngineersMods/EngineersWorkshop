@@ -139,6 +139,7 @@ public class DataWriter {
 		writeData(data, StandardCounts.INTEGER);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public void writeEnum(Enum data) {
 		try {
 			Class<? extends Enum> clazz = data.getDeclaringClass();

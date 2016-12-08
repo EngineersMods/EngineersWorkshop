@@ -1,12 +1,7 @@
 package engineers.workshop.network;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.io.DataInputStream;
-import java.io.IOException;
 
 
 public class DataReader {
@@ -134,7 +129,8 @@ public class DataReader {
         return readData(StandardCounts.INTEGER); //will automatically be signed due to the return value being an integer
     }
 
-    public <T extends Enum> T readEnum(Class<T> clazz) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	public <T extends Enum> T readEnum(Class<T> clazz) {
         try {
             Object[] values = (Object[] )clazz.getMethod("values").invoke(null);
             int length = values.length;

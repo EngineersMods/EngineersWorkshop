@@ -99,4 +99,9 @@ public class PageMain extends Page {
     public List<Unit> getUnits() {
         return units;
     }
+
+	@Override
+	public String getDesc() {
+		return "Viewing station";
+	}
 }
