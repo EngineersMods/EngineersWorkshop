@@ -69,10 +69,10 @@ public enum Upgrade {
 
 	public void addInfo(List<String> info) {
 		info.add(I18n.format(description));
-		if(!GuiScreen.isShiftKeyDown())
+		if(!GuiScreen.isShiftKeyDown() && !GuiScreen.isCtrlKeyDown()){
 			info.add(I18n.format("<hold shift for stack info>"));
-		if(!GuiScreen.isCtrlKeyDown())
 			info.add(I18n.format("<hold control for parent info>"));
+		}
 		
 		
 		if (GuiScreen.isShiftKeyDown()) {

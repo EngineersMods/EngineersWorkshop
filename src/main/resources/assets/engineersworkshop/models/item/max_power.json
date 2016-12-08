@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/rf"
+        "layer0":"engineersworkshop:items/max_power"
     },
     "display": {
         "thirdperson": {
