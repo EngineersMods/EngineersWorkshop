@@ -91,7 +91,7 @@ public abstract class GuiBase extends GuiContainer {
 
 	/**
 	 * TODO: private static final ResourceLocation BLOCK_TEXTURE = new
-	 * ResourceLocation("textures/atlas/blocks.png"); public void
+	 * ResourceLocation("textures/atlas/block.png"); public void
 	 * drawBlockIcon(IIcon icon, int x, int y) {
 	 * mc.getTextureManager().bindTexture(BLOCK_TEXTURE); drawIcon(icon, x, y);
 	 * }

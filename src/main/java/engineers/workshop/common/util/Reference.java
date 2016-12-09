@@ -12,6 +12,4 @@ public class Reference {
         public static final String COMMON_PROXY = "engineers.workshop.proxy.CommonProxy";
     }
 
-    public static final class Upgrades {}
-
 }

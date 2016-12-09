@@ -1,6 +1,7 @@
 package engineers.workshop.proxy;
 
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
@@ -21,6 +22,11 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
+        for (int i = 0; i < Upgrade.values().length; ++i) {
+            Upgrade[] upgrades = Upgrade.values().clone();
+            ModelLoader.setCustomModelResourceLocation(ItemLoader.itemUpgrade, i, new ModelResourceLocation(MODID + ":" + upgrades[i].getName()));
+        }
+        BlockLoader.registerModels();
 	}
 
 	@Override
@@ -31,10 +37,5 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
-
-        for (int i = 0; i < Upgrade.values().length; ++i) {
-            Upgrade[] upgrades = Upgrade.values().clone();
-            ModelLoader.setCustomModelResourceLocation(ItemLoader.itemUpgrade, i, new ModelResourceLocation(MODID + ":" + upgrades[i].getName()));
-        }
 	}
 }

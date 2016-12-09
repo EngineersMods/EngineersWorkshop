@@ -1,5 +1,7 @@
 package engineers.workshop;
 
+import engineers.workshop.common.loaders.BlockLoader;
+import engineers.workshop.common.loaders.ItemLoader;
 import engineers.workshop.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -25,6 +27,8 @@ public class EngineersWorkshop {
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
+        ItemLoader.registerItems();
+        BlockLoader.registerBlocks();
 		proxy.preInit(event);
 	}
 

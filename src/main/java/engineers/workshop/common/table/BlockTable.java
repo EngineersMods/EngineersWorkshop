@@ -3,16 +3,23 @@ package engineers.workshop.common.table;
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.CreativeTabLoader;
+import engineers.workshop.common.util.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyDirection;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -20,14 +27,20 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.Random;
 
 import static engineers.workshop.common.util.Reference.Info.MODID;
 
 public class BlockTable extends Block implements ITileEntityProvider {
+
+	public static final PropertyInteger POWER = PropertyInteger.create("power", 0, 8);
+	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
 	public BlockTable() {
 		super(Material.PISTON);
@@ -36,7 +49,40 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		setUnlocalizedName(MODID + ":" + "blockTable");
 		GameRegistry.register(this);
 		GameRegistry.register(new ItemBlock(this), getRegistryName());
-		GameRegistry.registerTileEntity(TileTable.class, MODID + ":" + "table");
+		GameRegistry.registerTileEntity(TileTable.class, MODID + ":" + "blockTable");
+		setDefaultState(blockState.getBaseState().withProperty(POWER, 0).withProperty(FACING, EnumFacing.NORTH));
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void registerModel() {
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
+	}
+
+	public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
+		return EnumFacing.getFacingFromVector(
+				(float) (entity.posX - clickedBlock.getX()),
+				(float) (entity.posY - clickedBlock.getY()),
+				(float) (entity.posZ - clickedBlock.getZ()));
+	}
+
+	@Override
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+		world.setBlockState(pos, state.withProperty(POWER, 0).withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
+	}
+
+	@Override
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(POWER, 0).withProperty(FACING, EnumFacing.getFront(meta & 7));
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(FACING).getIndex();
+	}
+
+	@Override
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, POWER, FACING);
 	}
 
 	@Override
