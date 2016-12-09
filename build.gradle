@@ -97,9 +97,9 @@ repositories {
 
 dependencies {
   compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-  compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.42"
-  deobfCompile "mezz.jei:jei_1.10.2:3.7.8.234:api"
-  runtime "mezz.jei:jei_1.10.2:3.7.8.234"
+  compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.50"
+  deobfCompile "mezz.jei:jei_1.10.2:3.13.6.389:api"
+  runtime "mezz.jei:jei_1.10.2:3.13.6.389"
   
 }
 
