@@ -1,7 +1,6 @@
-package engineers.workshop.common.waila;
+package engineers.workshop.common.dependencies.waila;
 
 import engineers.workshop.common.table.BlockTable;
-import engineers.workshop.common.util.Logger;
 import mcp.mobius.waila.api.IWailaRegistrar;
 
 public class WailaHandler {

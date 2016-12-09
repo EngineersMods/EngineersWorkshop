@@ -25,9 +25,9 @@ public class CommonProxy {
 	
 	public void preInit(FMLPreInitializationEvent event) {
 		packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
-        RecipeLoader.registerRecipies();
+        RecipeLoader.registerRecipes();
 		ConfigLoader.loadConfig(event.getSuggestedConfigurationFile());
-		FMLInterModComms.sendMessage("Waila", "register", "engineers.workshop.common.waila.WailaHandler.onWailaCall");
+		FMLInterModComms.sendMessage("Waila", "register", "engineers.workshop.common.dependencies.waila.WailaHandler.onWailaCall");
 	}
 	
 	public void init(FMLInitializationEvent event) {

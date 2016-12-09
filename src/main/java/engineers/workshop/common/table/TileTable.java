@@ -813,9 +813,9 @@ public class TileTable extends TileEntity
 
 	@Override
 	public long givePower(long power, boolean simulated) {
-		long rValue = Math.min(getCapacity() - getStoredPower(), power);
-		setPower((int) rValue + getPower());
-		return rValue;
+		long receiveValue = Math.min(getCapacity() - getStoredPower(), power);
+		setPower((int) receiveValue + getPower());
+		return receiveValue;
 	}
 
 	@Optional.Method(modid = "tesla")

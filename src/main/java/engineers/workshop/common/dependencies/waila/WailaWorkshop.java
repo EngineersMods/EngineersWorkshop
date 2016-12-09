@@ -1,4 +1,4 @@
-package engineers.workshop.common.waila;
+package engineers.workshop.common.dependencies.waila;
 
 
 import java.util.List;

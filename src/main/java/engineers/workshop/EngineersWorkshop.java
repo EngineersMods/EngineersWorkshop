@@ -11,12 +11,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
+import static engineers.workshop.common.util.Reference.Info.BuildVersion;
 import static engineers.workshop.common.util.Reference.Info.MODID;
 import static engineers.workshop.common.util.Reference.Info.NAME;
 import static engineers.workshop.common.util.Reference.Paths.CLIENT_PROXY;
 import static engineers.workshop.common.util.Reference.Paths.COMMON_PROXY;
 
-@Mod(modid = MODID, name = NAME)
+@Mod(modid = MODID, name = NAME, version = BuildVersion)
 public class EngineersWorkshop {
 
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = COMMON_PROXY)

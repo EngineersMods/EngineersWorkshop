@@ -5,6 +5,11 @@ public class Reference {
     public static final class Info {
         public static final String MODID = "engineersworkshop";
         public static final String NAME = "Engineers Workshop";
+        static final String VersionMajor = "1";
+        static final String VersionMinor = "0";
+        static final String VersionPatch = "0";
+        public static final String MinecraftVersion = "1.10.2";
+        public static final String BuildVersion = VersionMajor + "." + VersionMinor + "." + VersionPatch + "-" + MinecraftVersion;
     }
 
     public static final class Paths {

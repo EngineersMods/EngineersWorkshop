@@ -26,7 +26,7 @@ public final class ConfigLoader {
                     "Should EU upgrades be allowed? (Requires IC2)");*/
             TeslaSupport = config.getBoolean("Tesla Support", "Power", true,
                     "Should Tesla upgrades be allowed? (Requires Tesla)");
-            MIN_POWER = config.getInt("Max Power", "Power", 8000, 1000, Integer.MAX_VALUE, "Sets the max number of energy storage in the workshop table");
+            MIN_POWER = config.getInt("Max Power", "Power", 1000, 0, Integer.MAX_VALUE, "Sets the max number of energy storage in the workshop table");
             SOLAR_GENERATION = config.getInt("Solar Generation", "Upgrades", 4, 0, Integer.MAX_VALUE,
                     "Sets the amount of energy generated per tick per solar panel upgrade in the workshop table");
             MAX_POWER_CHANGE = config.getInt("Max Power Change", "Upgrades", 1000, 0, Integer.MAX_VALUE,
