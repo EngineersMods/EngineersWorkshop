@@ -1,12 +1,12 @@
 [
-{
-  "modid": "engineersworkshop",
-  "name": "Engineer's Workshop",
-  "description": "A simple mod about a modular worktable",
-  "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "http://github.com/engineersmods/engineersworkshop",
-  "authorList": ["VSWE", "EwyBoy", "JorVa"],
-  "credits": "VSWE for original mod idea & everyone who contributed to the git repo",
-}
+    {
+      "modid": "engineersworkshop",
+      "name": "Engineer's Workshop",
+      "description": "Adds a modular crafting station!",
+      "version": "${version}",
+      "mcversion": "${mcversion}",
+      "url": "http://github.com/engineersmods/engineersworkshop",
+      "authorList": ["EwyBoy", "JorVa"],
+      "credits": "VSWE for original mod Steve's Workshop back in 1.7.2",
+    }
 ]

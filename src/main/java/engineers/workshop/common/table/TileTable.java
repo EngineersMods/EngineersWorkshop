@@ -16,7 +16,7 @@ import engineers.workshop.client.gui.page.unit.UnitCrafting;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
-import engineers.workshop.common.util.ConfigHandler;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.util.Logger;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -56,7 +56,7 @@ public class TileTable extends TileEntity
 	private GuiMenu menu;
 
 	private int power;
-	public int maxPower = ConfigHandler.MIN_POWER;
+	public int maxPower = ConfigLoader.MIN_POWER;
 	private SlotFuel fuelSlot;
 
 	public int getPower() {
@@ -188,7 +188,7 @@ public class TileTable extends TileEntity
 	private List<EntityPlayer> players = new ArrayList<>();
 
 	public void addPlayer(EntityPlayer player) {
-		Logger.infof("Trying to add player %s", player.getName());
+		Logger.info("Trying to add player %s", player.getName());
 		if (!players.contains(player)) {
 			players.add(player);
 			sendAllDataToPlayer(player);
@@ -198,7 +198,7 @@ public class TileTable extends TileEntity
 	}
 	
 	public void removePlayer(EntityPlayer player) {
-		Logger.infof("Trying to remove player %s", player.getName());
+		Logger.info("Trying to remove player %s", player.getName());
 		if (!players.remove(player)) {
 			Logger.error("Trying to remove non-listening player: " + player.getName());
 		}
@@ -229,11 +229,7 @@ public class TileTable extends TileEntity
 	}
 
 	private void sendToAllPlayersExcept(DataWriter dw, EntityPlayer ignored) {
-		for (EntityPlayer player : players) {
-			if (!player.equals(ignored)) {
-				PacketHandler.sendToPlayer(dw, player);
-			}
-		}
+        players.stream().filter(player -> !player.equals(ignored)).forEach(player -> PacketHandler.sendToPlayer(dw, player));
 	}
 
 	public void updateServer(DataType dataType) {
@@ -318,9 +314,7 @@ public class TileTable extends TileEntity
 
 	@Override
 	public void update() {
-		for (Page page : pages) {
-			page.onUpdate();
-		}
+        pages.forEach(Page::onUpdate);
 
 		if (!worldObj.isRemote && ++fuelTick >= fuelDelay) {
 			lit = worldObj.getBlockLightOpacity(pos) == 15;
@@ -347,9 +341,7 @@ public class TileTable extends TileEntity
 
 		if (!worldObj.isRemote && ++slotTick >= SLOT_DELAY) {
 			slotTick = 0;
-			for (SlotBase slot : slots) {
-				slot.updateServer();
-			}
+            slots.forEach(SlotBase::updateServer);
 		}
 	}
 
@@ -405,15 +397,13 @@ public class TileTable extends TileEntity
 		}
 	}
 
-	private void transfer(IInventory from, IInventory to, int[] fromSlots, int[] toSlots, EnumFacing fromSide,
-			EnumFacing toSide, int maxTransfer) {
+	private void transfer(IInventory from, IInventory to, int[] fromSlots, int[] toSlots, EnumFacing fromSide, EnumFacing toSide, int maxTransfer) {
 		int oldTransfer = maxTransfer;
 
 		try {
-			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory
-					? (ISidedInventory) from : null;
-			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to
-					: null;
+
+			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory ? (ISidedInventory) from : null;
+			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to : null;
 
 			for (int fromSlot : fromSlots) {
 				ItemStack fromItem = from.getStackInSlot(fromSlot);
@@ -490,7 +480,7 @@ public class TileTable extends TileEntity
 	private void reloadFuel() {
 
 		if (isLitAndCanSeeTheSky()) {
-			power += ConfigHandler.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
+			power += ConfigLoader.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
 
 		ItemStack fuel = fuelSlot.getStack();
@@ -533,11 +523,9 @@ public class TileTable extends TileEntity
 	public void onUpgradeChange() {
 		reloadTransferSides();
 		getUpgradePage().onUpgradeChange();
-		for (UnitCrafting crafting : getMainPage().getCraftingList()) {
-			crafting.onUpgradeChange();
-		}
-		maxPower = (ConfigHandler.MIN_POWER + (ConfigHandler.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
-		fuelDelay = (ConfigHandler.FUEL_DELAY - (ConfigHandler.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
+        getMainPage().getCraftingList().forEach(UnitCrafting::onUpgradeChange);
+		maxPower = (ConfigLoader.MIN_POWER + (ConfigLoader.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
+		fuelDelay = (ConfigLoader.FUEL_DELAY - (ConfigLoader.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
 		sendDataToAllPlayer(DataType.POWER);
 	}
 
@@ -674,6 +662,7 @@ public class TileTable extends TileEntity
 			settingCompound.setTag(NBT_SIDES, sideList);
 			settingList.appendTag(settingCompound);
 		}
+
 		compound.setTag(NBT_SETTINGS, settingList);
 		compound.setInteger(NBT_POWER,  power);
 		compound.setInteger(NBT_MAX_POWER,  maxPower);

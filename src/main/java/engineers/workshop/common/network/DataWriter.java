@@ -124,7 +124,6 @@ public class DataWriter {
 	/**
 	 * Easy access methods
 	 */
-
 	public void writeBoolean(boolean data) {
 		writeData(data ? 1 : 0, StandardCounts.BOOLEAN);
 	}

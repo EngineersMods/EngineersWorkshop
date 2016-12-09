@@ -4,7 +4,7 @@ import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.gui.GuiHandler;
 import engineers.workshop.common.loaders.RecipeLoader;
 import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.common.util.ConfigHandler;
+import engineers.workshop.common.loaders.ConfigLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -26,7 +26,7 @@ public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		packetHandler = NetworkRegistry.INSTANCE.newEventDrivenChannel(MODID);
         RecipeLoader.registerRecipies();
-		ConfigHandler.init(event.getSuggestedConfigurationFile());
+		ConfigLoader.loadConfig(event.getSuggestedConfigurationFile());
 		FMLInterModComms.sendMessage("Waila", "register", "engineers.workshop.common.waila.WailaHandler.onWailaCall");
 	}
 	

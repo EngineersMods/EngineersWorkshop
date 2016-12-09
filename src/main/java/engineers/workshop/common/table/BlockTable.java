@@ -8,7 +8,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -39,7 +38,6 @@ import static engineers.workshop.common.util.Reference.Info.MODID;
 
 public class BlockTable extends Block implements ITileEntityProvider {
 
-	public static final PropertyInteger POWER = PropertyInteger.create("power", 0, 8);
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
 	public BlockTable() {
@@ -50,7 +48,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		GameRegistry.register(this);
 		GameRegistry.register(new ItemBlock(this), getRegistryName());
 		GameRegistry.registerTileEntity(TileTable.class, MODID + ":" + "blockTable");
-		setDefaultState(blockState.getBaseState().withProperty(POWER, 0).withProperty(FACING, EnumFacing.NORTH));
+		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -59,20 +57,19 @@ public class BlockTable extends Block implements ITileEntityProvider {
 	}
 
 	public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
-		return EnumFacing.getFacingFromVector(
-				(float) (entity.posX - clickedBlock.getX()),
-				(float) (entity.posY - clickedBlock.getY()),
-				(float) (entity.posZ - clickedBlock.getZ()));
+		return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), (float) (entity.posY - clickedBlock.getY()), (float) (entity.posZ - clickedBlock.getZ()));
 	}
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		world.setBlockState(pos, state.withProperty(POWER, 0).withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
+		Logger.info("FACING: " + state.getValue(FACING));
+		world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
 	}
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(POWER, 0).withProperty(FACING, EnumFacing.getFront(meta & 7));
+		return getDefaultState()
+				.withProperty(FACING, EnumFacing.getFront(meta & 7));
 	}
 
 	@Override
@@ -82,7 +79,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 
 	@Override
 	protected BlockStateContainer createBlockState() {
-		return new BlockStateContainer(this, POWER, FACING);
+		return new BlockStateContainer(this, FACING);
 	}
 
 	@Override
@@ -104,8 +101,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 			try {
 				ItemStack stack = player.getHeldItemMainhand();
 				if (stack != null) {
-					if (EnchantmentHelper.getEnchantments(stack).keySet()
-							.contains(Enchantment.getEnchantmentByLocation("minecraft:silk_touch"))) {
+					if (EnchantmentHelper.getEnchantments(stack).keySet().contains(Enchantment.getEnchantmentByLocation("minecraft:silk_touch"))) {
 						TileEntity te = world.getTileEntity(pos);
 						ItemStack eStack = getPickBlock(state, null, world, pos, null);
 						eStack = Minecraft.getMinecraft().storeTEInStack(eStack, te);
@@ -162,8 +158,8 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		}
 	}
 
-	private static final int[] SIDES_INDICES = { 0, 2, 3, 1 };
-	private static final int[] SIDES = { 0, 3, 1, 2 };
+	private static final int[] SIDES_INDICES = {0, 2, 3, 1};
+	private static final int[] SIDES = {0, 3, 1, 2};
 
 	public static int getSideFromSideAndMeta(int side, int meta) {
 		if (side <= 1) {
@@ -183,7 +179,6 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		} else {
 			int index = SIDES_INDICES[side - 2] + meta;
 			index %= SIDES.length;
-
 			return SIDES[index] + 2;
 		}
 	}
