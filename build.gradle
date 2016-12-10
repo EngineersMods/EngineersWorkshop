@@ -11,17 +11,17 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //Only edit below this line, the above code adds and enables the nessasary things for Forge to be setup.
 
 
-version = "Whats A Version?"
+version = "1.0.0"
 group= "engineers.workshop" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "engineersworkshop"
 
-sourceCompatibility = targetCompatibility = "1.6" // Need this here so eclipse task generates correctly.
+sourceCompatibility = targetCompatibility = "1.8" // Need this here so eclipse task generates correctly.
 compileJava {
-    sourceCompatibility = targetCompatibility = "1.6"
+    sourceCompatibility = targetCompatibility = "1.8"
 }
 
 minecraft {
-    version = "1.10.2-12.18.2.2171"
+    version = "1.10.2-12.18.2.2179"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -84,6 +84,11 @@ repositories {
         url 'http://maven.epoxide.xyz'
     }
 	
+	maven { 
+		name 'enderio'
+		url = "http://maven.tterrag.com" 
+	}
+	
 	maven {
 		name 'jei'
 		url "http://dvs1.progwml6.com/files/maven"
@@ -93,14 +98,23 @@ repositories {
         name 'waila'
         url 'http://mobiusstrip.eu/maven'
     }
+	
+	 ivy {
+        url "http://ae-mod.info/builds"
+        layout "pattern", {
+            artifact "[module]-[revision](-[classifier])(.[ext])"
+        }
+    }
 }
 
 dependencies {
   compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
   compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.50"
+  deobfCompile "com.enderio.core:EnderCore:1.10.2-0.4.1.59-beta"
+  deobfCompile "com.enderio:EnderIO:1.10.2-3.0.1.139_beta"
   deobfCompile "mezz.jei:jei_1.10.2:3.13.6.389:api"
   runtime "mezz.jei:jei_1.10.2:3.13.6.389"
-  
+
 }
 
 import java.nio.file.Files
