@@ -90,7 +90,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		if (!worldIn.isRemote) {
 			FMLNetworkHandler.openGui(playerIn, EngineersWorkshop.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		}
-		return super.onBlockActivated(worldIn, pos, state, playerIn, hand, heldItem, side, hitX, hitY, hitZ);
+		return true;
 	}
 
 	@Override
