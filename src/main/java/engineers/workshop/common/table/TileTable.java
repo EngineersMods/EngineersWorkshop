@@ -44,8 +44,7 @@ import java.util.List;
 		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
 })
 
-public class TileTable extends TileEntity
-		implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
+public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
 
 	private List<Page> pages;
 	private Page selectedPage;
