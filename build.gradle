@@ -109,7 +109,6 @@ repositories {
 
 dependencies {
   compile "mcp.mobius.waila:Waila:1.7.0-B3_1.9.4"
-  compile "net.darkhax.tesla:Tesla:1.10.2-1.2.1.50"
   deobfCompile "com.enderio.core:EnderCore:1.10.2-0.4.1.59-beta"
   deobfCompile "com.enderio:EnderIO:1.10.2-3.0.1.139_beta"
   deobfCompile "mezz.jei:jei_1.10.2:3.13.6.389:api"

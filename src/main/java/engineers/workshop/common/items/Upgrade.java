@@ -98,11 +98,11 @@ public enum Upgrade {
 
     public boolean isValid(ItemStack parent) {
         for (ParentType validParent : validParents) {
-            if (!validParent.isValidParent(parent)) {
-                return false;
+            if (validParent.isValidParent(parent)) {
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     public int getMaxCount() {

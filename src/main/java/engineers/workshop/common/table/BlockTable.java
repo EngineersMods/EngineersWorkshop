@@ -3,7 +3,6 @@ package engineers.workshop.common.table;
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.CreativeTabLoader;
-import engineers.workshop.common.util.Logger;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
@@ -62,7 +61,6 @@ public class BlockTable extends Block implements ITileEntityProvider {
 
 	@Override
 	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-		Logger.info("FACING: " + state.getValue(FACING));
 		world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
 	}
 

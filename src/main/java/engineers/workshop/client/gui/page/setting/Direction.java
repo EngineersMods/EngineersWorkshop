@@ -7,8 +7,8 @@ public enum Direction {
     TOP(1, 0),
     FRONT(1, 1),
     BACK(3, 1),
-    LEFT(2, 1, "Your right side when facing the front"),
-    RIGHT(0, 1, "Your left side when facing the front");
+    RIGHT(2, 1, "Your right side when facing the front"),
+    LEFT(0, 1, "Your left side when facing the front");
 
     private int interfaceX;
     private int interfaceY;

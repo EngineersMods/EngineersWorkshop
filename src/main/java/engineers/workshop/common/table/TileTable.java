@@ -1,5 +1,8 @@
 package engineers.workshop.common.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import engineers.workshop.client.gui.container.slot.SlotBase;
 import engineers.workshop.client.gui.container.slot.SlotFuel;
 import engineers.workshop.client.gui.menu.GuiMenu;
@@ -14,9 +17,14 @@ import engineers.workshop.client.gui.page.setting.Transfer;
 import engineers.workshop.client.gui.page.unit.Unit;
 import engineers.workshop.client.gui.page.unit.UnitCrafting;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.network.*;
-import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.network.DataReader;
+import engineers.workshop.common.network.DataWriter;
+import engineers.workshop.common.network.IBitCount;
+import engineers.workshop.common.network.LengthCount;
+import engineers.workshop.common.network.PacketHandler;
+import engineers.workshop.common.network.PacketId;
+import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.darkhax.tesla.api.ITeslaConsumer;
 import net.darkhax.tesla.api.ITeslaHolder;
@@ -29,16 +37,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla"),
@@ -188,7 +192,7 @@ public class TileTable extends TileEntity
 	private List<EntityPlayer> players = new ArrayList<>();
 
 	public void addPlayer(EntityPlayer player) {
-		Logger.info("Trying to add player %s", player.getName());
+		Logger.debug("Trying to add player %s", player.getName());
 		if (!players.contains(player)) {
 			players.add(player);
 			sendAllDataToPlayer(player);
@@ -198,7 +202,7 @@ public class TileTable extends TileEntity
 	}
 	
 	public void removePlayer(EntityPlayer player) {
-		Logger.info("Trying to remove player %s", player.getName());
+		Logger.debug("Trying to remove player %s", player.getName());
 		if (!players.remove(player)) {
 			Logger.error("Trying to remove non-listening player: " + player.getName());
 		}
@@ -348,25 +352,23 @@ public class TileTable extends TileEntity
 	private void transfer(Setting setting, Side side, Transfer transfer, int transferSize) {
 		if (transfer.isEnabled() && transfer.isAuto()) {
 			EnumFacing direction = EnumFacing.values()[BlockTable.getSideFromSideAndMetaReversed(side.getDirection().ordinal(), getBlockMetadata())];
-
-            TileEntity te = worldObj.getTileEntity(new BlockPos(
-                    pos.getX() + direction.getFrontOffsetX(),
-                    pos.getY() + direction.getFrontOffsetY(),
-                    pos.getX() + direction.getFrontOffsetZ())
-            );
-
+			BlockPos nPos = pos.add(
+					direction.getFrontOffsetX(),
+                    direction.getFrontOffsetY(),
+                    direction.getFrontOffsetZ());
+            TileEntity te = worldObj.getTileEntity(nPos);
 			if (te instanceof IInventory) {
-				IInventory inventory = null;
-				if (te instanceof TileEntityChest) {
-					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
-					// te.getPos().getX(), te.getPos().getY(),
-					// te.getPos().getX());
-					if (inventory == null) {
-						return;
-					}
-				} else {
-					inventory = (IInventory) te;
-				}
+				IInventory inventory = (IInventory)te;
+//				if (te instanceof TileEntityChest) {
+//					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
+//					// te.getPos().getX(), te.getPos().getY(),
+//					// te.getPos().getX());
+//					if (inventory == null) {
+//						return;
+//					}
+//				} else {
+//					inventory = (IInventory) te;
+//				}
 				List<SlotBase> transferSlots = setting.getSlots();
 				if (transferSlots == null) {
 					return;
