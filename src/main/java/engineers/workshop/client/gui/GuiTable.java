@@ -8,6 +8,7 @@ import engineers.workshop.common.network.PacketHandler;
 import engineers.workshop.common.network.PacketId;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.util.ColorHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
@@ -186,34 +187,13 @@ public class GuiTable extends GuiBase {
         if (hover) {
             srcX += POWER_WIDTH;
         }
+
         drawRect(POWER_X, POWER_Y, srcX, POWER_SRC_Y, POWER_WIDTH, POWER_HEIGHT);
 
-//        NBTTagCompound tag = new NBTTagCompound();
-//        tag.setInteger("power", table.getPower());
-        int power = getTable().getPower();
-        TextFormatting color;
-        if (power <= ((table.getMaxPower() * 12.5) / 100)) {
-            color = TextFormatting.DARK_RED;
-        } else if (power <= ((table.getMaxPower() * 25) / 100)) {
-            color = TextFormatting.RED;
-        } else if (power <= ((table.getMaxPower() * 37.5) / 100)) {
-            color = TextFormatting.GOLD;
-        } else if (power <= ((table.getMaxPower() * 50) / 100)) {
-            color = TextFormatting.YELLOW;
-        } else if (power <= ((table.getMaxPower() * 62.5) / 100)) {
-            color = TextFormatting.DARK_GREEN;
-        } else if (power <= ((table.getMaxPower() * 75) / 100)) {
-            color = TextFormatting.GREEN;
-        } else if (power <= ((table.getMaxPower() * 87.5) / 100)) {
-            color = TextFormatting.DARK_AQUA;
-        } else {
-            color = TextFormatting.AQUA;
-        }
-
         if (hover) {
-            String str = color + "Power: " + formatNumber(table.getPower()) + "/" + formatNumber(table.getMaxPower());
+            String str = ColorHelper.getPowerColor(getTable().getPower(), getTable().getMaxPower()) + "Power: " + formatNumber(table.getPower()) + " / " + formatNumber(table.getMaxPower());
             if (table.getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR)) {
-                str += "\n" + TextFormatting.YELLOW + "Solar panel: " + (table.isLitAndCanSeeTheSky() ? "Lit" : TextFormatting.GRAY + "Dark");
+                str += "\n" + TextFormatting.YELLOW + "Solar panel: " + (table.getWorld().canSeeSky(table.getPos().up()) ? "Lit" : TextFormatting.GRAY + "Dark");
             }
             drawMouseOver(str);
         }

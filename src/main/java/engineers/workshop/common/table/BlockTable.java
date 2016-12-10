@@ -150,7 +150,6 @@ public class BlockTable extends Block implements ITileEntityProvider {
 						world.spawnEntityInWorld(entityItem);
 						itemStack.stackSize = 0;
 					}
-
 				}
 			}
 		}

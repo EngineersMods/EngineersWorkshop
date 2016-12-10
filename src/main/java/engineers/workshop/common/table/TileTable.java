@@ -1,8 +1,5 @@
 package engineers.workshop.common.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engineers.workshop.client.gui.container.slot.SlotBase;
 import engineers.workshop.client.gui.container.slot.SlotFuel;
 import engineers.workshop.client.gui.menu.GuiMenu;
@@ -18,12 +15,7 @@ import engineers.workshop.client.gui.page.unit.Unit;
 import engineers.workshop.client.gui.page.unit.UnitCrafting;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.DataReader;
-import engineers.workshop.common.network.DataWriter;
-import engineers.workshop.common.network.IBitCount;
-import engineers.workshop.common.network.LengthCount;
-import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.common.network.PacketId;
+import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.darkhax.tesla.api.ITeslaConsumer;
@@ -43,6 +35,9 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.common.Optional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Optional.InterfaceList({
 		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla"),
@@ -369,6 +364,7 @@ public class TileTable extends TileEntity
 //				} else {
 //					inventory = (IInventory) te;
 //				}
+
 				List<SlotBase> transferSlots = setting.getSlots();
 				if (transferSlots == null) {
 					return;
@@ -480,7 +476,6 @@ public class TileTable extends TileEntity
 	private int lastPower;
 
 	private void reloadFuel() {
-
 		if (isLitAndCanSeeTheSky()) {
 			power += ConfigLoader.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
