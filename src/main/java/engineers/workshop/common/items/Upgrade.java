@@ -14,21 +14,21 @@ import java.util.stream.Collectors;
 import static engineers.workshop.common.util.Reference.Info.MODID;
 
 public enum Upgrade {
-    BLANK			(new MaxCount(0), 			    ParentType.NULL),
-    AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING),
-    STORAGE			(new MaxCount(1),			    ParentType.CRAFTING),
-    CHARGED			(new ConfigurableMax(8),	    ParentType.NULL),
-    SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),
-    QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),
-    EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),
-    TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),
-    SOLAR			(new ConfigurableMax(1),	    ParentType.GLOBAL),
+    BLANK			(new MaxCount(0), 			    ParentType.NULL), 		// Max count = 0  (Not usable as an upgrade)
+    AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 	// Max count = 1
+    STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 	// Max count = 1
+    CHARGED			(new ConfigurableMax(8),	    ParentType.NULL),		// Max count = 8  (Configable)
+    SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
+    QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
+    EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
+    TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
+    SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
     // EU			(new ConfigurableMax(1), 	    ParentType.GLOBAL, "eu"),
-    AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),
-    FILTER			(new MaxCount(1),			    ParentType.GLOBAL),
-    TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),
-    MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),
-    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL);
+    AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
+    FILTER			(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
+    TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),		// Max count = 6  (Configable upto 20)
+    MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),		// Max count = 16 (Configable)
+    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL);		// Max count = 5  (Configable)
 
     /**
      * PATTERN("Pattern Crafting", "Remembers old recipes", 4,
