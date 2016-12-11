@@ -13,7 +13,7 @@ public final class ConfigLoader {
 
 	private static final String MAX_COUNT_SUFFIX = " maximum amount";
 	public static boolean doRenderSpinningEntity, debugMode;
-	public static int MIN_POWER, SOLAR_GENERATION, FUEL_DELAY, MAX_POWER_CHANGE, FUEL_DELAY_CHANGE;
+	public static int MIN_POWER, SOLAR_GENERATION, FUEL_DELAY, MAX_POWER_CHANGE, FUEL_DELAY_CHANGE, FUEL_EFFICIENCY_CHANGE;
 
 	public static boolean EUSupport, TeslaSupport;
 
@@ -29,6 +29,8 @@ public final class ConfigLoader {
             MIN_POWER = config.getInt("Max Power", "Power", 8000, 1, Integer.MAX_VALUE, "Sets the max number of energy storage in the workshop table");
             SOLAR_GENERATION = config.getInt("Solar Generation", "Upgrades", 4, 0, Integer.MAX_VALUE,
                     "Sets the amount of energy generated per tick per solar panel upgrade in the workshop table");
+            FUEL_EFFICIENCY_CHANGE = config.getInt("Fuel Efficiency Change", "Upgrades", 4, 0, Integer.MAX_VALUE,
+                    "Sets how efficient each upgrade is, formula: 'power = fuel * (upgradeAmount / this)'");
             MAX_POWER_CHANGE = config.getInt("Max Power Change", "Upgrades", 1000, 0, Integer.MAX_VALUE,
                     "Sets the amount that each max power upgrade increases the max power by.");
             FUEL_DELAY_CHANGE = config.getInt("Fuel Delay Change", "Upgrades", 1, 0, 14,

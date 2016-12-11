@@ -316,12 +316,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 		if (!worldObj.isRemote && ++fuelTick >= fuelDelay) {
 			lit = worldObj.getBlockLightOpacity(pos) == 15;
-			if (lastLit != lit) {
-				lastLit = lit;
-				sendDataToAllPlayer(DataType.LIT);
-			}
 			fuelTick = 0;
-			reloadFuel();
+			updateFuel();
 		}
 
 		if (!worldObj.isRemote && ++moveTick >= MOVE_DELAY) {
@@ -474,7 +470,12 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	//TODO Upgrades?
 	private int lastPower;
 
-	private void reloadFuel() {
+	private void updateFuel() {
+		if (lastLit != lit) {
+			lastLit = lit;
+			sendDataToAllPlayer(DataType.LIT);
+		}
+		
 		if (isLitAndCanSeeTheSky()) {
 			power += ConfigLoader.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
@@ -482,7 +483,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
-			fuelLevel *= 1 + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY) / 4F;
+			fuelLevel *= 1F + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY) / ConfigLoader.FUEL_EFFICIENCY_CHANGE;
 			if (fuelLevel > 0 && fuelLevel + power <= maxPower) {
 				power += fuelLevel;
 				if (fuel.getItem().hasContainerItem(fuel)) {
@@ -492,13 +493,11 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				}
 			}
 		}
-		if (power > maxPower) {
+		if (power > maxPower) 
 			power = maxPower;
-		}
 
-		if (power != lastPower) {
+		if (power != lastPower) 
 			lastPower = power;
-		}
 		
 		sendDataToAllPlayer(DataType.POWER);
 	}
