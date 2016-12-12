@@ -309,13 +309,21 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private int slotTick = 0;
 	private static final int SLOT_DELAY = 10;
 	private int fuelDelay;
+	private boolean firstUpdate = true;
 
 	@Override
 	public void update() {
         pages.forEach(Page::onUpdate);
 
+		if(firstUpdate) {
+			onUpgradeChangeDistribute();
+			onSideChange();
+			onUpgradeChange();
+            firstUpdate = false;
+		}
+
 		if (!worldObj.isRemote && ++fuelTick >= fuelDelay) {
-			lit = worldObj.getBlockLightOpacity(pos) == 15;
+			lit = worldObj.canSeeSky(pos.up());
 			fuelTick = 0;
 			updateFuel();
 		}
@@ -394,7 +402,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		int oldTransfer = maxTransfer;
 
 		try {
-
 			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory ? (ISidedInventory) from : null;
 			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to : null;
 
@@ -476,7 +483,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			sendDataToAllPlayer(DataType.LIT);
 		}
 		
-		if (isLitAndCanSeeTheSky()) {
+		if (canSeeTheSky()) {
 			power += ConfigLoader.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
 
@@ -502,8 +509,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		sendDataToAllPlayer(DataType.POWER);
 	}
 
-	public boolean isLitAndCanSeeTheSky() {
-		return lit && worldObj.canBlockSeeSky(pos);
+	public boolean canSeeTheSky() {
+		return worldObj.canSeeSky(pos.up());
 	}
 
 	public void onUpgradeChangeDistribute() {
@@ -712,9 +719,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		power = compound.getInteger(NBT_POWER);
 		maxPower = compound.getInteger(NBT_MAX_POWER);
 
-//		onUpgradeChangeDistribute();
-//		onSideChange();
-//		onUpgradeChange();
 	}
 
 	public void spitOutItem(ItemStack item) {
@@ -806,10 +810,14 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		return maxPower;
 	}
 
+
+    //TODO add conversion rate to config
 	@Override
 	public long givePower(long power, boolean simulated) {
-		long receiveValue = Math.min(getCapacity() - getStoredPower(), power);
+		long receiveValue = Math.min(getCapacity() - getStoredPower(), (power / 8));
 		setPower((int) receiveValue + getPower());
+        Logger.info(receiveValue);
+
 		return receiveValue;
 	}
 

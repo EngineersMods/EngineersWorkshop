@@ -66,7 +66,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 
 	@Override
 	public IBlockState getStateFromMeta(int meta) {
-		return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 8));
+		return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 7));
 	}
 
 	@Override

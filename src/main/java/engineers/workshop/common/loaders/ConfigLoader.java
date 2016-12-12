@@ -12,7 +12,6 @@ import static engineers.workshop.common.util.Reference.Info.MODID;
 public final class ConfigLoader {
 
 	private static final String MAX_COUNT_SUFFIX = " maximum amount";
-	public static boolean doRenderSpinningEntity, debugMode;
 	public static int MIN_POWER, SOLAR_GENERATION, FUEL_DELAY, MAX_POWER_CHANGE, FUEL_DELAY_CHANGE, FUEL_EFFICIENCY_CHANGE;
 
 	public static boolean EUSupport, TeslaSupport;
@@ -22,8 +21,6 @@ public final class ConfigLoader {
         config.load();
             FUEL_DELAY = config.getInt("Fuel Delay", "Tweaks", 15, 0, Integer.MAX_VALUE,
                     "Sets the amount of ticks between each time the worktable consumes a fuel resource");
-            /*EUSupport = config.getBoolean("EU Support", "Power", true,
-                    "Should EU upgrades be allowed? (Requires IC2)");*/
             TeslaSupport = config.getBoolean("Tesla Support", "Power", true,
                     "Should Tesla upgrades be allowed? (Requires Tesla)");
             MIN_POWER = config.getInt("Max Power", "Power", 8000, 1, Integer.MAX_VALUE, "Sets the max number of energy storage in the workshop table");
@@ -40,7 +37,7 @@ public final class ConfigLoader {
                 Upgrade.MaxCount max = upgrade.getMaxCountObject();
                 if (max.getConfigurableMax() > 0) {
                     upgrade.getMaxCountObject().setMax(config.getInt(upgrade.getName() + MAX_COUNT_SUFFIX, "Upgrades", max.getMax(), 0,
-                                    max.getConfigurableMax(), "Max amount of the " + upgrade.getName() + " upgrade"));
+                            max.getConfigurableMax(), "Max amount of the " + upgrade.getName() + " upgrade"));
                 }
             }
         config.save();

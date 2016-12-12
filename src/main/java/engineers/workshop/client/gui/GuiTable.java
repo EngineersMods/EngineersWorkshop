@@ -8,7 +8,8 @@ import engineers.workshop.common.network.PacketHandler;
 import engineers.workshop.common.network.PacketId;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.common.util.ColorHelper;
+import engineers.workshop.common.util.helpers.ColorHelper;
+import engineers.workshop.common.util.helpers.FormattingHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
@@ -191,16 +192,12 @@ public class GuiTable extends GuiBase {
         drawRect(POWER_X, POWER_Y, srcX, POWER_SRC_Y, POWER_WIDTH, POWER_HEIGHT);
 
         if (hover) {
-            String str = ColorHelper.getPowerColor(getTable().getPower(), getTable().getMaxPower()) + "Power: " + formatNumber(table.getPower()) + " / " + formatNumber(table.getMaxPower());
+            String str = ColorHelper.getPowerColor(getTable().getPower(), getTable().getMaxPower()) + "Power: " + FormattingHelper.formatNumber(table.getPower()) + " / " + FormattingHelper.formatNumber(table.getMaxPower());
             if (table.getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR)) {
                 str += "\n" + TextFormatting.YELLOW + "Solar panel: " + (table.getWorld().canSeeSky(table.getPos().up()) ? "Lit" : TextFormatting.GRAY + "Dark");
             }
             drawMouseOver(str);
         }
-    }
-
-    private String formatNumber(int number) {
-        return String.format("%,d", number).replace((char)160,(char)32);
     }
 
     private boolean closed = true;
