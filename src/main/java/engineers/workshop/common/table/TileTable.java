@@ -478,9 +478,12 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			lastLit = lit;
 			sendDataToAllPlayer(DataType.LIT);
 		}
+
+        int weatherModifier;
 		
 		if (canSeeTheSky()) {
-			power += ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
+            weatherModifier = worldObj.isRaining() ? ConfigLoader.UPGRADES.SOLAR_GENERATION : 1;
+            if (worldObj.isDaytime()) power += (ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR)) / weatherModifier;
 		}
 
 		ItemStack fuel = fuelSlot.getStack();
