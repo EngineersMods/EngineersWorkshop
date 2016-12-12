@@ -181,7 +181,7 @@ public class GuiTable extends GuiBase {
 
         int height = (int) (POWER_INNER_HEIGHT * table.getPower() / table.getCapacity());
         int offset = POWER_INNER_HEIGHT - height;
-        GL11.glColor3f(ColorHelper.getRed(getTable().getPower(), getTable().getMaxPower()), ColorHelper.getGreen(getTable().getPower(), getTable().getMaxPower()), ColorHelper.getBlue(getTable().getPower(), getTable().getMaxPower()));
+        GL11.glColor3f(ColorHelper.getRed(getTable().getPower(), getTable().getCapacity()), ColorHelper.getGreen(getTable().getPower(), getTable().getCapacity()), ColorHelper.getBlue(getTable().getPower(), getTable().getMaxPower()));
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y + offset, POWER_INNER_SRC_X, POWER_INNER_SRC_Y + offset, POWER_INNER_WIDTH, height);
         drawRect(POWER_X, POWER_Y + POWER_INNER_OFFSET_Y + offset - 1, POWER_SRC_X, POWER_SRC_Y - 1, POWER_WIDTH, 1);
 
