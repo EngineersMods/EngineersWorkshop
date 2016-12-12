@@ -9,9 +9,9 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.0.0"
+version = "1.0.1-1.10.2"
 group= "engineers.workshop"
-archivesBaseName = "engineersworkshop"
+archivesBaseName = "EngineersWorkshop"
 
 sourceCompatibility = targetCompatibility = "1.8"
 compileJava {

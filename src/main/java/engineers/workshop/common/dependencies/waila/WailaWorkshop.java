@@ -2,7 +2,7 @@ package engineers.workshop.common.dependencies.waila;
 
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.common.util.ColorHelper;
+import engineers.workshop.common.util.helpers.ColorHelper;
 import mcp.mobius.waila.api.IWailaConfigHandler;
 import mcp.mobius.waila.api.IWailaDataAccessor;
 import mcp.mobius.waila.api.IWailaDataProvider;
@@ -49,8 +49,8 @@ public class WailaWorkshop implements IWailaDataProvider {
 
 		return tag;
 	}
-	
-    private String formatNumber(int number) {
-        return NumberFormat.getIntegerInstance(Locale.forLanguageTag(String.valueOf(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()))).format(number);
-    }
+
+	private String formatNumber(int number) {
+		return NumberFormat.getIntegerInstance(Locale.forLanguageTag(String.valueOf(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()))).format(number);
+	}
 }
