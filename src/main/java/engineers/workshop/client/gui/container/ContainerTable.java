@@ -15,9 +15,7 @@ public class ContainerTable extends ContainerBase {
     public ContainerTable(TileTable table, EntityPlayer player) {
         this.table = table;
 
-        for (SlotBase slot : table.getSlots()) {
-            addSlotToContainer(slot);
-        }
+        table.getSlots().forEach(this::addSlotToContainer);
 
         InventoryPlayer inventory = player.inventory;
         for (int y = 0; y < NORMAL_ROWS; y++) {

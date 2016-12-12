@@ -48,11 +48,7 @@ public class PageMain extends Page {
 
     @Override
     public void onUpdate() {
-        for (Unit unit : units) {
-            if (unit.isEnabled()) {
-                unit.onUpdate();
-            }
-        }
+        units.stream().filter(Unit::isEnabled).forEachOrdered(Unit::onUpdate);
     }
 
     @Override
@@ -81,20 +77,12 @@ public class PageMain extends Page {
         gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH, BAR_THICKNESS);
         gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS, BAR_HEIGHT);
 
-        for (Unit unit : units) {
-            if (unit.isEnabled()) {
-                unit.draw(gui, mX, mY);
-            }
-        }
+        units.stream().filter(Unit::isEnabled).forEachOrdered(unit -> unit.draw(gui, mX, mY));
     }
 
     @Override
     public void onClick(GuiBase gui, int mX, int mY, int button) {
-        for (Unit unit : units) {
-            if (unit.isEnabled()) {
-                unit.onClick(gui, mX, mY);
-            }
-        }
+        units.stream().filter(Unit::isEnabled).forEachOrdered(unit -> unit.onClick(gui, mX, mY));
     }
 
     public List<Unit> getUnits() {
@@ -103,6 +91,6 @@ public class PageMain extends Page {
 
 	@Override
 	public String getDesc() {
-		return "Viewing station";
+		return "Workshop Area";
 	}
 }

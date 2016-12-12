@@ -75,8 +75,7 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	public void drawCenteredString(String str, int x, int y, int width, float multiplier, int color) {
-		drawString(str, x + (width - (int) (fontRendererObj.getStringWidth(str) * multiplier)) / 2, y, multiplier,
-				color);
+		drawString(str, x + (width - (int) (fontRendererObj.getStringWidth(str) * multiplier)) / 2, y, multiplier, color);
 	}
 
 	public void drawItem(ItemStack item, int x, int y) {

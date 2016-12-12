@@ -22,6 +22,7 @@ public enum Upgrade {
     QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
     EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
     TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
+    RF  			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
     // EU			(new ConfigurableMax(1), 	    ParentType.GLOBAL, "eu"),
     AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
@@ -176,9 +177,7 @@ public enum Upgrade {
             return defaultMax;
         }
 
-        public void init(Upgrade upgrade) {
-
-        }
+        public void init(Upgrade upgrade) {}
     }
 
     private static class ConfigurableMax extends MaxCount {

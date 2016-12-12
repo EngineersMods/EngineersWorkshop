@@ -1,5 +1,7 @@
 package engineers.workshop.common.table;
 
+import cofh.api.energy.EnergyStorage;
+import cofh.api.energy.IEnergyHandler;
 import engineers.workshop.client.gui.container.slot.SlotBase;
 import engineers.workshop.client.gui.container.slot.SlotFuel;
 import engineers.workshop.client.gui.menu.GuiMenu;
@@ -44,7 +46,7 @@ import java.util.List;
 		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
 })
 
-public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
+public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer, /*RF*/ IEnergyHandler {
 
 	private List<Page> pages;
 	private Page selectedPage;
@@ -83,7 +85,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		id = page.createSlots(id);
 	}
 	items = new ItemStack[slots.size()];
-
+	energy = new EnergyStorage(5000, ConfigLoader.TWEAKS.POWER_CONVERSION);
 	setSelectedPage(pages.get(0));
 	onUpgradeChange();
 }
@@ -486,6 +488,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
             if (worldObj.isDaytime()) power += (ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR)) / weatherModifier;
 		}
 
+		convertRFToPower();
+
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
@@ -633,9 +637,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				itemList.appendTag(slotCompound);
 			}
 		}
-		compound.setTag(NBT_ITEMS, itemList);
 
+		compound.setTag(NBT_ITEMS, itemList);
 		NBTTagList unitList = new NBTTagList();
+
 		for (Unit unit : getMainPage().getUnits()) {
 			NBTTagCompound unitCompound = new NBTTagCompound();
 			unit.writeToNBT(unitCompound);
@@ -663,6 +668,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			settingCompound.setTag(NBT_SIDES, sideList);
 			settingList.appendTag(settingCompound);
 		}
+
+		energy.writeToNBT(compound);
 
 		compound.setTag(NBT_SETTINGS, settingList);
 		compound.setInteger(NBT_POWER,  power);
@@ -715,6 +722,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				side.getOutput().readFromNBT(outputCompound);
 			}
 		}
+
+		energy.readFromNBT(compound);
 		power = compound.getInteger(NBT_POWER);
 		maxPower = compound.getInteger(NBT_MAX_POWER);
 
@@ -724,8 +733,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		float offsetX, offsetY, offsetZ;
 		offsetX = offsetY = offsetZ = worldObj.rand.nextFloat() * 0.8F + 1.0F;
 
-		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY,
-				pos.getZ() + offsetZ, item.copy());
+		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, item.copy());
 		entityItem.motionX = worldObj.rand.nextGaussian() * 0.05F;
 		entityItem.motionY = worldObj.rand.nextGaussian() * 0.05F + 0.2F;
 		entityItem.motionZ = worldObj.rand.nextGaussian() * 0.05F;
@@ -807,16 +815,21 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		return maxPower;
 	}
 
-
-	// TODO add conversion rate to config
 	@Optional.Method(modid = "tesla")
-	public long givePower(long tesla, boolean simulated) {
-		int PTF = (int) (maxPower - power);
-		PTF = PTF - (PTF % ConfigLoader.TWEAKS.TESLA_CONVERSION);
-		long teslaTake = Math.min(tesla, PTF / ConfigLoader.TWEAKS.TESLA_CONVERSION);
-		power += teslaTake * ConfigLoader.TWEAKS.TESLA_CONVERSION;
-		return teslaTake;
+	@Override
+	public long givePower(long power, boolean simulated) {
+		long receiveValue = Math.min(getCapacity() - getStoredPower(), (power / ConfigLoader.TWEAKS.POWER_CONVERSION));
+		setPower((int) receiveValue + getPower());
+		return receiveValue;
 	}
+
+	/**
+		 int PTF = (int) (maxPower - power);
+		 PTF = PTF - (PTF % ConfigLoader.TWEAKS.TESLA_CONVERSION);
+		 long teslaTake = Math.min(tesla, PTF / ConfigLoader.TWEAKS.TESLA_CONVERSION);
+		 power += teslaTake * ConfigLoader.TWEAKS.TESLA_CONVERSION;
+		 return teslaTake;
+	 */
 
 	@Optional.Method(modid = "tesla")
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
@@ -835,4 +848,30 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		return super.getCapability(capability, facing);
 	}
 
+	//RF
+
+	public EnergyStorage energy;
+
+	private void convertRFToPower() {
+		if (getUpgradePage().hasGlobalUpgrade(Upgrade.RF)) {
+			long receiveValue = Math.min(getCapacity() - getStoredPower(), (power / ConfigLoader.TWEAKS.POWER_CONVERSION));
+			setPower((int) receiveValue + getPower());
+			Logger.info(receiveValue);
+		}
+	}
+
+	@Override
+	public int getEnergyStored(EnumFacing from) {
+		return energy.getEnergyStored();
+	}
+
+	@Override
+	public int getMaxEnergyStored(EnumFacing from) {
+		return energy.getMaxEnergyStored();
+	}
+
+	@Override
+	public boolean canConnectEnergy(EnumFacing from) {
+		return (getUpgradePage().hasGlobalUpgrade(Upgrade.RF));
+	}
 }

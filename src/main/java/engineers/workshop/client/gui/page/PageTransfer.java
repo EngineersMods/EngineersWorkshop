@@ -6,7 +6,6 @@ import engineers.workshop.client.gui.component.ArrowScroll;
 import engineers.workshop.client.gui.component.CheckBox;
 import engineers.workshop.client.gui.menu.GuiMenuItem;
 import engineers.workshop.client.gui.page.setting.*;
-import engineers.workshop.client.gui.page.setting.Side;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.data.DataSide;
 import engineers.workshop.common.network.data.DataType;
@@ -14,7 +13,7 @@ import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fml.relauncher.*;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +32,7 @@ public class PageTransfer extends Page {
     public PageTransfer(TileTable table, String name) {
         super(table, name);
 
-        settings = new ArrayList<Setting>();
+        settings = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             int x = SETTING_X + (i % 2) * SETTING_OFFSET;
             int y = SETTING_Y + (i / 2) * SETTING_OFFSET;
@@ -50,6 +49,7 @@ public class PageTransfer extends Page {
 
         checkBoxes = new ArrayList<>();
         checkBoxes.add(new CheckBox("Select mode", 165, 20) {
+
             @Override
             public void setValue(boolean value) {
                 selectMode = value;
@@ -261,14 +261,14 @@ public class PageTransfer extends Page {
 
 
                 gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE, SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
-//                gui.drawBlockIcon(BlockLoader.workshopTable.getIcon(side.getDirection().ordinal(), 0), side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET);
+                //gui.drawBlockIcon(BlockLoader.workshopTable.getIcon(side.getDirection().ordinal(), 0), side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET);
                 if (hover) {
                     gui.drawMouseOver(side.getDescription(side == selectedSide));
                 }
             }
 
             if (selectedTransfer != null && table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER)) {
-                gui.drawString("Filter", 8, 100, 0x404040);
+                gui.drawString("Filter", 8, 100, 0x1E1E1E);
 
                 for (int i = 0; i < ItemSetting.ITEM_COUNT; i++) {
                     gui.prepare();
@@ -392,9 +392,7 @@ public class PageTransfer extends Page {
 
     @Override
     public void onRelease(GuiTable gui, int mX, int mY, int button) {
-        for (ArrowScroll arrow : arrows) {
-            arrow.onRelease();
-        }
+        arrows.forEach(ArrowScroll::onRelease);
     }
 
     public List<Setting> getSettings() {
@@ -403,6 +401,6 @@ public class PageTransfer extends Page {
 
 	@Override
 	public String getDesc() {
-		return "Configure item movement";
+		return "Manage Exporting / Importing";
 	}
 }

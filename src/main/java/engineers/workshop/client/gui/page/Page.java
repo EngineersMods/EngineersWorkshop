@@ -8,10 +8,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class Page {
+
     private String name;
     protected TileTable table;
     private int id;
-
 
     public Page(TileTable table, String name) {
         this.id = table.getPages().size();
@@ -20,7 +20,7 @@ public abstract class Page {
     }
 
     public String getName() {
-        return name;
+        return name.toUpperCase();
     }
 
     public abstract int createSlots(int id);
@@ -32,8 +32,9 @@ public abstract class Page {
 
     @SideOnly(Side.CLIENT)
     public void draw(GuiBase gui, int mX, int mY) {
-        gui.drawString(name, 8, 6, 0x404040);
+        gui.drawString(name.toUpperCase(), 8, 6, 0x1E1E1E);
     }
+
     @SideOnly(Side.CLIENT)
     public void onClick(GuiBase gui, int mX, int mY, int button) {}
 

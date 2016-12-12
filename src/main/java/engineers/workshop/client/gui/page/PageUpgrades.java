@@ -55,7 +55,7 @@ public class PageUpgrades extends Page {
     @Override
     public void draw(GuiBase gui, int mX, int mY) {
         super.draw(gui, mX, mY);
-        gui.drawString("Global Upgrades", GLOBAL_X, GLOBAL_Y - 10, 0x404040);
+        gui.drawString("GLOBAL UPGRADES", GLOBAL_X, GLOBAL_Y - 10, 0x1E1E1E);
     }
 
     public ItemStack getUpgradeMainItem(int id) {
@@ -130,6 +130,6 @@ public class PageUpgrades extends Page {
 
 	@Override
 	public String getDesc() {
-		return "View upgrades";
+		return "Manage Upgrades";
 	}
 }

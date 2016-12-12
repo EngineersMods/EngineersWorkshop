@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GuiMenuItem extends GuiMenu {
 
@@ -173,11 +174,7 @@ public class GuiMenuItem extends GuiMenu {
                 }
             }
 
-            for (ItemStack itemStack : itemStacks) {
-                if (itemStack != null) {
-                    searchItems.add(itemStack);
-                }
-            }
+            searchItems.addAll(itemStacks.stream().filter(itemStack -> itemStack != null).collect(Collectors.toList()));
 
             Iterator<ItemStack> itemIterator = searchItems.iterator();
 
@@ -300,10 +297,7 @@ public class GuiMenuItem extends GuiMenu {
     @Override
     public void onRelease(GuiBase gui, int mX, int mY) {
         super.onRelease(gui, mX, mY);
-
-        for (ArrowScroll arrow : arrows) {
-            arrow.onRelease();
-        }
+        arrows.forEach(ArrowScroll::onRelease);
     }
 
 
