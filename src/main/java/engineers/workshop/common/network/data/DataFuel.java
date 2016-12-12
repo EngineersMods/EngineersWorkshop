@@ -9,7 +9,7 @@ import engineers.workshop.common.network.MaxCount;
 import engineers.workshop.common.table.TileTable;
 
 public class DataFuel extends DataBase {
-    private static IBitCount FUEL_BIT_COUNT = new MaxCount(ConfigLoader.MIN_POWER + (ConfigLoader.MAX_POWER_CHANGE * Upgrade.MAX_POWER.getMaxCount()));
+    private static IBitCount FUEL_BIT_COUNT = new MaxCount(ConfigLoader.TWEAKS.MIN_POWER + (ConfigLoader.UPGRADES.MAX_POWER_CHANGE * Upgrade.MAX_POWER.getMaxCount()));
 
     @Override
     public void save(TileTable table, DataWriter dw, int id) {

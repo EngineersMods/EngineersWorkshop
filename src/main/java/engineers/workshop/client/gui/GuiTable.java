@@ -178,7 +178,7 @@ public class GuiTable extends GuiBase {
         prepare();
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y, POWER_INNER_SRC_X + POWER_INNER_WIDTH, POWER_INNER_SRC_Y, POWER_INNER_WIDTH, POWER_INNER_HEIGHT);
 
-        int height = POWER_INNER_HEIGHT * table.getPower() / table.getMaxPower();
+        int height = (int) (POWER_INNER_HEIGHT * table.getPower() / table.getCapacity());
         int offset = POWER_INNER_HEIGHT - height;
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y + offset, POWER_INNER_SRC_X, POWER_INNER_SRC_Y + offset, POWER_INNER_WIDTH, height);
         drawRect(POWER_X, POWER_Y + POWER_INNER_OFFSET_Y + offset - 1, POWER_SRC_X, POWER_SRC_Y - 1, POWER_WIDTH, 1);
@@ -192,7 +192,7 @@ public class GuiTable extends GuiBase {
         drawRect(POWER_X, POWER_Y, srcX, POWER_SRC_Y, POWER_WIDTH, POWER_HEIGHT);
 
         if (hover) {
-            String str = ColorHelper.getPowerColor(getTable().getPower(), getTable().getMaxPower()) + "Power: " + FormattingHelper.formatNumber(table.getPower()) + " / " + FormattingHelper.formatNumber(table.getMaxPower());
+            String str = ColorHelper.getPowerColor(getTable().getPower(), getTable().getCapacity()) + "Power: " + FormattingHelper.formatNumber(table.getPower()) + " / " + FormattingHelper.formatNumber((int) table.getCapacity());
             if (table.getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR)) {
                 str += "\n" + TextFormatting.YELLOW + "Solar panel: " + (table.getWorld().canSeeSky(table.getPos().up()) ? "Lit" : TextFormatting.GRAY + "Dark");
             }

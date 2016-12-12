@@ -54,19 +54,15 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private GuiMenu menu;
 
 	private int power;
-	public int maxPower = ConfigLoader.MIN_POWER;
+	public int maxPower = ConfigLoader.TWEAKS.MIN_POWER;
 	private SlotFuel fuelSlot;
 
 	public int getPower() {
 		return power;
 	}
 	
-	public int getMaxPower(){
-		return maxPower;
-	}
-	
-	public void setMaxPower(int max_power){
-		this.maxPower = max_power;
+	public void setCapacity(int newCap){
+		this.maxPower = newCap;
 	}
 
 	public void setPower(int power) {
@@ -484,13 +480,13 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		}
 		
 		if (canSeeTheSky()) {
-			power += ConfigLoader.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
+			power += ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
 		}
 
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
-			fuelLevel *= 1F + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY) / ConfigLoader.FUEL_EFFICIENCY_CHANGE;
+			fuelLevel *= 1F + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY) / ConfigLoader.UPGRADES.FUEL_EFFICIENCY_CHANGE;
 			if (fuelLevel > 0 && fuelLevel + power <= maxPower) {
 				power += fuelLevel;
 				if (fuel.getItem().hasContainerItem(fuel)) {
@@ -526,8 +522,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		reloadTransferSides();
 		getUpgradePage().onUpgradeChange();
         getMainPage().getCraftingList().forEach(UnitCrafting::onUpgradeChange);
-		maxPower = (ConfigLoader.MIN_POWER + (ConfigLoader.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
-		fuelDelay = (ConfigLoader.FUEL_DELAY - (ConfigLoader.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
+		maxPower = (ConfigLoader.TWEAKS.MIN_POWER + (ConfigLoader.UPGRADES.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
+		fuelDelay = (ConfigLoader.TWEAKS.FUEL_DELAY - (ConfigLoader.UPGRADES.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
 		sendDataToAllPlayer(DataType.POWER);
 	}
 
@@ -800,25 +796,23 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public void clear() {}
 
 	// Tesla
-	@Override
 	public long getStoredPower() {
 		return power;
 	}
 
-	@Override
 	public long getCapacity() {
 		return maxPower;
 	}
 
 
-    //TODO add conversion rate to config
-	@Override
-	public long givePower(long power, boolean simulated) {
-		long receiveValue = Math.min(getCapacity() - getStoredPower(), (power / 8));
-		setPower((int) receiveValue + getPower());
-        Logger.info(receiveValue);
-
-		return receiveValue;
+	// TODO add conversion rate to config
+	@Optional.Method(modid = "tesla")
+	public long givePower(long tesla, boolean simulated) {
+		int PTF = (int) (maxPower - power);
+		PTF = PTF - (PTF % ConfigLoader.TWEAKS.TESLA_CONVERSION);
+		long teslaTake = Math.min(tesla, PTF / ConfigLoader.TWEAKS.TESLA_CONVERSION);
+		power += teslaTake * ConfigLoader.TWEAKS.TESLA_CONVERSION;
+		return teslaTake;
 	}
 
 	@Optional.Method(modid = "tesla")
