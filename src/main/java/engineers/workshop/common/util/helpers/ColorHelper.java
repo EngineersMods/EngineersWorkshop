@@ -26,4 +26,58 @@ public class ColorHelper {
             default: return AQUA;
         }
     }
+
+    public static float getRed(float power, float maxPower) {
+        float percentage = ((power) / maxPower) * 100;
+        int color = (int) (percentage / (100f / 8));
+
+        switch (color) {
+            case 0: return 140;
+            case 1: return 255;
+            case 2: return 255;
+            case 3: return 255;
+            case 4: return 0;
+            case 5: return 0;
+            case 6: return 0;
+            case 7: return 0;
+
+            default: return 0;
+        }
+    }
+    public static float getGreen(float power, float maxPower) {
+        float percentage = ((power) / maxPower) * 100;
+        int color = (int) (percentage / (100f / 8));
+
+        switch (color) {
+            case 0: return 0;
+            case 1: return 0;
+            case 2: return 200;
+            case 3: return 255;
+            case 4: return 150;
+            case 5: return 255;
+            case 6: return 85;
+            case 7: return 170;
+
+            default: return 170;
+        }
+    }
+
+    public static float getBlue(float power, float maxPower) {
+        float percentage = ((power) / maxPower) * 100;
+        int color = (int) (percentage / (100f / 8));
+
+        switch (color) {
+            case 0: return 0;
+            case 1: return 0;
+            case 2: return 0;
+            case 3: return 0;
+            case 4: return 0;
+            case 5: return 0;
+            case 6: return 255;
+            case 7: return 255;
+
+            default: return 255;
+        }
+    }
+
 }

@@ -46,7 +46,7 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	protected static final ResourceLocation BACKGROUND = new ResourceLocation(MODID, "textures/gui/background.png");
-	protected static final ResourceLocation ELEMENTS = new ResourceLocation(MODID, "textures/gui/elements.png");
+	protected static final ResourceLocation ELEMENTS = new ResourceLocation(MODID, "textures/gui/elements_gl.png");
 
 	public void prepare() {
 		mc.getTextureManager().bindTexture(ELEMENTS);
