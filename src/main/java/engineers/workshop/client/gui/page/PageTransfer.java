@@ -12,7 +12,6 @@ import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -240,9 +239,8 @@ public class PageTransfer extends Page {
 			int textureIndexX = isValid && hover ? 1 : 0;
 			int textureIndexY = isValid ? isSelected ? 1 : 0 : 2;
 
-			//ItemStack item = setting.getItem();
-            ItemStack item = new ItemStack(Items.COAL);
-            gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE, SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
+			ItemStack item = setting.getItem();
+			gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE, SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
 			gui.drawItem(item, setting.getX() + SETTING_ITEM_OFFSET, setting.getY() + SETTING_ITEM_OFFSET);
 
 			if (hover && isValid) {
