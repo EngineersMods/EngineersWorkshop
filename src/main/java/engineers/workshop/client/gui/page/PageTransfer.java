@@ -1,32 +1,24 @@
 package engineers.workshop.client.gui.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.client.gui.GuiTable;
 import engineers.workshop.client.gui.component.ArrowScroll;
 import engineers.workshop.client.gui.component.CheckBox;
 import engineers.workshop.client.gui.menu.GuiMenuItem;
-import engineers.workshop.client.gui.page.setting.ItemSetting;
-import engineers.workshop.client.gui.page.setting.Setting;
-import engineers.workshop.client.gui.page.setting.SettingCoal;
-import engineers.workshop.client.gui.page.setting.SettingNormal;
-import engineers.workshop.client.gui.page.setting.Side;
-import engineers.workshop.client.gui.page.setting.Transfer;
+import engineers.workshop.client.gui.page.setting.*;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.data.DataSide;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PageTransfer extends Page {
 
@@ -40,19 +32,19 @@ public class PageTransfer extends Page {
 
 	public PageTransfer(TileTable table, String name) {
 		super(table, name);
-
 		settings = new ArrayList<>();
-		for (int i = 0; i < 4; i++) {
+
+        for (int i = 0; i < 4; i++) {
 			int x = SETTING_X + (i % 2) * SETTING_OFFSET;
 			int y = SETTING_Y + (i / 2) * SETTING_OFFSET;
 			settings.add(new SettingNormal(table, i, x, y));
 		}
+
 		settings.add(new SettingCoal(table, 4, SETTING_X + 2 * SETTING_OFFSET, SETTING_Y + SETTING_OFFSET / 2));
 
 		for (Setting setting : settings) {
 			for (EnumFacing direction : EnumFacing.values()) {
-				setting.getSides().add(new Side(setting, direction, SIDE_X + getInterfaceX(direction) * SIDE_OFFSET,
-						SIDE_Y + getInterfaceY(direction) * SIDE_OFFSET));
+				setting.getSides().add(new Side(setting, direction, SIDE_X + getInterfaceX(direction) * SIDE_OFFSET, SIDE_Y + getInterfaceY(direction) * SIDE_OFFSET));
 			}
 		}
 
@@ -87,8 +79,7 @@ public class PageTransfer extends Page {
 			@Override
 			public void setValue(boolean value) {
 				selectedTransfer.setEnabled(value);
-				PageTransfer.this.table.updateServer(DataType.SIDE_ENABLED,
-						DataSide.getId(selectedSetting, selectedSide, selectedTransfer));
+				PageTransfer.this.table.updateServer(DataType.SIDE_ENABLED, DataSide.getId(selectedSetting, selectedSide, selectedTransfer));
 				PageTransfer.this.table.onSideChange();
 			}
 
@@ -194,8 +185,7 @@ public class PageTransfer extends Page {
 	}
 
 	private boolean shouldSelectModeBeVisible() {
-		return table.getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER)
-				|| table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER);
+		return table.getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER) || table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER);
 	}
 
 	private static final int SIDE_X = 75;
@@ -250,9 +240,9 @@ public class PageTransfer extends Page {
 			int textureIndexX = isValid && hover ? 1 : 0;
 			int textureIndexY = isValid ? isSelected ? 1 : 0 : 2;
 
-			ItemStack item = setting.getItem();
-			gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE,
-					SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
+			//ItemStack item = setting.getItem();
+            ItemStack item = new ItemStack(Items.COAL);
+            gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE, SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
 			gui.drawItem(item, setting.getX() + SETTING_ITEM_OFFSET, setting.getY() + SETTING_ITEM_OFFSET);
 
 			if (hover && isValid) {
@@ -263,7 +253,6 @@ public class PageTransfer extends Page {
 				gui.drawMouseOver(name);
 			}
 		}
-//		Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation("engineersworkshop:textures/blocks/front.png"));//TODO:
 
 		if (selectedSetting != null) {
 			for (Side side : selectedSetting.getSides()) {
@@ -274,13 +263,11 @@ public class PageTransfer extends Page {
 				boolean input = side.isInputEnabled();
 				int textureIndexY = output && input ? 3 : output ? 2 : input ? 1 : 0;
 
-				gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE,
-						SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
-//				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET,	 0, 0,	 16, 16); //TODO:
-				
-				// gui.drawBlockIcon(BlockLoader.workshopTable.getIcon(side.getDirection().ordinal(),
-				// 0), side.getX() + SIDE_ITEM_OFFSET, side.getY() +
-				// SIDE_ITEM_OFFSET);
+				gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE, SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
+				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132, 0, 16, 16);
+
+				/*gui
+				gui.drawBlockIcon(BlockLoader.workshopTable.getIcon(side.getDirection().ordinal(), 0), side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET);*/
 				
 				if (hover) {
 					gui.drawMouseOver(side.getDescription(side == selectedSide));

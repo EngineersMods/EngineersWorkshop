@@ -35,10 +35,6 @@ import net.minecraft.util.math.BlockPos;
 import java.util.ArrayList;
 import java.util.List;
 
-//@Optional.InterfaceList({
-//		@Optional.Interface(iface = "cofh.api.energy.IEnergyReceiver", modid = "CoFH|API"),
-//})
-
 public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /*RF*/ IEnergyReceiver {
 
 	private List<Page> pages;
@@ -347,16 +343,16 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
             TileEntity te = worldObj.getTileEntity(nPos);
 			if (te instanceof IInventory) {
 				IInventory inventory = (IInventory)te;
-//				if (te instanceof TileEntityChest) {
-//					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
-//					// te.getPos().getX(), te.getPos().getY(),
-//					// te.getPos().getX());
-//					if (inventory == null) {
-//						return;
-//					}
-//				} else {
-//					inventory = (IInventory) te;
-//				}
+				/*if (te instanceof TileEntityChest) {
+					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
+					// te.getPos().getX(), te.getPos().getY(),
+					// te.getPos().getX());
+					if (inventory == null) {
+						return;
+					}
+				} else {
+					inventory = (IInventory) te;
+				}*/
 
 				List<SlotBase> transferSlots = setting.getSlots();
 				if (transferSlots == null) {
@@ -800,8 +796,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public int getCapacity() {
 		return maxPower;
 	}
-	
-	
 
 	public int getEnergyStored(EnumFacing from) {
 		return 0;
@@ -821,15 +815,4 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			power+=energyToPower;
 		return energyToPower*ConfigLoader.TWEAKS.POWER_CONVERSION;
 	}
-
-
-	//RF
-
-//	private void convertRFToPower() {
-//		if (getUpgradePage().hasGlobalUpgrade(Upgrade.RF)) {
-//			long receiveValue = Math.min(getCapacity() - getStoredPower(), (power / ConfigLoader.TWEAKS.POWER_CONVERSION));
-//			setPower((int) receiveValue + getPower());
-//		}
-//	}
-
 }
