@@ -1,20 +1,23 @@
 package engineers.workshop.client.gui.page.setting;
 
 import engineers.workshop.common.items.Upgrade;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Side {
     private int x;
     private int y;
-    private Direction direction;
+    private EnumFacing direction;
     private Setting setting;
     private Transfer input;
     private Transfer output;
 
-    public Side(Setting setting, Direction direction, int x, int y) {
+    public Side(Setting setting, EnumFacing direction, int x, int y) {
         this.x = x;
         this.y = y;
         this.direction = direction;
@@ -48,7 +51,7 @@ public class Side {
         input.setEnabled(value);
     }
 
-    public Direction getDirection() {
+    public EnumFacing getDirection() {
         return direction;
     }
 
@@ -66,12 +69,8 @@ public class Side {
 
     public List<String> getDescription(boolean selected) {
         List<String> str = new ArrayList<String>();
-        str.add(direction.getName());
+        str.add(StringUtils.capitalize(direction.getName()));
 
-        String description = direction.getDescription();
-        if (description != null) {
-            str.add(TextFormatting.GRAY + description);
-        }
         if (selected) {
             str.add(TextFormatting.YELLOW + "Selected");
         }

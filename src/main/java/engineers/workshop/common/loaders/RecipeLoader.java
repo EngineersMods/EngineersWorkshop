@@ -27,7 +27,7 @@ public class RecipeLoader {
         addRecipe(Upgrade.AUTO_TRANSFER, "GGG", "HUH", "GGG", 'G', GOLD_INGOT, 'H', HOPPER, 'U', Upgrade.BLANK.getItemStack());
         addRecipe(Upgrade.FILTER, "III", "GBG", "IUI", 'G', Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE, 'I', IRON_INGOT, 'B', Blocks.IRON_BARS, 'U', Upgrade.BLANK.getItemStack());
         addRecipe(Upgrade.TRANSFER, "III", "GRG", "GUG", 'G', GOLD_INGOT, 'I', IRON_INGOT, 'R', REDSTONE_BLOCK, 'U', Upgrade.BLANK.getItemStack());
-        addRecipe(Upgrade.TESLA, "ORO", "RDR", "ORO", 'O', IRON_INGOT, 'R', REDSTONE_BLOCK, 'D', Upgrade.CHARGED.getItemStack());
+        addRecipe(Upgrade.RF, "ORO", "RDR", "ORO", 'O', IRON_INGOT, 'R', REDSTONE_BLOCK, 'D', Upgrade.CHARGED.getItemStack());
         addRecipe(Upgrade.FUEL_DELAY, "IRI", "LUL", "IRI", 'I', IRON_INGOT, 'R', REDSTONE, 'L', new ItemStack(DYE, 1, 4), 'U', Upgrade.SPEED.getItemStack());
         addRecipe(Upgrade.MAX_POWER, "GRG", "RTR", "GUG", 'G', GOLD_INGOT, 'T', TRAPPED_CHEST, 'R', REDSTONE_BLOCK, 'U', Upgrade.STORAGE.getItemStack());
     }

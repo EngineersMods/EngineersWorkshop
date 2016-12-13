@@ -36,8 +36,8 @@ public class BlockTable extends Block implements ITileEntityProvider {
 	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
 	public BlockTable() {
-		super(Material.WOOD);
-        setHardness(3.0f);
+		super(Material.ROCK);
+        setHardness(3.5f);
 		setCreativeTab(CreativeTabLoader.tabWorkshop);
 		setRegistryName(MODID + ":" + "blockTable");
 		setUnlocalizedName(MODID + ":" + "blockTable");
@@ -135,31 +135,6 @@ public class BlockTable extends Block implements ITileEntityProvider {
 					}
 				}
 			}
-		}
-	}
-
-	private static final int[] SIDES_INDICES = {0, 2, 3, 1};
-	private static final int[] SIDES = {0, 3, 1, 2};
-
-	public static int getSideFromSideAndMeta(int side, int meta) {
-		if (side <= 1) {
-			return side;
-		} else {
-			int index = SIDES_INDICES[side - 2] - meta;
-			if (index < 0) {
-				index += SIDES.length;
-			}
-			return SIDES[index] + 2;
-		}
-	}
-
-	public static int getSideFromSideAndMetaReversed(int side, int meta) {
-		if (side <= 1) {
-			return side;
-		} else {
-			int index = SIDES_INDICES[side - 2] + meta;
-			index %= SIDES.length;
-			return SIDES[index] + 2;
 		}
 	}
 
