@@ -1,12 +1,12 @@
 package engineers.workshop.common.network.data;
 
-import engineers.workshop.client.gui.page.unit.Unit;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.DataReader;
 import engineers.workshop.common.network.DataWriter;
 import engineers.workshop.common.network.IBitCount;
 import engineers.workshop.common.network.MaxCount;
 import engineers.workshop.common.table.TileTable;
+import engineers.workshop.container.page.unit.Unit;
 
 public abstract class DataUnit extends DataBase {
 
