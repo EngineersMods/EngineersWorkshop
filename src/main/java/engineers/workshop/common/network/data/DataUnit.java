@@ -6,7 +6,7 @@ import engineers.workshop.common.network.DataWriter;
 import engineers.workshop.common.network.IBitCount;
 import engineers.workshop.common.network.MaxCount;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.container.page.unit.Unit;
+import engineers.workshop.client.page.unit.Unit;
 
 public abstract class DataUnit extends DataBase {
 

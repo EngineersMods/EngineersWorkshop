@@ -3,7 +3,7 @@ package engineers.workshop.proxy;
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.common.loaders.RecipeLoader;
 import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.container.GuiHandler;
+import engineers.workshop.client.GuiHandler;
 import engineers.workshop.common.loaders.ConfigLoader;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLInterModComms;

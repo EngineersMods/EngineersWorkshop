@@ -15,7 +15,7 @@ public interface IEnergyContainerItem
 {
 
 	/**
-	 * Adds energy to a container item. Returns the quantity of energy that was
+	 * Adds energy to a client item. Returns the quantity of energy that was
 	 * accepted. This should always return 0 if the item cannot be externally
 	 * charged.
 	 *
@@ -31,7 +31,7 @@ public interface IEnergyContainerItem
 	int receiveEnergy(ItemStack container, int maxReceive, boolean simulate);
 
 	/**
-	 * Removes energy from a container item. Returns the quantity of energy that
+	 * Removes energy from a client item. Returns the quantity of energy that
 	 * was removed. This should always return 0 if the item cannot be externally
 	 * discharged.
 	 *
@@ -47,12 +47,12 @@ public interface IEnergyContainerItem
 	int extractEnergy(ItemStack container, int maxExtract, boolean simulate);
 
 	/**
-	 * Get the amount of energy currently stored in the container item.
+	 * Get the amount of energy currently stored in the client item.
 	 */
 	int getEnergyStored(ItemStack container);
 
 	/**
-	 * Get the max amount of energy that can be stored in the container item.
+	 * Get the max amount of energy that can be stored in the client item.
 	 */
 	int getMaxEnergyStored(ItemStack container);
 

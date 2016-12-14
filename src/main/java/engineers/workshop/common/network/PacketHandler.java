@@ -1,7 +1,7 @@
 package engineers.workshop.common.network;
 
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.container.container.ContainerTable;
+import engineers.workshop.client.container.ContainerTable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.network.NetHandlerPlayServer;
@@ -33,7 +33,7 @@ public class PacketHandler {
         TileTable table = null;
         if (id.isInInterface()) {
             if (player.openContainer instanceof ContainerTable) {
-                table = ((engineers.workshop.container.container.ContainerTable)player.openContainer).getTable();
+                table = ((engineers.workshop.client.container.ContainerTable)player.openContainer).getTable();
             }
         }else{
             int x = dr.readSignedInteger();

@@ -3,7 +3,7 @@ package engineers.workshop.common.network.data;
 import engineers.workshop.common.network.DataReader;
 import engineers.workshop.common.network.DataWriter;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.container.page.setting.*;
+import engineers.workshop.client.page.setting.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
