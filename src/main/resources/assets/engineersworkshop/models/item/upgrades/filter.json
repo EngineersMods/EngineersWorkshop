@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/efficiency"
+        "layer0":"EngineersWorkshop:items/upgrades/filter"
     },
     "display": {
         "thirdperson": {

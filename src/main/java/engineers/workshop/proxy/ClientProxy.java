@@ -24,7 +24,7 @@ public class ClientProxy extends CommonProxy {
 		super.preInit(event);
         for (int i = 0; i < Upgrade.values().length; ++i) {
             Upgrade[] upgrades = Upgrade.values().clone();
-            ModelLoader.setCustomModelResourceLocation(ItemLoader.itemUpgrade, i, new ModelResourceLocation(MODID + ":" + upgrades[i].getName()));
+            ModelLoader.setCustomModelResourceLocation(ItemLoader.itemUpgrade, i, new ModelResourceLocation(MODID + ":upgrades/" + upgrades[i].getName()));
         }
         BlockLoader.registerModels();
 	}

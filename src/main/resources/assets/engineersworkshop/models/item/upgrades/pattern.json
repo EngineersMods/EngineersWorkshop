@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/transfer"
+        "layer0":"EngineersWorkshop:items/upgrades/pattern"
     },
     "display": {
         "thirdperson": {

@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"EngineersWorkshop:items/rf"
+        "layer0":"EngineersWorkshop:items/upgrades/auto_crafter"
     },
     "display": {
         "thirdperson": {

@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/storage"
+        "layer0":"EngineersWorkshop:items/upgrades/restock"
     },
     "display": {
         "thirdperson": {

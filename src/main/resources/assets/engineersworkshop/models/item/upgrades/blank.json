@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/tesla"
+        "layer0":"EngineersWorkshop:items/upgrades/blank"
     },
     "display": {
         "thirdperson": {

@@ -1,7 +1,7 @@
 {
     "parent":"item/generated",
     "textures":{
-        "layer0":"engineersworkshop:items/auto_transfer"
+        "layer0":"EngineersWorkshop:items/upgrades/transfer"
     },
     "display": {
         "thirdperson": {
