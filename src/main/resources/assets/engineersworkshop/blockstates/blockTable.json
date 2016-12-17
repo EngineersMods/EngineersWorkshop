@@ -5,6 +5,6 @@
   },
   "variants": {
     "normal": [{}],
-    "inventory": [{}],
+    "inventory": [{}]
   }
 }
