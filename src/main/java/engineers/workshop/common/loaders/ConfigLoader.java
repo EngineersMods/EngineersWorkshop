@@ -38,9 +38,8 @@ public final class ConfigLoader {
 			for (Upgrade upgrade : Upgrade.values()) {
 				Upgrade.MaxCount max = upgrade.getMaxCountObject();
 				if (max.getConfigurableMax() > 0) {
-					upgrade.getMaxCountObject()
-							.setMax(config.getInt(upgrade.getName() + MAX_COUNT_SUFFIX, category, max.getMax(), 0,
-									max.getConfigurableMax(), "Max amount of the " + upgrade.getName() + " upgrade"));
+					upgrade.getMaxCountObject().setMax(config.getInt(upgrade.getName() + MAX_COUNT_SUFFIX, category, max.getMax(), 0,
+							max.getConfigurableMax(), "Max amount of the " + upgrade.getName() + " upgrade"));
 				}
 			}
 
@@ -57,7 +56,7 @@ public final class ConfigLoader {
 	}
 
 	public static class TWEAKS extends ConfigHandler {
-		public static int FUEL_DELAY, MIN_POWER, TESLA_CONVERSION;
+		public static int FUEL_DELAY, MIN_POWER, POWER_CONVERSION;
 
 		public TWEAKS(Configuration config, String category) {
 			super(config, category);
@@ -71,14 +70,15 @@ public final class ConfigLoader {
 			MIN_POWER = config.getInt("Max Power", category, 8000, 1, Integer.MAX_VALUE,
 					"Sets the default max power in the workshop table (minimum, since upgrades can only add power)");
 			
-			TESLA_CONVERSION = config.getInt("Tesla Conversion", category, 8, 8, Integer.MAX_VALUE,
-					"Tesla conversion rate (x Tesla = 1 power)");
+			POWER_CONVERSION = config.getInt("Power Conversion Rate", category, 8, 1, Integer.MAX_VALUE,
+					"Power conversion rate [x:1] [x = external power input]");
 		}
 
 	}
 
 	public static class POWER extends ConfigHandler {
 		public static boolean TESLA_SUPPORT;
+		public static boolean RF_SUPPORT;
 
 		public POWER(Configuration config, String category) {
 			super(config, category);
@@ -88,8 +88,9 @@ public final class ConfigLoader {
 		public void load() {
 			TESLA_SUPPORT = config.getBoolean("Tesla Support", "Power", true,
 					"Should Tesla upgrades be allowed? (Requires Tesla)");
+			RF_SUPPORT = config.getBoolean("RF Support", "Power", true,
+					"Should Tesla upgrades be allowed? (Requires Tesla)");
 		}
-
 	}
 
 	public static void loadConfig(File file) {

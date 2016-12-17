@@ -1,26 +1,24 @@
 package engineers.workshop.common.table;
 
-import engineers.workshop.client.gui.container.slot.SlotBase;
-import engineers.workshop.client.gui.container.slot.SlotFuel;
-import engineers.workshop.client.gui.menu.GuiMenu;
-import engineers.workshop.client.gui.menu.GuiMenuItem;
-import engineers.workshop.client.gui.page.Page;
-import engineers.workshop.client.gui.page.PageMain;
-import engineers.workshop.client.gui.page.PageTransfer;
-import engineers.workshop.client.gui.page.PageUpgrades;
-import engineers.workshop.client.gui.page.setting.Setting;
-import engineers.workshop.client.gui.page.setting.Side;
-import engineers.workshop.client.gui.page.setting.Transfer;
-import engineers.workshop.client.gui.page.unit.Unit;
-import engineers.workshop.client.gui.page.unit.UnitCrafting;
+import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
-import net.darkhax.tesla.api.ITeslaConsumer;
-import net.darkhax.tesla.api.ITeslaHolder;
-import net.darkhax.tesla.capability.TeslaCapabilities;
+import engineers.workshop.client.container.slot.SlotBase;
+import engineers.workshop.client.container.slot.SlotFuel;
+import engineers.workshop.client.menu.GuiMenu;
+import engineers.workshop.client.menu.GuiMenuItem;
+import engineers.workshop.client.page.Page;
+import engineers.workshop.client.page.PageMain;
+import engineers.workshop.client.page.PageTransfer;
+import engineers.workshop.client.page.PageUpgrades;
+import engineers.workshop.client.page.setting.Setting;
+import engineers.workshop.client.page.setting.Side;
+import engineers.workshop.client.page.setting.Transfer;
+import engineers.workshop.client.page.unit.Unit;
+import engineers.workshop.client.page.unit.UnitCrafting;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -33,18 +31,11 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.fml.common.Optional;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.InterfaceList({
-		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaHolder", modid = "tesla"),
-		@Optional.Interface(iface = "net.darkhax.tesla.api.ITeslaConsumer", modid = "tesla"),
-})
-
-public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /* TESLA */ ITeslaHolder, ITeslaConsumer {
+public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /*RF*/ IEnergyReceiver {
 
 	private List<Page> pages;
 	private Page selectedPage;
@@ -83,7 +74,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		id = page.createSlots(id);
 	}
 	items = new ItemStack[slots.size()];
-
 	setSelectedPage(pages.get(0));
 	onUpgradeChange();
 }
@@ -345,7 +335,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	private void transfer(Setting setting, Side side, Transfer transfer, int transferSize) {
 		if (transfer.isEnabled() && transfer.isAuto()) {
-			EnumFacing direction = EnumFacing.values()[BlockTable.getSideFromSideAndMetaReversed(side.getDirection().ordinal(), getBlockMetadata())];
+			EnumFacing direction = side.getDirection();
 			BlockPos nPos = pos.add(
 					direction.getFrontOffsetX(),
                     direction.getFrontOffsetY(),
@@ -353,16 +343,16 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
             TileEntity te = worldObj.getTileEntity(nPos);
 			if (te instanceof IInventory) {
 				IInventory inventory = (IInventory)te;
-//				if (te instanceof TileEntityChest) {
-//					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
-//					// te.getPos().getX(), te.getPos().getY(),
-//					// te.getPos().getX());
-//					if (inventory == null) {
-//						return;
-//					}
-//				} else {
-//					inventory = (IInventory) te;
-//				}
+				/*if (te instanceof TileEntityChest) {
+					// inventory = Blocks.CHEST.func_149951_m(te.getWorld(),
+					// te.getPos().getX(), te.getPos().getY(),
+					// te.getPos().getX());
+					if (inventory == null) {
+						return;
+					}
+				} else {
+					inventory = (IInventory) te;
+				}*/
 
 				List<SlotBase> transferSlots = setting.getSlots();
 				if (transferSlots == null) {
@@ -470,7 +460,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		}
 	}
 
-	//TODO Upgrades?
+	//TODO: updateFuel bookmark
 	private int lastPower;
 
 	private void updateFuel() {
@@ -478,10 +468,15 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			lastLit = lit;
 			sendDataToAllPlayer(DataType.LIT);
 		}
+
+        int weatherModifier;
 		
 		if (canSeeTheSky()) {
-			power += ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR);
+            weatherModifier = worldObj.isRaining() ? ConfigLoader.UPGRADES.SOLAR_GENERATION : 1;
+            if (worldObj.isDaytime()) power += (ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR)) / weatherModifier;
 		}
+
+		//convertRFToPower(); //TODO: rf bookmark
 
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
@@ -578,17 +573,14 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	@Override
 	public boolean canInsertItem(int slot, ItemStack item, EnumFacing side) {
 		return isItemValidForSlot(slot, item) && slots.get(slot).canAcceptItem(item)
-				&& slots.get(slot).isInputValid(getTransferSide(side), item);
+				&& slots.get(slot).isInputValid(side.ordinal(), item);
 	}
 
 	@Override
 	public boolean canExtractItem(int slot, ItemStack item, EnumFacing side) {
-		return slots.get(slot).isOutputValid(getTransferSide(side), item);
+		return slots.get(slot).isOutputValid(side.ordinal(), item);
 	}
 
-	private int getTransferSide(EnumFacing side) {
-		return BlockTable.getSideFromSideAndMeta(side.ordinal(), getBlockMetadata());
-	}
 
 	public GuiMenu getMenu() {
 		return menu;
@@ -630,9 +622,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				itemList.appendTag(slotCompound);
 			}
 		}
-		compound.setTag(NBT_ITEMS, itemList);
 
+		compound.setTag(NBT_ITEMS, itemList);
 		NBTTagList unitList = new NBTTagList();
+
 		for (Unit unit : getMainPage().getUnits()) {
 			NBTTagCompound unitCompound = new NBTTagCompound();
 			unit.writeToNBT(unitCompound);
@@ -660,6 +653,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			settingCompound.setTag(NBT_SIDES, sideList);
 			settingList.appendTag(settingCompound);
 		}
+
 
 		compound.setTag(NBT_SETTINGS, settingList);
 		compound.setInteger(NBT_POWER,  power);
@@ -712,6 +706,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				side.getOutput().readFromNBT(outputCompound);
 			}
 		}
+
 		power = compound.getInteger(NBT_POWER);
 		maxPower = compound.getInteger(NBT_MAX_POWER);
 
@@ -721,8 +716,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		float offsetX, offsetY, offsetZ;
 		offsetX = offsetY = offsetZ = worldObj.rand.nextFloat() * 0.8F + 1.0F;
 
-		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY,
-				pos.getZ() + offsetZ, item.copy());
+		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, item.copy());
 		entityItem.motionX = worldObj.rand.nextGaussian() * 0.05F;
 		entityItem.motionY = worldObj.rand.nextGaussian() * 0.05F + 0.2F;
 		entityItem.motionZ = worldObj.rand.nextGaussian() * 0.05F;
@@ -765,7 +759,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	@Override
 	public int[] getSlotsForFace(EnumFacing side) {
-		return sideSlots[getTransferSide(side)];
+		return sideSlots[side.ordinal()];
 	}
 
 	@Override
@@ -795,41 +789,30 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	@Override
 	public void clear() {}
 
-	// Tesla
-	public long getStoredPower() {
+	public int getStoredPower() {
 		return power;
 	}
 
-	public long getCapacity() {
+	public int getCapacity() {
 		return maxPower;
 	}
 
-
-	// TODO add conversion rate to config
-	@Optional.Method(modid = "tesla")
-	public long givePower(long tesla, boolean simulated) {
-		int PTF = (int) (maxPower - power);
-		PTF = PTF - (PTF % ConfigLoader.TWEAKS.TESLA_CONVERSION);
-		long teslaTake = Math.min(tesla, PTF / ConfigLoader.TWEAKS.TESLA_CONVERSION);
-		power += teslaTake * ConfigLoader.TWEAKS.TESLA_CONVERSION;
-		return teslaTake;
+	public int getEnergyStored(EnumFacing from) {
+		return 0;
 	}
 
-	@Optional.Method(modid = "tesla")
-	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
-		return ((capability == TeslaCapabilities.CAPABILITY_HOLDER
-                || capability == TeslaCapabilities.CAPABILITY_CONSUMER)
-                && getUpgradePage().getGlobalUpgradeCount(Upgrade.TESLA) > 0) || super.hasCapability(capability, facing);
+	public int getMaxEnergyStored(EnumFacing from) {
+		return 8000;
 	}
 
-	@SuppressWarnings("unchecked")
-	@Optional.Method(modid = "tesla")
-	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if (getUpgradePage().getGlobalUpgradeCount(Upgrade.TESLA) > 0) {
-			if (capability == TeslaCapabilities.CAPABILITY_HOLDER) return (T) this;
-			if (capability == TeslaCapabilities.CAPABILITY_CONSUMER) return (T) this;
-		}
-		return super.getCapability(capability, facing);
+	public boolean canConnectEnergy(EnumFacing from) {
+		return getUpgradePage().hasGlobalUpgrade(Upgrade.RF);
 	}
 
+	public int receiveEnergy(EnumFacing from, int energy, boolean simulate) {
+		int energyToPower = Math.min(getCapacity() - getStoredPower(), (energy / ConfigLoader.TWEAKS.POWER_CONVERSION));
+		if(!simulate)
+			power+=energyToPower;
+		return energyToPower*ConfigLoader.TWEAKS.POWER_CONVERSION;
+	}
 }
