@@ -1,23 +1,29 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.network.data.DataSide;
-import engineers.workshop.common.network.data.DataType;
-import engineers.workshop.common.table.TileTable;
+import java.util.ArrayList;
+import java.util.List;
+
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.GuiTable;
 import engineers.workshop.client.component.ArrowScroll;
 import engineers.workshop.client.component.CheckBox;
 import engineers.workshop.client.menu.GuiMenuItem;
-import engineers.workshop.client.page.setting.*;
+import engineers.workshop.client.page.setting.ItemSetting;
+import engineers.workshop.client.page.setting.Setting;
+import engineers.workshop.client.page.setting.SettingCoal;
+import engineers.workshop.client.page.setting.SettingNormal;
+import engineers.workshop.client.page.setting.Side;
+import engineers.workshop.client.page.setting.Transfer;
+import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.network.data.DataSide;
+import engineers.workshop.common.network.data.DataType;
+import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class PageTransfer extends Page {
 
@@ -206,6 +212,8 @@ public class PageTransfer extends Page {
 	private static final int ITEM_OFFSET = 20;
 	private static final int ITEM_SIZE = 18;
     private static final int SIDE_ITEM_OFFSET = 1;
+    
+    
 
 	@Override
 	public int createSlots(int id) {
@@ -262,11 +270,8 @@ public class PageTransfer extends Page {
 				int textureIndexY = output && input ? 3 : output ? 2 : input ? 1 : 0;
 
 				gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE, SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
-				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132, 0, 16, 16);
-
-				/*gui
-				gui.drawBlockIcon(BlockLoader.workshopTable.getIcon(side.getDirection().ordinal(), 0), side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET);*/
-				
+				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132 + (side.getDirection().getIndex() * 16), 0, 16, 16);
+//TODO:
 				if (hover) {
 					gui.drawMouseOver(side.getDescription(side == selectedSide));
 				}

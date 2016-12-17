@@ -1,15 +1,16 @@
 package engineers.workshop.common.table;
 
+import static engineers.workshop.common.util.Reference.Info.MODID;
+
+import java.util.Random;
+
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.common.loaders.CreativeTabLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -27,13 +28,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.util.Random;
-
-import static engineers.workshop.common.util.Reference.Info.MODID;
-
 public class BlockTable extends Block implements ITileEntityProvider {
 
-	public static final PropertyDirection FACING = PropertyDirection.create("facing");
+//	public static final PropertyDirection FACING = PropertyDirection.create("facing");
 
 	public BlockTable() {
 		super(Material.ROCK);
@@ -44,7 +41,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		GameRegistry.register(this);
 		GameRegistry.register(new ItemBlock(this), getRegistryName());
 		GameRegistry.registerTileEntity(TileTable.class, MODID + ":" + "blockTable");
-		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
+//		setDefaultState(blockState.getBaseState().withProperty(FACING, EnumFacing.NORTH));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -52,29 +49,29 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
 	}
 
-    @Override
-    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
-    }
-
-    public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
-        return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), (float) (entity.posY - clickedBlock.getY()), (float) (entity.posZ - clickedBlock.getZ()));
-    }
-
-    @Override
-    public IBlockState getStateFromMeta(int meta) {
-        return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 7));
-    }
-
-    @Override
-    public int getMetaFromState(IBlockState state) {
-        return state.getValue(FACING).getIndex();
-    }
-
-    @Override
-    protected BlockStateContainer createBlockState() {
-        return new BlockStateContainer(this, FACING);
-    }
+//    @Override
+//    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
+//        world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
+//    }
+//
+//    public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
+//        return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), (float) (entity.posY - clickedBlock.getY()), (float) (entity.posZ - clickedBlock.getZ()));
+//    }
+//
+//    @Override
+//    public IBlockState getStateFromMeta(int meta) {
+//        return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta & 7));
+//    }
+//
+//    @Override
+//    public int getMetaFromState(IBlockState state) {
+//        return state.getValue(FACING).getIndex();
+//    }
+//
+//    @Override
+//    protected BlockStateContainer createBlockState() {
+//        return new BlockStateContainer(this, FACING);
+//    }
 
 	@Override
 	public TileEntity createNewTileEntity(World worldIn, int meta) {
