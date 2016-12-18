@@ -1,6 +1,9 @@
 package engineers.workshop.client.page;
 
 import engineers.workshop.common.table.TileTable;
+
+import org.apache.commons.lang3.StringUtils;
+
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.GuiTable;
 import engineers.workshop.client.container.slot.SlotBase;
@@ -32,7 +35,7 @@ public abstract class Page {
 
     @SideOnly(Side.CLIENT)
     public void draw(GuiBase gui, int mX, int mY) {
-        gui.drawString(name.toUpperCase(), 8, 6, 0x1E1E1E);
+        gui.drawString(StringUtils.capitalize(name), 8, 6, 0x1E1E1E);
     }
 
     @SideOnly(Side.CLIENT)

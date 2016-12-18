@@ -22,7 +22,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class PageTransfer extends Page {
@@ -270,7 +269,7 @@ public class PageTransfer extends Page {
 				int textureIndexY = output && input ? 3 : output ? 2 : input ? 1 : 0;
 
 				gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE, SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
-				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132 + (side.getDirection().getIndex() * 16), 0, 16, 16);
+				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132 + (getTextureOffsetFromSide(side) * 16), 0, 16, 16);
 //TODO:
 				if (hover) {
 					gui.drawMouseOver(side.getDescription(side == selectedSide));
@@ -450,6 +449,24 @@ public class PageTransfer extends Page {
 			return 0;
 		case WEST: // LEFT
 			return 1;
+		}
+		return -1;
+	}
+	
+	private int getTextureOffsetFromSide(Side side){
+		switch(side.getDirection()){
+		case WEST:
+			return 0;
+		case SOUTH:
+			return 1;
+		case UP:
+			return 2;
+		case DOWN:
+			return 3;
+		case NORTH:
+			return 4;
+		case EAST:
+			return 5;
 		}
 		return -1;
 	}
