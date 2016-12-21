@@ -57,8 +57,7 @@ public abstract class ArrowScroll {
 		return true;
 	}
 
-	public void onUpdate() {
-	}
+	public void onUpdate() {}
 
 	@SideOnly(Side.CLIENT)
 	public void onClick(GuiBase gui, int mX, int mY) {

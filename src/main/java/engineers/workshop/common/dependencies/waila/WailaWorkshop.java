@@ -32,7 +32,7 @@ public class WailaWorkshop implements IWailaDataProvider {
 
 	@Override
 	public List<String> getWailaBody(ItemStack itemStack, List<String> currenttip, IWailaDataAccessor accessor, IWailaConfigHandler config) {
-		currenttip.add(String.format(ColorHelper.getPowerColor(accessor.getNBTInteger(accessor.getNBTData(), "power"), accessor.getNBTInteger(accessor.getNBTData(), "maxPower")) +"Power: %s / %s", formatNumber(accessor.getNBTData().getInteger("power")), formatNumber(accessor.getNBTData().getInteger("maxPower"))));
+		currenttip.add(String.format(ColorHelper.getPowerColor(accessor.getNBTInteger(accessor.getNBTData(), "power"), accessor.getNBTInteger(accessor.getNBTData(), "maxPower")) + "Power: %s / %s", formatNumber(accessor.getNBTData().getInteger("power")), formatNumber(accessor.getNBTData().getInteger("maxPower"))));
 		return currenttip;
 	}
 
@@ -44,8 +44,8 @@ public class WailaWorkshop implements IWailaDataProvider {
 	@Override
 	public NBTTagCompound getNBTData(EntityPlayerMP player, TileEntity te, NBTTagCompound tag, World world, BlockPos pos) {
 		TileTable table = (TileTable) te;
-		tag.setInteger("power", (int)table.getStoredPower());
-		tag.setInteger("maxPower", (int)table.getCapacity());
+		tag.setInteger("power", table.getStoredPower());
+		tag.setInteger("maxPower", table.getCapacity());
 
 		return tag;
 	}

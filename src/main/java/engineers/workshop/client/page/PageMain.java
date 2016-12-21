@@ -86,7 +86,8 @@ public class PageMain extends Page {
     		gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS, BAR_HEIGHT);
 
 		if (enabledUnits == 0) {
-			gui.drawString("Add some machines!", 8, 6, 0xFF0000);
+			gui.drawString("ADD A CRAFTING TABLE OR FURNACE", 45, 30, 0x1E1E1E);
+			gui.drawString("IN THE UPGRADE PAGE TO GET STARTED", 40, 45, 0x1E1E1E);
 		}
 		units.stream().filter(Unit::isEnabled).forEachOrdered(unit -> unit.draw(gui, mX, mY));
 	}

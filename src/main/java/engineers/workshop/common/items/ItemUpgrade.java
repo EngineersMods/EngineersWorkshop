@@ -18,8 +18,6 @@ public class ItemUpgrade extends Item {
 	public ItemUpgrade() {
 		setCreativeTab(CreativeTabLoader.tabWorkshop);
 		setHasSubtypes(true);
-
-		//Register
 		setRegistryName(MODID + ":" + "upgrade");
 		GameRegistry.register(this);
 	}
@@ -31,19 +29,11 @@ public class ItemUpgrade extends Item {
 	}
 
 	public static Upgrade getUpgrade(int dmg) {
-		if (dmg >= 0 && dmg < Upgrade.values().length) {
-			return Upgrade.values()[dmg];
-		} else {
-			return null;
-		}
+		return dmg >= 0 && dmg < Upgrade.values().length ? Upgrade.values()[dmg] : null;
 	}
 
 	public static Upgrade getUpgrade(ItemStack item) {
-		if (item != null && ItemLoader.itemUpgrade.equals(item.getItem())) {
-			return getUpgrade(item.getItemDamage());
-		} else {
-			return null;
-		}
+        return item != null && ItemLoader.itemUpgrade.equals(item.getItem()) ? getUpgrade(item.getItemDamage()) : null;
 	}
 
 	@Override
@@ -55,12 +45,12 @@ public class ItemUpgrade extends Item {
 	}
 
 	@Override
-	public void addInformation(ItemStack item, EntityPlayer player, List<String> lst, boolean useExtraInfo) {
+	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean useExtraInfo) {
 		Upgrade upgrade = getUpgrade(item);
 		if (upgrade != null) {
-			upgrade.addInfo(lst);
+			upgrade.addInfo(list);
 		} else {
-			lst.add(TextFormatting.RED + "This is not a valid item");
+			list.add(TextFormatting.RED + "This is not a valid item");
 		}
 	}
 }

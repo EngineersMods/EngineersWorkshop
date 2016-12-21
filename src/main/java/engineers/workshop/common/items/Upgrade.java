@@ -21,7 +21,7 @@ public enum Upgrade {
     SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
     QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
     EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
-//    TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
+    //TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     RF  			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
     // EU			(new ConfigurableMax(1), 	    ParentType.GLOBAL, "eu"),
@@ -32,9 +32,8 @@ public enum Upgrade {
     FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL);		// Max count = 5  (Configable)
 
     /**
-     * PATTERN("Pattern Crafting", "Remembers old recipes", 4,
-     * ParentType.CRAFTING), RESTOCK("Restock Control", "Only produce more items
-     * when there isn't enough of them", 1),
+     * PATTERN("Pattern Crafting", "Remembers old recipes", 4, ParentType.CRAFTING),
+     * RESTOCK("Restock Control", "Only produce more items* when there isn't enough of them", 1),
      */
 
     private String name;
@@ -127,7 +126,7 @@ public enum Upgrade {
                 return item != null && Item.getItemFromBlock(Blocks.FURNACE).equals(item.getItem());
             }
         },
-        GLOBAL("Upgrades the entire Production Table") {
+        GLOBAL("Upgrades the entire Workshop Table") {
             @Override
             protected boolean isValidParent(ItemStack item) {
                 return item == null;
