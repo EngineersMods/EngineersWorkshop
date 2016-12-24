@@ -84,7 +84,7 @@ public class UnitCrafting extends Unit {
 		onCrafted(player, item);
 		lockedRecipeGeneration = true;
 		try {
-			onCrafting(inventoryCrafting, player == null, false);
+			onCrafting(player, inventoryCrafting, false);
 		} finally {
 			lockedRecipeGeneration = false;
 		}
@@ -186,43 +186,91 @@ public class UnitCrafting extends Unit {
 		}
 	}
 
-	private void onCrafting(CraftingBase crafting, boolean auto, boolean fake) {
-		for (int i = 0; i < GRID_SIZE; i++) {
-			ItemStack itemStack = crafting.getStackInSlot(i);
-			if (itemStack != null && itemStack.getItem() != null) {
-				int id = i;
-				for (int j = auto ? 0 : GRID_SIZE; j < crafting.getFullSize(); j++) {
-					if (i == j)
-						continue;
+	private void onCrafting(EntityPlayer playerIn, CraftingBase crafting, boolean fake) {
+	
+		
+        if(playerIn != null)
+        	net.minecraftforge.common.ForgeHooks.setCraftingPlayer(playerIn);
+        
+          ItemStack[] aitemstack = CraftingManager.getInstance().getRemainingItems(crafting, table.getWorld());
+        net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
+        
+        
+        
+        for (int c = 0; c < aitemstack.length; ++c)
+        {
+            ItemStack itemstack = crafting.getStackInSlot(c);
+            ItemStack itemstack1 = aitemstack[c];
 
-					ItemStack other = crafting.getStackInSlot(j);
-					// TODO support ore dictionary and fuzzy etc?. Problem is
-					// that it needs to figure out if the recipe supports it
-					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize)
-							&& itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
-						id = j;
-						itemStack = other;
-						break;
-					}
-				}
+            if (itemstack != null)
+            {
+            	crafting.decrStackSize(c, 1);
+                itemstack = crafting.getStackInSlot(c);
+            }
 
-				crafting.decrStackSize(id, 1);
-				if (itemStack.getItem().hasContainerItem(itemStack)) {
-					ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
-					if (!containerItem.isItemStackDamageable()
-							|| containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
-						// TODO where should the client go?
-						// if (false) {
-						// if (!fake) {
-						// table.spitOutItem(containerItem);
-						// }
-						// }
-						crafting.setInventorySlotContents(id, containerItem);
-
-					}
-				}
-			}
-		}
+            if (itemstack1 != null)
+            {
+                if (itemstack == null)
+                {
+                	crafting.setInventorySlotContents(c, itemstack1);
+                }
+                else if (ItemStack.areItemsEqual(itemstack, itemstack1) && ItemStack.areItemStackTagsEqual(itemstack, itemstack1))
+                {
+                    itemstack1.stackSize += itemstack.stackSize;
+                    crafting.setInventorySlotContents(c, itemstack1);
+                }
+                else if (playerIn != null && !playerIn.inventory.addItemStackToInventory(itemstack1))
+                {
+                	playerIn.dropItem(itemstack1, false);
+                }
+            }
+        }
+        
+        
+//        I Commited this out cause I wasn't entirly sure what it was doing. and it wouldn't work with this new code. 
+//		
+//		
+//		for (int i = 0; i < GRID_SIZE; i++) 
+//		{
+//			ItemStack itemStack = crafting.getStackInSlot(i);
+//			if (itemStack != null && itemStack.getItem() != null) {
+//				int id = i;
+//				for (int j = auto ? 0 : GRID_SIZE; j < crafting.getFullSize(); j++) {
+//					if (i == j)
+//						continue;
+//
+//					ItemStack other = crafting.getStackInSlot(j);
+//					// TODO support ore dictionary and fuzzy etc?. Problem is
+//					// that it needs to figure out if the recipe supports it
+//					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize)
+//							&& itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
+//						id = j;
+//						itemStack = other;
+//						break;
+//					}
+//				}
+//
+//				crafting.decrStackSize(id, 1);
+//				
+//				
+//
+//		        
+////				if (itemStack.getItem().hasContainerItem(itemStack)) {
+////					ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
+////					if (!containerItem.isItemStackDamageable()
+////							|| containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
+////						// TODO where should the client go?
+////						// if (false) {
+////						// if (!fake) {
+////						// table.spitOutItem(containerItem);
+////						// }
+////						// }
+////						crafting.setInventorySlotContents(id, containerItem);
+////
+////					}
+////				}
+//			}
+//		}
 	}
 
 	private CraftingBase inventoryCrafting = new CraftingWrapper();
@@ -248,7 +296,7 @@ public class UnitCrafting extends Unit {
 					canAutoCraft = false;
 				} else {
 					CraftingBase dummy = new CraftingDummy(inventoryCrafting);
-					onCrafting(dummy, true, true);
+					onCrafting(null, dummy, true);
 					canAutoCraft = dummy.isMatch(recipe);
 				}
 			}
