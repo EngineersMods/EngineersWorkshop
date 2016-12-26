@@ -21,10 +21,8 @@ public enum Upgrade {
     SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
     QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
     EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
-    //TESLA			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     RF  			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
-    // EU			(new ConfigurableMax(1), 	    ParentType.GLOBAL, "eu"),
     AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
     FILTER			(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
     TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),		// Max count = 6  (Configable upto 20)

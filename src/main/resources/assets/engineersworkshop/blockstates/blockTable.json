@@ -1,10 +1,58 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "engineersworkshop:blockTable"
+    "model": "engineersworkshop:blockTable",
+    "textures": {
+      "front": "engineersworkshop:blocks/front0"
+    }
   },
   "variants": {
     "normal": [{}],
-    "inventory": [{}]
+    "inventory": [{}],
+    "power=0": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front0"
+      }
+    },
+    "power=1": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front1"
+      }
+    },
+    "power=2": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front2"
+      }
+    },
+    "power=3": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front3"
+      }
+    },
+    "power=4": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front4"
+      }
+    },
+    "power=5": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front5"
+      }
+    },
+    "power=6": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front6"
+      }
+    },
+    "power=7": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front7"
+      }
+    },
+    "power=8": {
+      "textures": {
+        "front": "engineersworkshop:blocks/front8"
+      }
+    }
   }
 }

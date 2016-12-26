@@ -6,7 +6,7 @@
     "up": "engineersworkshop:blocks/top",
     "east": "engineersworkshop:blocks/left",
     "west": "engineersworkshop:blocks/right",
-    "north": "engineersworkshop:blocks/front0",
+    "north": "#front",
     "south": "engineersworkshop:blocks/back"
   }
 }

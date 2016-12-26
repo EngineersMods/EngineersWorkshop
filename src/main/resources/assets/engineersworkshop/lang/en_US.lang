@@ -35,7 +35,7 @@ engineersworkshop:upgrade.auto_transfer.description=Enables auto transfer to and
 engineersworkshop:upgrade.filter.description=Enables transfer filters
 engineersworkshop:upgrade.transfer.description=Increases the automatic transfer capacities
 engineersworkshop:upgrade.max_power.description=Increases the max power capacities
-engineersworkshop:upgrade.fuel_delay.description=Decreases the time between power consumations
+engineersworkshop:upgrade.fuel_delay.description=Decreases the time between power consummations
 
 #Upgrade Info
 engineersworkshop:upgrade.unstackable=Doesn't stack very well
