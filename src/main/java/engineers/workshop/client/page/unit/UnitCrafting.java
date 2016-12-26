@@ -22,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class UnitCrafting extends Unit {
+
 	public UnitCrafting(TileTable table, Page page, int id, int x, int y) {
 		super(table, page, id, x, y);
 	}
@@ -118,7 +119,6 @@ public class UnitCrafting extends Unit {
 				player.addStat(AchievementList.BUILD_WORK_BENCH, 1);
 			} else if (item instanceof ItemPickaxe) {
 				player.addStat(AchievementList.BUILD_PICKAXE, 1);
-
 				if (((ItemPickaxe) item).getToolMaterial() != Item.ToolMaterial.WOOD) {
 					player.addStat(AchievementList.BUILD_BETTER_PICKAXE, 1);
 				}
@@ -189,17 +189,15 @@ public class UnitCrafting extends Unit {
 	private void onCrafting(CraftingBase crafting, boolean auto, boolean fake) {
 		for (int i = 0; i < GRID_SIZE; i++) {
 			ItemStack itemStack = crafting.getStackInSlot(i);
-			if (itemStack != null && itemStack.getItem() != null) {
+			if (itemStack != null) {
 				int id = i;
 				for (int j = auto ? 0 : GRID_SIZE; j < crafting.getFullSize(); j++) {
 					if (i == j)
 						continue;
 
 					ItemStack other = crafting.getStackInSlot(j);
-					// TODO support ore dictionary and fuzzy etc?. Problem is
-					// that it needs to figure out if the recipe supports it
-					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize)
-							&& itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
+					// TODO support ore dictionary and fuzzy etc?. Problem is that it needs to figure out if the recipe supports it
+					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize) && itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
 						id = j;
 						itemStack = other;
 						break;
@@ -213,12 +211,11 @@ public class UnitCrafting extends Unit {
 							|| containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
 						// TODO where should the client go?
 						// if (false) {
-						// if (!fake) {
-						// table.spitOutItem(containerItem);
-						// }
+                            // if (!fake) {
+                            // table.spitOutItem(containerItem);
+                            // }
 						// }
 						crafting.setInventorySlotContents(id, containerItem);
-
 					}
 				}
 			}
@@ -354,13 +351,10 @@ public class UnitCrafting extends Unit {
 					setInventorySlotContents(id, null);
 					return item;
 				}
-
 				ItemStack result = item.splitStack(count);
-
 				if (item.stackSize == 0) {
 					setInventorySlotContents(id, null);
 				}
-
 				return result;
 			} else {
 				return null;
@@ -403,22 +397,16 @@ public class UnitCrafting extends Unit {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj)
-				return true;
-			if (!(obj instanceof CraftingBase))
-				return false;
-
+			if (this == obj) return true;
+			if (!(obj instanceof CraftingBase)) return false;
 			CraftingBase crafting = (CraftingBase) obj;
-
-			if (getFullSize() != crafting.getFullSize())
-				return false;
+			if (getFullSize() != crafting.getFullSize()) return false;
 
 			for (int i = 0; i < getFullSize(); i++) {
 				if (!ItemStack.areItemStacksEqual(getStackInSlot(i), crafting.getStackInSlot(i))) {
 					return false;
 				}
 			}
-
 			return true;
 		}
 	}
