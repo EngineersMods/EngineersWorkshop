@@ -1,0 +1,47 @@
+#Blocks
+tile.engineersworkshop:blockTable.name=Мастерской стол
+
+#Upgrade Names
+engineersworkshop:upgrade.blank.name=Чистое обновление
+engineersworkshop:upgrade.auto_crafter.name=Обновление: Автокрафтер
+engineersworkshop:upgrade.storage.name=Обновление: Хранение
+engineersworkshop:upgrade.charged.name=Обновление: Заряд
+engineersworkshop:upgrade.speed.name=Обновление: Скорость
+engineersworkshop:upgrade.queue.name=Обновление: Очерёдность
+engineersworkshop:upgrade.efficiency.name=Обновление: Эффективность
+engineersworkshop:upgrade.lava.name=Обновление: Энергия лавы
+engineersworkshop:upgrade.eu.name=Обновление: EU приёмщик
+engineersworkshop:upgrade.rf.name=Обновление: RF приёмщик
+engineersworkshop:upgrade.solar.name=Обновление: Солнечная энергия
+engineersworkshop:upgrade.auto_transfer.name=Обновление: Автопередача
+engineersworkshop:upgrade.filter.name=Обновление: Фильтр
+engineersworkshop:upgrade.transfer.name=Обновление: Ёмкость передачи
+engineersworkshop:upgrade.max_power.name=Обновление: Ёмкость энергии
+engineersworkshop:upgrade.fuel_delay.name=Обновление: Топливная горелка
+
+#Upgrade Descriptions
+engineersworkshop:upgrade.blank.description=Компонент крафта
+engineersworkshop:upgrade.auto_crafter.description=Конвертирует верстак в автоверстак
+engineersworkshop:upgrade.storage.description=Добавляет дополнительное место для хранения
+engineersworkshop:upgrade.charged.description=Позволяет простаивающим компонентам заряжаться для последующего использования
+engineersworkshop:upgrade.speed.description=Увеличивает скорость производства
+engineersworkshop:upgrade.queue.description=Добавляет очередь на вход
+engineersworkshop:upgrade.efficiency.description=Улучшает эффективность твердых видов топлива
+engineersworkshop:upgrade.lava.description=Позволяет лаве быть в качестве топлива
+engineersworkshop:upgrade.rf.description=Позволяет RF использовать в качестве топлива
+engineersworkshop:upgrade.solar.description=Позволяет солнечному свету быть в качестве топлива
+#engineersworkshop:upgrade.eu.description=Позволяет EU использовать в качестве топлива
+engineersworkshop:upgrade.auto_transfer.description=Включает автопередачу в и из стола
+engineersworkshop:upgrade.filter.description=Включает фильтр передачи
+engineersworkshop:upgrade.transfer.description=Увеличивает ёмкость автопередачи
+engineersworkshop:upgrade.max_power.description=Увеличивает ёмкость макс. энергии
+engineersworkshop:upgrade.fuel_delay.description=Уменьшает время между потребляемой мощности
+
+#Upgrade Info
+engineersworkshop:upgrade.unstackable=Не суммируются очень хорошо
+engineersworkshop:upgrade.stackable=Суммируются до %s
+
+#Creative Tabs
+itemGroup.engineersworkshop=Инженерная мастерская
+
+###Translated to russian by Kellixon###

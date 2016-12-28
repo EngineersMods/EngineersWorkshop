@@ -1,11 +1,6 @@
 package engineers.workshop.common.table;
 
 import cofh.api.energy.IEnergyReceiver;
-import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.*;
-import engineers.workshop.common.network.data.DataType;
-import engineers.workshop.common.util.Logger;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
 import engineers.workshop.client.menu.GuiMenu;
@@ -19,6 +14,11 @@ import engineers.workshop.client.page.setting.Side;
 import engineers.workshop.client.page.setting.Transfer;
 import engineers.workshop.client.page.unit.Unit;
 import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.network.*;
+import engineers.workshop.common.network.data.DataType;
+import engineers.workshop.common.util.Logger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -476,8 +476,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
             if (worldObj.isDaytime()) power += (ConfigLoader.UPGRADES.SOLAR_GENERATION * getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR)) / weatherModifier;
 		}
 
-		//convertRFToPower(); //TODO: rf bookmark
-
 		ItemStack fuel = fuelSlot.getStack();
 		if (fuel != null && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
@@ -491,14 +489,32 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				}
 			}
 		}
-		if (power > maxPower) 
-			power = maxPower;
 
-		if (power != lastPower) 
-			lastPower = power;
-		
+		if (power > maxPower) power = maxPower;
+		if (power != lastPower) lastPower = power;
+
+		//setState(power, maxPower);
+
 		sendDataToAllPlayer(DataType.POWER);
 	}
+
+	/*private void setState(float power, float maxPower) {
+		float percentage = ((power) / maxPower) * 100;
+		int state = (int) (percentage / (100f / 8));
+
+		switch (state) {
+			case 0: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 0));
+			case 1: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 1));
+			case 2: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 2));
+			case 3: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 3));
+			case 4: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 4));
+			case 5: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 5));
+			case 6: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 6));
+			case 7: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 7));
+
+			default: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 8));
+		}
+	}*/
 
 	public boolean canSeeTheSky() {
 		return worldObj.canSeeSky(pos.up());
@@ -667,8 +683,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		super.readFromNBT(compound);
 
 		items = new ItemStack[getSizeInventory()];
-
 		NBTTagList itemList = compound.getTagList(NBT_ITEMS, COMPOUND_ID);
+
 		for (int i = 0; i < itemList.tagCount(); i++) {
 			NBTTagCompound slotCompound = itemList.getCompoundTagAt(i);
 			int id = slotCompound.getByte(NBT_SLOT);
@@ -683,6 +699,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 		NBTTagList unitList = compound.getTagList(NBT_UNITS, COMPOUND_ID);
 		List<Unit> units = getMainPage().getUnits();
+
 		for (int i = 0; i < units.size(); i++) {
 			Unit unit = units.get(i);
 			NBTTagCompound unitCompound = unitList.getCompoundTagAt(i);
@@ -691,6 +708,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 		NBTTagList settingList = compound.getTagList(NBT_SETTINGS, COMPOUND_ID);
 		List<Setting> settings = getTransferPage().getSettings();
+
 		for (int i = 0; i < settings.size(); i++) {
 			Setting setting = settings.get(i);
 			NBTTagCompound settingCompound = settingList.getCompoundTagAt(i);
@@ -811,8 +829,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate) {
 		int energyToPower = Math.min(getCapacity() - getStoredPower(), (energy / ConfigLoader.TWEAKS.POWER_CONVERSION));
-		if(!simulate)
-			power+=energyToPower;
-		return energyToPower*ConfigLoader.TWEAKS.POWER_CONVERSION;
+		if(!simulate) power+=energyToPower;
+
+		return energyToPower * ConfigLoader.TWEAKS.POWER_CONVERSION;
 	}
 }

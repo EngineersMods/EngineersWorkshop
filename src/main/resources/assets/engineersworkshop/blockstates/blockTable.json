@@ -1,58 +1,23 @@
 {
   "forge_marker": 1,
   "defaults": {
-    "model": "engineersworkshop:blockTable",
-    "textures": {
-      "front": "engineersworkshop:blocks/front0"
-    }
+    "model": "engineersworkshop:workshop0"
   },
   "variants": {
-    "normal": [{}],
-    "inventory": [{}],
-    "power=0": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front0"
-      }
-    },
-    "power=1": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front1"
-      }
-    },
-    "power=2": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front2"
-      }
-    },
-    "power=3": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front3"
-      }
-    },
-    "power=4": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front4"
-      }
-    },
-    "power=5": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front5"
-      }
-    },
-    "power=6": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front6"
-      }
-    },
-    "power=7": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front7"
-      }
-    },
-    "power=8": {
-      "textures": {
-        "front": "engineersworkshop:blocks/front8"
-      }
+    "normal": [{
+      "model": "engineersworkshop:workshop0"
+    }],
+    "inventory": [{
+      "model": "engineersworkshop:workshop0",
+      "transform": "forge:default-block"
+    }],
+    "facing": {
+      "north": {"y" : 180},
+      "south": {"y": 0},
+      "west": {"y": 90},
+      "east": {"y": 270},
+      "up": {"x": 0},
+      "down": {"x": 0}
     }
   }
 }
