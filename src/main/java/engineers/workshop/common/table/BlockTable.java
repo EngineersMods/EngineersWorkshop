@@ -95,10 +95,6 @@ public class BlockTable extends Block implements ITileEntityProvider {
 		return new BlockStateContainer(this, STATE);
 	}*/
 
-	private TileTable getTE(IBlockAccess world, BlockPos pos) {
-		return (TileTable) world.getTileEntity(pos);
-	}
-
 	@Nonnull
 	@Override
 	@SideOnly(Side.CLIENT)

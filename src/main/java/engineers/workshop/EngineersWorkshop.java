@@ -1,8 +1,17 @@
 package engineers.workshop;
 
+import static engineers.workshop.common.util.Reference.Info.BuildVersion;
+import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.util.Reference.Info.NAME;
+import static engineers.workshop.common.util.Reference.Paths.CLIENT_PROXY;
+import static engineers.workshop.common.util.Reference.Paths.COMMON_PROXY;
+
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import engineers.workshop.proxy.CommonProxy;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
@@ -10,26 +19,23 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
-import static engineers.workshop.common.util.Reference.Info.BuildVersion;
-import static engineers.workshop.common.util.Reference.Info.MODID;
-import static engineers.workshop.common.util.Reference.Info.NAME;
-import static engineers.workshop.common.util.Reference.Paths.CLIENT_PROXY;
-import static engineers.workshop.common.util.Reference.Paths.COMMON_PROXY;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 
 @Mod(modid = MODID, name = NAME, version = BuildVersion)
 public class EngineersWorkshop {
 
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = COMMON_PROXY)
 	public static CommonProxy proxy;
-	
+
 	@Instance(MODID)
 	public static EngineersWorkshop instance;
 
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-        ItemLoader.registerItems();
-        BlockLoader.registerBlocks();
+		ItemLoader.registerItems();
+		BlockLoader.registerBlocks();
+		MinecraftForge.EVENT_BUS.register(this);
 		proxy.preInit(event);
 	}
 
@@ -41,5 +47,12 @@ public class EngineersWorkshop {
 	@EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 		proxy.postInit(event);
+	}
+
+	@SubscribeEvent
+	public void onPlayerLogin(PlayerLoggedInEvent event) {
+		System.out.println((event.player.getName() + ":Darkosto"));
+		if (event.player.getName().equalsIgnoreCase("Darkosto"))
+			event.player.addChatComponentMessage(new TextComponentString(I18n.format("engineersworkshop:hbdark")));
 	}
 }

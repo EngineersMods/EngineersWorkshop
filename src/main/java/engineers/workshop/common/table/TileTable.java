@@ -365,7 +365,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				int[] slots2;
 				EnumFacing directionReversed = direction.getOpposite();
 				if (inventory instanceof ISidedInventory) {
-					slots2 = ((TileTable) inventory).getSlotsForFace(directionReversed);
+					slots2 = ((ISidedInventory) inventory).getSlotsForFace(directionReversed);
 				} else {
 					slots2 = new int[inventory.getSizeInventory()];
 					for (int i = 0; i < slots2.length; i++) {
