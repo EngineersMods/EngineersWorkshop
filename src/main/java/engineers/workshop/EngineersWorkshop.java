@@ -9,8 +9,7 @@ import static engineers.workshop.common.util.Reference.Paths.COMMON_PROXY;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import engineers.workshop.proxy.CommonProxy;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -51,8 +50,7 @@ public class EngineersWorkshop {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event) {
-		System.out.println((event.player.getName() + ":Darkosto"));
 		if (event.player.getName().equalsIgnoreCase("Darkosto"))
-			event.player.addChatComponentMessage(new TextComponentString(I18n.format("engineersworkshop:hbdark")));
+			event.player.addChatComponentMessage(new TextComponentTranslation("engineersworkshop:hbdark"));
 	}
 }
