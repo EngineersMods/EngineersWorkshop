@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 import java.util.List;
 
 public class SettingNormal extends Setting {
-
+	
     public SettingNormal(TileTable table, int id, int x, int y) {
         super(table, id, x, y);
     }
@@ -34,4 +34,5 @@ public class SettingNormal extends Setting {
     public String getName() {
         return null;
     }
+
 }

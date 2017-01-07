@@ -18,6 +18,7 @@ import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.data.DataSide;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.util.Logger;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -249,15 +250,14 @@ public class PageTransfer extends Page {
 			ItemStack item = setting.getItem();
 			gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE, SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
 			gui.drawItem(item, setting.getX() + SETTING_ITEM_OFFSET, setting.getY() + SETTING_ITEM_OFFSET);
-
 			if (hover && isValid) {
 				String name = setting.getName();
 				if (name == null) {
-					gui.getItemName(item);
+					gui.drawMouseOver(gui.getItemName(item));
 				}
 				gui.drawMouseOver(name);
 			}
-		}
+		}//END FOR
 
 		if (selectedSetting != null) {
 			for (Side side : selectedSetting.getSides()) {
@@ -270,7 +270,6 @@ public class PageTransfer extends Page {
 
 				gui.drawRect(side.getX(), side.getY(), SIDE_SRC_X + textureIndexX * SIDE_SIZE, SIDE_SRC_Y + textureIndexY * SIDE_SIZE, SIDE_SIZE, SIDE_SIZE);
 				gui.drawTexturedModalRect(side.getX() + SIDE_ITEM_OFFSET, side.getY() + SIDE_ITEM_OFFSET, 132 + (getTextureOffsetFromSide(side) * 16), 0, 16, 16);
-//TODO:
 				if (hover) {
 					gui.drawMouseOver(side.getDescription(side == selectedSide));
 				}
