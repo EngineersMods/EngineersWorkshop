@@ -35,7 +35,7 @@ processResources {
         include 'mcmod.info'
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-       
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -47,22 +47,22 @@ repositories {
 		name 'tesla'
         url 'http://maven.epoxide.xyz'
     }
-	
-	maven { 
+
+	maven {
 		name 'enderio'
-		url = "http://maven.tterrag.com" 
+		url = "http://maven.tterrag.com"
 	}
-	
+
 	maven {
 		name 'jei'
 		url "http://dvs1.progwml6.com/files/maven"
     }
-  
+
     maven {
         name 'waila'
         url 'http://mobiusstrip.eu/maven'
     }
-	
+
 	ivy {
        url "http://ae-mod.info/builds"
        layout "pattern", {
@@ -173,4 +173,3 @@ task makeJSONItems << {
 	createItemJSON();
 	print 'Finished making JSON for existing item textures';
 }
-
