@@ -16,6 +16,7 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.stats.AchievementList;
+import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
@@ -97,17 +98,9 @@ public class UnitCrafting extends Unit {
 		if (itemStack == null) {
 			return;
 		}
+
 		Item item = itemStack.getItem();
 
-		try {
-			FMLCommonHandler.instance().firePlayerCraftingEvent(player, itemStack, inventoryCrafting);
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-		if (player != null) {
-			// player.addStat(StatList.objectCraftStats[Item.getIdFromItem(item)],
-			// itemStack.stackSize);
-		}
 		try {
 			item.onCreated(itemStack, table.getWorld(), player);
 		} catch (Exception ex) {
