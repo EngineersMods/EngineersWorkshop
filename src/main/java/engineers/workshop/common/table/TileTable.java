@@ -1,6 +1,7 @@
 package engineers.workshop.common.table;
 
 import cofh.api.energy.IEnergyReceiver;
+import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
 import engineers.workshop.client.menu.GuiMenu;
@@ -15,6 +16,7 @@ import engineers.workshop.client.page.setting.Transfer;
 import engineers.workshop.client.page.unit.Unit;
 import engineers.workshop.client.page.unit.UnitCrafting;
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
@@ -523,6 +525,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public void onUpgradeChangeDistribute() {
 		if (!worldObj.isRemote) {
 			onUpgradeChange();
+			worldObj.notifyNeighborsOfStateChange(pos, BlockLoader.blockTable);
 			sendToAllPlayers(PacketHandler.getWriter(this, PacketId.UPGRADE_CHANGE));
 		} else {
 			getUpgradePage().onUpgradeChange();

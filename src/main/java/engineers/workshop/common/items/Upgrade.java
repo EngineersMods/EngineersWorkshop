@@ -17,7 +17,7 @@ public enum Upgrade {
     BLANK			(new MaxCount(0), 			    ParentType.NULL), 		// Max count = 0  (Not usable as an upgrade)
     AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 	// Max count = 1
     STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 	// Max count = 1
-    CHARGED			(new ConfigurableMax(8),	    ParentType.NULL),		// Max count = 8  (Configable)
+    CHARGED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
     SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
     QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
     EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)

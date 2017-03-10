@@ -173,7 +173,10 @@ public class GuiTable extends GuiBase {
     private static final int POWER_INNER_OFFSET_Y = (POWER_HEIGHT - POWER_INNER_HEIGHT) / 2;
 
     private void drawPower(int mX, int mY) {
-        prepare();
+    	if(table.getCapacity() == 0)
+    		return;
+    	
+    	prepare();
 
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y, POWER_INNER_SRC_X + POWER_INNER_WIDTH, POWER_INNER_SRC_Y, POWER_INNER_WIDTH, POWER_INNER_HEIGHT);
 
