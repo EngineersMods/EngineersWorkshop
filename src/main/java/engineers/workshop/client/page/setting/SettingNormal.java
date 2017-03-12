@@ -24,7 +24,10 @@ public class SettingNormal extends Setting {
         if (!unit.isEnabled()) {
             unit = table.getMainPage().getSmeltingList().get(id);
             if (!unit.isEnabled()) {
-                return null;
+            	unit = table.getMainPage().getCrushingList().get(id);
+                if (!unit.isEnabled()) {
+                    return null;
+                }
             }
         }
         return unit.getSlots();

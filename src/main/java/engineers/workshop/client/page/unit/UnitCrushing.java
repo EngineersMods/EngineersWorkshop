@@ -2,9 +2,13 @@ package engineers.workshop.client.page.unit;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceInput;
-import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceQueue;
-import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceResult;
+import com.enderio.core.common.config.ConfigHandler;
+
+import crazypants.enderio.machine.recipe.IRecipe;
+import crazypants.enderio.machine.sagmill.SagMillRecipeManager;
+import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherInput;
+import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherQueue;
+import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherResult;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.ConfigLoader;
@@ -12,11 +16,10 @@ import engineers.workshop.common.table.TileTable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 
-public class UnitSmelting extends Unit {
+public class UnitCrushing extends Unit {
 
-    public UnitSmelting(TileTable table, Page page, int id, int x, int y) {
+    public UnitCrushing(TileTable table, Page page, int id, int x, int y) {
         super(table, page, id, x, y);
     }
 
@@ -35,13 +38,13 @@ public class UnitSmelting extends Unit {
     @Override
     public int createSlots(int id) {
         inputId = id;
-        addSlot(new SlotUnitFurnaceInput(table, page, id++, this.x + START_X, this.y + START_Y, this));
+        addSlot(new SlotUnitCrusherInput(table, page, id++, this.x + START_X, this.y + START_Y, this));
         outputId = id;
-        addSlot(new SlotUnitFurnaceResult(table, page, id++, this.x + START_X + RESULT_X, this.y + START_Y, this));
+        addSlot(new SlotUnitCrusherResult(table, page, id++, this.x + START_X + RESULT_X, this.y + START_Y, this));
         queueId = id;
 
         for (int i = 0; i < QUEUE_MAX_COUNT; i++) {
-            addSlot(new SlotUnitFurnaceQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this, QUEUE_ORDER[i]));
+            addSlot(new SlotUnitCrusherQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this, QUEUE_ORDER[i]));
         }
 
         return id;
@@ -91,7 +94,8 @@ public class UnitSmelting extends Unit {
     @Override
     protected ItemStack getProductionResult() {
         ItemStack input = table.getStackInSlot(inputId);
-        return input == null ? null : FurnaceRecipes.instance().getSmeltingResult(input);
+        IRecipe ir = SagMillRecipeManager.getInstance().getRecipeForInput(input);
+        return input == null ? null : ir == null ? null : ir.getOutputs()[0].getOutput();
     }
 
     @Override
@@ -107,7 +111,7 @@ public class UnitSmelting extends Unit {
     @Override
     public boolean isEnabled() {
         ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-        return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.FURNACE_BLOCKS, item.getItem().getRegistryName().toString());
+        return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRUSHER_BLOCKS, item.getItem().getRegistryName().toString());
     }
 
 

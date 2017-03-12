@@ -1,19 +1,23 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.common.table.TileTable;
+import java.util.ArrayList;
+import java.util.List;
+
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.page.unit.Unit;
 import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.client.page.unit.UnitCrushing;
 import engineers.workshop.client.page.unit.UnitSmelting;
-
-import java.util.ArrayList;
-import java.util.List;
+import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.table.TileTable;
+import net.minecraftforge.fml.common.Loader;
 
 public class PageMain extends Page {
 
 	private List<Unit> units;
 	private List<UnitCrafting> craftingList;
 	private List<UnitSmelting> smeltingList;
+	private List<UnitCrushing> crushingList;
 
 	public PageMain(TileTable table, String name) {
 		super(table, name);
@@ -21,6 +25,8 @@ public class PageMain extends Page {
 		units = new ArrayList<>();
 		craftingList = new ArrayList<>();
 		smeltingList = new ArrayList<>();
+		if(ConfigLoader.MACHINES.CRUSHER_ENABLED)
+			crushingList = new ArrayList<>();
 
 		for (int i = 0; i < 4; i++) {
 			addUnit(i);
@@ -36,6 +42,11 @@ public class PageMain extends Page {
 		smeltingList.add(smelting);
 		units.add(crafting);
 		units.add(smelting);
+		if(ConfigLoader.MACHINES.CRUSHER_ENABLED){
+			UnitCrushing crushing = new UnitCrushing(table, this, id, x, y);
+			crushingList.add(crushing);
+			units.add(crushing);
+		}
 	}
 
 	public List<UnitSmelting> getSmeltingList() {
@@ -44,6 +55,10 @@ public class PageMain extends Page {
 
 	public List<UnitCrafting> getCraftingList() {
 		return craftingList;
+	}
+	
+	public List<UnitCrushing> getCrushingList() {
+		return crushingList;
 	}
 
 	@Override
@@ -109,7 +124,7 @@ public class PageMain extends Page {
 	public boolean[] makeUnitMap() {
 		boolean[] out = new boolean[4];
 		for (int i = 0; i < out.length; i++) {
-			out[i] = craftingList.get(i).isEnabled() || smeltingList.get(i).isEnabled();
+			out[i] = craftingList.get(i).isEnabled() || smeltingList.get(i).isEnabled() || (ConfigLoader.MACHINES.CRUSHER_ENABLED && crushingList.get(i).isEnabled());
 		}
 		return out;
 	}

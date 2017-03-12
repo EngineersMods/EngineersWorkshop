@@ -1,12 +1,16 @@
 package engineers.workshop.client.page.unit;
 
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import engineers.workshop.client.GuiBase;
-import engineers.workshop.client.container.slot.SlotUnitCraftingGrid;
-import engineers.workshop.client.container.slot.SlotUnitCraftingOutput;
-import engineers.workshop.client.container.slot.SlotUnitCraftingResult;
-import engineers.workshop.client.container.slot.SlotUnitCraftingStorage;
+import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingGrid;
+import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingOutput;
+import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingResult;
+import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingStorage;
 import engineers.workshop.client.page.Page;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
@@ -73,8 +77,7 @@ public class UnitCrafting extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-
-		return item != null && Item.getItemFromBlock(Blocks.CRAFTING_TABLE) == item.getItem();
+		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRAFTER_BLOCKS, item.getItem().getRegistryName().toString());
 	}
 
 	@Override

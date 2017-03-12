@@ -1,9 +1,11 @@
 package engineers.workshop.client.container.slot;
 
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import engineers.workshop.client.page.Page;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
@@ -15,12 +17,10 @@ public class SlotFuel extends SlotTable {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		
-		return super.isItemValid(itemstack) && TileEntityFurnace.isItemFuel(itemstack);
-	}
-
-	@Override
-	public boolean canShiftClickInto(ItemStack item) {
-		return !item.getItem().equals(Item.getItemFromBlock(Blocks.CRAFTING_TABLE));
+		String[] upgrades = {};
+		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
+		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.FURNACE_BLOCKS);
+		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
+		return super.isItemValid(itemstack) && TileEntityFurnace.isItemFuel(itemstack) && !(ArrayUtils.contains(upgrades, itemstack.getItem().getRegistryName().toString()));
 	}
 }

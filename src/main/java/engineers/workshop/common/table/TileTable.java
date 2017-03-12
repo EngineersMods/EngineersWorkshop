@@ -1,7 +1,9 @@
 package engineers.workshop.common.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cofh.api.energy.IEnergyReceiver;
-import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
 import engineers.workshop.client.menu.GuiMenu;
@@ -18,7 +20,12 @@ import engineers.workshop.client.page.unit.UnitCrafting;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.*;
+import engineers.workshop.common.network.DataReader;
+import engineers.workshop.common.network.DataWriter;
+import engineers.workshop.common.network.IBitCount;
+import engineers.workshop.common.network.LengthCount;
+import engineers.workshop.common.network.PacketHandler;
+import engineers.workshop.common.network.PacketId;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.entity.item.EntityItem;
@@ -33,9 +40,6 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /*RF*/ IEnergyReceiver {
 
