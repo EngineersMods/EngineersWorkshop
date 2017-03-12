@@ -23,16 +23,7 @@ public enum SlotValidity {
 		return isOutput;
 	}
 
-    //TODO ADD SWITCH HERE
 	public static SlotValidity getValidity(boolean isSlotInput, boolean isSlotOutput) {
-		if (isSlotInput && isSlotOutput) {
-			return BOTH;
-		} else if (isSlotInput) {
-			return INPUT;
-		} else if (isSlotOutput) {
-			return OUTPUT;
-		} else {
-			return NONE;
-		}
+		return isSlotInput && isSlotOutput ? BOTH : isSlotInput ? INPUT : isSlotOutput ? OUTPUT : NONE;
 	}
 }

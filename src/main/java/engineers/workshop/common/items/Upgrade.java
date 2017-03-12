@@ -1,25 +1,25 @@
 package engineers.workshop.common.items;
 
+import static engineers.workshop.common.util.Reference.Info.MODID;
+
+import java.util.EnumSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import engineers.workshop.common.loaders.ItemLoader;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.EnumSet;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static engineers.workshop.common.util.Reference.Info.MODID;
-
+@SuppressWarnings("unchecked")
 public enum Upgrade {
     BLANK			(new MaxCount(0), 			    ParentType.NULL), 		// Max count = 0  (Not usable as an upgrade)
     AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 	// Max count = 1
     STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 	// Max count = 1
-    CHARGED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
-    SPEED			(new ConfigurableMax(8),	    ParentType.BOTH),		// Max count = 8  (Configable)
-    QUEUE			(new MaxCount(3), 			    ParentType.SMELTING),	// Max count = 3
+    CHARGED			(new ConfigurableMax(8),	  	ParentType.MachineSet),		// Max count = 8  (Configable)
+	SPEED			(new ConfigurableMax(8),	    ParentType.MachineSet),		// Max count = 8  (Configable)
+    QUEUE			(new MaxCount(3), 			    EnumSet.of(ParentType.CRUSHING, ParentType.SMELTING)),	// Max count = 3
     EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
     RF  			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
     SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
@@ -28,6 +28,7 @@ public enum Upgrade {
     TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),		// Max count = 6  (Configable upto 20)
     MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),		// Max count = 16 (Configable)
     FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL);		// Max count = 5  (Configable)
+	
 
     /**
      * PATTERN("Pattern Crafting", "Remembers old recipes", 4, ParentType.CRAFTING),
@@ -48,12 +49,7 @@ public enum Upgrade {
     }
 
     Upgrade(MaxCount maxCount, ParentType type) {
-        this(maxCount, type == null
-                || type == ParentType.NULL
-                ? EnumSet.noneOf(ParentType.class)
-                : (type == ParentType.BOTH
-                ? EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING) : EnumSet.of(type))
-        );
+        this(maxCount, type == null ? EnumSet.of(ParentType.NULL) : EnumSet.of((type)));
     }
 
     public String getName() {
@@ -114,27 +110,30 @@ public enum Upgrade {
     public enum ParentType {
         CRAFTING("Works with Crafting Tables") {
             @Override
-            protected boolean isValidParent(ItemStack item) {
-                return item != null && Item.getItemFromBlock(Blocks.CRAFTING_TABLE).equals(item.getItem());
-            }
+			protected boolean isValidParent(ItemStack item) {
+				Machine machine = ItemMachine.getMachine(item);
+				return machine == null ? false : machine == Machine.CRAFTER;
+			}
         },
-        SMELTING("Works with Furnaces") {
-            @Override
-            protected boolean isValidParent(ItemStack item) {
-                return item != null && Item.getItemFromBlock(Blocks.FURNACE).equals(item.getItem());
-            }
-        },
+		SMELTING("Works with Furnaces") {
+			@Override
+			protected boolean isValidParent(ItemStack item) {
+				Machine machine = ItemMachine.getMachine(item);
+				return machine == null ? false : machine == Machine.SMELTER;
+			}
+		},
         GLOBAL("Upgrades the entire Workshop Table") {
             @Override
             protected boolean isValidParent(ItemStack item) {
                 return item == null;
             }
         },
-        BOTH("upgrade" + "." + "both") {
+        CRUSHING("upgrade.crusher") {
             @Override
-            protected boolean isValidParent(ItemStack item) {
-                return CRAFTING.isValidParent(item) || SMELTING.isValidParent(item);
-            }
+			protected boolean isValidParent(ItemStack item) {
+				Machine machine = ItemMachine.getMachine(item);
+				return machine == null ? false : machine == Machine.CRUSHER;
+			}
 
         },
         NULL("upgrade" + "." + "null") {
@@ -151,6 +150,8 @@ public enum Upgrade {
         }
 
         protected abstract boolean isValidParent(ItemStack item);
+        
+    	private static final EnumSet MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING);
     }
 
     public static class MaxCount {
