@@ -1,10 +1,13 @@
 package engineers.workshop.client.page.unit;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceInput;
 import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceQueue;
 import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceResult;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
@@ -104,7 +107,7 @@ public class UnitSmelting extends Unit {
     @Override
     public boolean isEnabled() {
         ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-        return item != null && Item.getItemFromBlock(Blocks.FURNACE) == item.getItem();
+        return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.FURNACE_BLOCKS, item.getItem().getRegistryName().toString());
     }
 
 

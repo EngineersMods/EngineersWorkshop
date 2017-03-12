@@ -1,6 +1,7 @@
 package engineers.workshop.common.network.data;
 
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.network.DataReader;
 import engineers.workshop.common.network.DataWriter;
 import engineers.workshop.common.network.IBitCount;
@@ -13,17 +14,24 @@ public abstract class DataUnit extends DataBase {
     public static final int LENGTH = 8;
 
     protected Unit getUnit(TileTable table, int id) {
-        boolean isCrafting = id % 2 == 1;
-        id /= 2;
-        if (isCrafting) {
-            return table.getMainPage().getCraftingList().get(id);
-        }else{
-            return table.getMainPage().getSmeltingList().get(id);
-        }
+    	id /= 2;
+    	
+    	Unit smelting = table.getMainPage().getSmeltingList().get(id);
+    	Unit crushing = ConfigLoader.MACHINES.CRUSHER_ENABLED ? crushing = table.getMainPage().getCrushingList().get(id) : null;
+    	Unit crafting = table.getMainPage().getCraftingList().get(id);
+    	
+        if (smelting.isEnabled())
+        	return smelting;
+        else if(ConfigLoader.MACHINES.CRUSHER_ENABLED && crushing.isEnabled())
+        	return crushing;
+        else
+        	return crafting;
+        
+        	
     }
 
     public static int getId(Unit unit) {
-        return unit.getId() * 2;
+        return unit.getId() *2;
     }
 
     public static class Progress extends DataUnit {

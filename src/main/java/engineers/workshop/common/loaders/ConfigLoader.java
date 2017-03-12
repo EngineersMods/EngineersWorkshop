@@ -2,6 +2,7 @@ package engineers.workshop.common.loaders;
 
 import engineers.workshop.common.items.Upgrade;
 import net.minecraftforge.common.config.Configuration;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
@@ -86,10 +87,29 @@ public final class ConfigLoader {
 
 		@Override
 		public void load() {
-			TESLA_SUPPORT = config.getBoolean("Tesla Support", "Power", true,
-					"Should Tesla upgrades be allowed? (Requires Tesla)");
+//			TESLA_SUPPORT = config.getBoolean("Tesla Support", "Power", true,
+//					"Should Tesla upgrades be allowed? (Requires Tesla)");
 			RF_SUPPORT = config.getBoolean("RF Support", "Power", true,
-					"Should Tesla upgrades be allowed? (Requires Tesla)");
+					"Should RF upgrades be allowed?");
+		}
+	}
+	
+	public static class MACHINES extends ConfigHandler {
+		public static boolean CRUSHER_ENABLED;
+		public static String[] CRAFTER_BLOCKS, FURNACE_BLOCKS, CRUSHER_BLOCKS;
+
+		public MACHINES(Configuration config, String category) {
+			super(config, category);
+		}
+
+		@Override
+		public void load() {
+			CRUSHER_ENABLED = config.getBoolean("Enable Crusher", "Machines", true,
+					"Is a crusher allowed as a machine? (Requires EnderIO)") && Loader.isModLoaded("EnderIO");
+			CRAFTER_BLOCKS = config.getStringList("Crafter Blocks", "Machines", new String[]{"minecraft:crafting_table"}, "What blocks should the table accept for crafters.");
+			FURNACE_BLOCKS = config.getStringList("Furnace Blocks", "Machines", new String[]{"minecraft:furnace"}, "What blocks should the table accept for furances.");
+			CRUSHER_BLOCKS = config.getStringList("Crusher Blocks", "Machines", new String[]{"enderio:blockSagMill"}, "What blocks should the table accept for crushers.");
+			
 		}
 	}
 
@@ -99,6 +119,7 @@ public final class ConfigLoader {
 		new UPGRADES(config, "Upgrades").load();
 		new TWEAKS(config, "Tweaks").load();
 		new POWER(config, "Power").load();
+		new MACHINES(config, "Machines").load();
 		config.save();
 	}
 }

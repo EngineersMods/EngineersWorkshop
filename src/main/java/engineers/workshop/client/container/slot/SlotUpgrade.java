@@ -1,9 +1,13 @@
 package engineers.workshop.client.container.slot;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.ItemUpgrade;
 import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
@@ -48,7 +52,11 @@ public class SlotUpgrade extends SlotTable {
 	}
 
 	private boolean isMainItem(ItemStack itemstack) {
-		return itemstack.getItem().equals(ItemLoader.itemMachine);
+		String[] accepted = {};
+		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
+		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.FURNACE_BLOCKS);
+		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
+		return ArrayUtils.contains(accepted, itemstack.getItem().getRegistryName().toString());
 	}
 
 	@Override

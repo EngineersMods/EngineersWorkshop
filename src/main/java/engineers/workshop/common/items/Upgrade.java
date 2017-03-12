@@ -6,6 +6,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.enderio.core.common.config.annot.Config;
+
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -108,35 +111,46 @@ public enum Upgrade {
     }
 
     public enum ParentType {
-        CRAFTING("Works with Crafting Tables") {
-            @Override
+		CRAFTING("Works with Crafting Tables") {
+			@Override
 			protected boolean isValidParent(ItemStack item) {
-				Machine machine = ItemMachine.getMachine(item);
-				return machine == null ? false : machine == Machine.CRAFTER;
+				if (item != null)
+					for (String parent : ConfigLoader.MACHINES.CRAFTER_BLOCKS)
+						if (item.getItem().getRegistryName().toString().equals(parent))
+							return true;
+				return false;
 			}
-        },
+		},
 		SMELTING("Works with Furnaces") {
 			@Override
 			protected boolean isValidParent(ItemStack item) {
-				Machine machine = ItemMachine.getMachine(item);
-				return machine == null ? false : machine == Machine.SMELTER;
+				if (item != null)
+					for (String parent : ConfigLoader.MACHINES.FURNACE_BLOCKS)
+						if (item.getItem().getRegistryName().toString().equals(parent))
+							return true;
+
+				return false;
 			}
 		},
-        GLOBAL("Upgrades the entire Workshop Table") {
+		CRUSHING("Works with Crushers") {
+			@Override
+			protected boolean isValidParent(ItemStack item) {
+				if (item != null)
+					for (String parent : ConfigLoader.MACHINES.CRUSHER_BLOCKS)
+						if (item.getItem().getRegistryName().toString().equals(parent))
+							return true;
+
+				return false;
+			}
+
+		},
+        GLOBAL("Upgrades the entire Table") {
             @Override
             protected boolean isValidParent(ItemStack item) {
                 return item == null;
             }
         },
-        CRUSHING("upgrade.crusher") {
-            @Override
-			protected boolean isValidParent(ItemStack item) {
-				Machine machine = ItemMachine.getMachine(item);
-				return machine == null ? false : machine == Machine.CRUSHER;
-			}
-
-        },
-        NULL("upgrade" + "." + "null") {
+        NULL("you shouldn't be seeing this.") {
             @Override
             protected boolean isValidParent(ItemStack item) {
                 return false;
