@@ -1,1 +1,1 @@
-gradlew sDecW
+gradlew sDecW idea
