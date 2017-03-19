@@ -41,8 +41,6 @@ public class ContainerTable extends ContainerBase {
         return table.isUseableByPlayer(player);
     }
 
-
-
     @Override
     public ItemStack transferStackInSlot(EntityPlayer player, int i) {
         ItemStack itemstack = null;

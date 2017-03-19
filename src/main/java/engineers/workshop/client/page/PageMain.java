@@ -1,16 +1,12 @@
 package engineers.workshop.client.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engineers.workshop.client.GuiBase;
-import engineers.workshop.client.page.unit.Unit;
-import engineers.workshop.client.page.unit.UnitAlloy;
-import engineers.workshop.client.page.unit.UnitCraft;
-import engineers.workshop.client.page.unit.UnitCrush;
-import engineers.workshop.client.page.unit.UnitSmelt;
+import engineers.workshop.client.page.unit.*;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PageMain extends Page {
 
@@ -109,12 +105,11 @@ public class PageMain extends Page {
 				enabledUnits++;
 			}
 		}
+
 		if (drawHorizontal())
-			gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH,
-					BAR_THICKNESS);
+			gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH, BAR_THICKNESS);
 		if (drawVertical())
-			gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS,
-					BAR_HEIGHT);
+			gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS, BAR_HEIGHT);
 
 		if (enabledUnits == 0) {
 			gui.drawString("ADD A CRAFTING TABLE OR FURNACE", 45, 30, 0x1E1E1E);

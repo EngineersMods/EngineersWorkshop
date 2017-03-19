@@ -5,7 +5,6 @@ public class Reference {
     public static final class Info {
         public static final String MODID = "engineersworkshop";
         public static final String NAME = "Engineers Workshop";
-        public static final String MinecraftVersion = "1.10.2";
     }
 
     public static final class Paths {

@@ -1,29 +1,24 @@
 package engineers.workshop.client.page;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.GuiTable;
 import engineers.workshop.client.component.ArrowScroll;
 import engineers.workshop.client.component.CheckBox;
 import engineers.workshop.client.menu.GuiMenuItem;
-import engineers.workshop.client.page.setting.ItemSetting;
-import engineers.workshop.client.page.setting.Setting;
-import engineers.workshop.client.page.setting.SettingCoal;
-import engineers.workshop.client.page.setting.SettingNormal;
-import engineers.workshop.client.page.setting.Side;
-import engineers.workshop.client.page.setting.Transfer;
+import engineers.workshop.client.page.setting.*;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.data.DataSide;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.common.util.Logger;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PageTransfer extends Page {
 
@@ -224,6 +219,8 @@ public class PageTransfer extends Page {
 	public void draw(GuiBase gui, int mX, int mY) {
 		super.draw(gui, mX, mY);
 
+        RenderHelper.enableGUIStandardItemLighting();
+
 		for (Setting setting : settings) {
 			gui.prepare();
 			boolean isValid = setting.isValid();
@@ -250,6 +247,7 @@ public class PageTransfer extends Page {
 			ItemStack item = setting.getItem();
 			gui.drawRect(setting.getX(), setting.getY(), SETTING_SRC_X + textureIndexX * SETTING_SIZE, SETTING_SRC_Y + textureIndexY * SETTING_SIZE, SETTING_SIZE, SETTING_SIZE);
 			gui.drawItem(item, setting.getX() + SETTING_ITEM_OFFSET, setting.getY() + SETTING_ITEM_OFFSET);
+
 			if (hover && isValid) {
 				String name = setting.getName();
 				if (name == null) {
@@ -257,7 +255,7 @@ public class PageTransfer extends Page {
 				}
 				gui.drawMouseOver(name);
 			}
-		}//END FOR
+		}
 
 		if (selectedSetting != null) {
 			for (Side side : selectedSetting.getSides()) {

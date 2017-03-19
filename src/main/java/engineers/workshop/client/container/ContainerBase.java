@@ -34,7 +34,6 @@ public abstract class ContainerBase extends Container {
 
     private Set<EntityPlayer> invalidPlayers = new HashSet<>();
 
-
     private List<ItemStack> getItems() {
         return inventoryItemStacks;
     }
@@ -42,7 +41,6 @@ public abstract class ContainerBase extends Container {
     private List<Slot> getSlots() {
         return inventorySlots;
     }
-
 
     @Override
     protected Slot addSlotToContainer(Slot slot) {
@@ -58,12 +56,10 @@ public abstract class ContainerBase extends Container {
         return result;
     }
 
-
     @Override
     public boolean enchantItem(EntityPlayer player, int slotId) {
         return false;
     }
-
 
     @Override
     public Slot getSlot(int slotId) {
@@ -74,9 +70,6 @@ public abstract class ContainerBase extends Container {
     public ItemStack transferStackInSlot(EntityPlayer player, int slotId) {
         return null;
     }
-
-   
-
     
     @Override
     public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {

@@ -1,9 +1,5 @@
 package engineers.workshop.client.page.unit;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.enderio.core.common.config.ConfigHandler;
-
 import crazypants.enderio.machine.recipe.IRecipe;
 import crazypants.enderio.machine.sagmill.SagMillRecipeManager;
 import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherInput;
@@ -13,9 +9,8 @@ import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class UnitCrush extends Unit {
 

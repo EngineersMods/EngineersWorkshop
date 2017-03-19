@@ -140,7 +140,6 @@ public class GuiTable extends GuiBase {
     private static final int SLOT_BIG_SIZE = 26;
     private static final int SLOT_BIG_OFFSET = SLOT_OFFSET - (SLOT_BIG_SIZE - SLOT_SIZE) / 2;
 
-
     private void drawSlots() {
         prepare();
         for (SlotBase slot : slots) {
@@ -173,14 +172,13 @@ public class GuiTable extends GuiBase {
     private static final int POWER_INNER_OFFSET_Y = (POWER_HEIGHT - POWER_INNER_HEIGHT) / 2;
 
     private void drawPower(int mX, int mY) {
-    	if(table.getCapacity() == 0)
-    		return;
+    	if(table.getCapacity() == 0) return;
     	
     	prepare();
 
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y, POWER_INNER_SRC_X + POWER_INNER_WIDTH, POWER_INNER_SRC_Y, POWER_INNER_WIDTH, POWER_INNER_HEIGHT);
 
-        int height = (int) (POWER_INNER_HEIGHT * table.getPower() / table.getCapacity());
+        int height = POWER_INNER_HEIGHT * table.getPower() / table.getCapacity();
         int offset = POWER_INNER_HEIGHT - height;
         GL11.glColor3f(ColorHelper.getRed(getTable().getPower(), getTable().getCapacity()), ColorHelper.getGreen(getTable().getPower(), getTable().getCapacity()), ColorHelper.getBlue(getTable().getPower(), getTable().getCapacity()));
             drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y + offset, POWER_INNER_SRC_X, POWER_INNER_SRC_Y + offset, POWER_INNER_WIDTH, height);
@@ -211,7 +209,6 @@ public class GuiTable extends GuiBase {
         	closed = true;
         }
     }
-    
 
     @Override
     public void setWorldAndResolution(Minecraft minecraft, int width, int height) {

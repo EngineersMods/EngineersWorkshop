@@ -1,16 +1,13 @@
 package engineers.workshop.client;
 
+import engineers.workshop.client.container.slot.SlotBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
-
-import engineers.workshop.client.container.slot.SlotBase;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,13 +77,7 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	public void drawItem(ItemStack item, int x, int y) {
-		RenderHelper.enableGUIStandardItemLighting();
-		GL11.glEnable(GL12.GL_RESCALE_NORMAL);
-		GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-		GL11.glEnable(GL11.GL_LIGHTING);
-		itemRender.renderItemOverlayIntoGUI(fontRendererObj, item, x, y, null);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-		GL11.glEnable(GL11.GL_ALPHA_TEST);
+		if (item != null) itemRender.renderItemAndEffectIntoGUI(item, x, y);
 	}
 
 	/**
@@ -127,8 +118,7 @@ public abstract class GuiBase extends GuiContainer {
 		int textureIndexY = item != null ? 1 : 0;
 
 		prepare();
-		drawRect(x, y, ITEM_SRC_X + textureIndexX * ITEM_SIZE, ITEM_SRC_Y + textureIndexY * ITEM_SIZE, ITEM_SIZE,
-				ITEM_SIZE);
+		drawRect(x, y, ITEM_SRC_X + textureIndexX * ITEM_SIZE, ITEM_SRC_Y + textureIndexY * ITEM_SIZE, ITEM_SIZE, ITEM_SIZE);
 		drawItem(item, x + ITEM_ITEM_OFFSET, y + ITEM_ITEM_OFFSET);
 
 		if (hover) {
@@ -259,8 +249,7 @@ public abstract class GuiBase extends GuiContainer {
 
 		try {
 			// noinspection unchecked
-			return item.getTooltip(Minecraft.getMinecraft().thePlayer,
-					Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
+			return item.getTooltip(Minecraft.getMinecraft().thePlayer, Minecraft.getMinecraft().gameSettings.advancedItemTooltips);
 		} catch (Throwable ignored) {
 			return null;
 		}
