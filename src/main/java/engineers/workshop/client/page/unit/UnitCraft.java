@@ -26,9 +26,9 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class UnitCrafting extends Unit {
+public class UnitCraft extends Unit {
 
-	public UnitCrafting(TileTable table, Page page, int id, int x, int y) {
+	public UnitCraft(TileTable table, Page page, int id, int x, int y) {
 		super(table, page, id, x, y);
 	}
 

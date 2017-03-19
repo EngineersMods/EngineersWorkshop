@@ -144,6 +144,19 @@ public enum Upgrade {
 			}
 
 		},
+		
+		ALLOY("Works with Alloy Smelters") {
+			@Override
+			protected boolean isValidParent(ItemStack item) {
+				if (item != null)	
+					for (String parent : ConfigLoader.MACHINES.ALLOY_BLOCKS)
+						if (item.getItem().getRegistryName().toString().equals(parent))
+							return true;
+
+				return false;
+			}
+
+		},
         GLOBAL("Upgrades the entire Table") {
             @Override
             protected boolean isValidParent(ItemStack item) {
@@ -165,7 +178,7 @@ public enum Upgrade {
 
         protected abstract boolean isValidParent(ItemStack item);
         
-    	private static final EnumSet MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING);
+    	private static final EnumSet MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING, ParentType.ALLOY);
     }
 
     public static class MaxCount {

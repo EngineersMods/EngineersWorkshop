@@ -5,7 +5,7 @@ import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.container.slot.SlotUnit;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.client.page.unit.Unit;
-import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.client.page.unit.UnitCraft;
 
 public class SlotUnitCraftingStorage extends SlotUnit {
 
@@ -45,6 +45,6 @@ public class SlotUnitCraftingStorage extends SlotUnit {
     @Override
     public void onSlotChanged() {
         super.onSlotChanged();
-        ((UnitCrafting)unit).onGridChanged();
+        ((UnitCraft)unit).onGridChanged();
     }
 }

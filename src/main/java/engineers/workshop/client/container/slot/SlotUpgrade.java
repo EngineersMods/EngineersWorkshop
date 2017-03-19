@@ -56,6 +56,7 @@ public class SlotUpgrade extends SlotTable {
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.FURNACE_BLOCKS);
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
+		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.ALLOY_BLOCKS);
 		return ArrayUtils.contains(accepted, itemstack.getItem().getRegistryName().toString());
 	}
 

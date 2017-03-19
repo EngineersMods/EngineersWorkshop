@@ -5,19 +5,20 @@ import java.util.List;
 
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.page.unit.Unit;
-import engineers.workshop.client.page.unit.UnitCrafting;
-import engineers.workshop.client.page.unit.UnitCrushing;
-import engineers.workshop.client.page.unit.UnitSmelting;
+import engineers.workshop.client.page.unit.UnitAlloy;
+import engineers.workshop.client.page.unit.UnitCraft;
+import engineers.workshop.client.page.unit.UnitCrush;
+import engineers.workshop.client.page.unit.UnitSmelt;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
-import net.minecraftforge.fml.common.Loader;
 
 public class PageMain extends Page {
 
 	private List<Unit> units;
-	private List<UnitCrafting> craftingList;
-	private List<UnitSmelting> smeltingList;
-	private List<UnitCrushing> crushingList;
+	private List<UnitCraft> craftingList;
+	private List<UnitSmelt> smeltingList;
+	private List<UnitCrush> crushingList;
+	private List<UnitAlloy> alloyList;
 
 	public PageMain(TileTable table, String name) {
 		super(table, name);
@@ -25,8 +26,8 @@ public class PageMain extends Page {
 		units = new ArrayList<>();
 		craftingList = new ArrayList<>();
 		smeltingList = new ArrayList<>();
-		if(ConfigLoader.MACHINES.CRUSHER_ENABLED)
-			crushingList = new ArrayList<>();
+		crushingList = new ArrayList<>();
+		alloyList = new ArrayList<>();
 
 		for (int i = 0; i < 4; i++) {
 			addUnit(i);
@@ -36,29 +37,42 @@ public class PageMain extends Page {
 	private void addUnit(int id) {
 		int x = (id % 2) * WIDTH / 2;
 		int y = (id / 2) * HEIGHT / 2;
-		UnitCrafting crafting = new UnitCrafting(table, this, id, x, y);
-		UnitSmelting smelting = new UnitSmelting(table, this, id, x, y);
+
+		UnitCraft crafting = new UnitCraft(table, this, id, x, y);
 		craftingList.add(crafting);
-		smeltingList.add(smelting);
 		units.add(crafting);
+
+		UnitSmelt smelting = new UnitSmelt(table, this, id, x, y);
+		smeltingList.add(smelting);
 		units.add(smelting);
-		if(ConfigLoader.MACHINES.CRUSHER_ENABLED){
-			UnitCrushing crushing = new UnitCrushing(table, this, id, x, y);
+
+		if (ConfigLoader.MACHINES.CRUSHER_ENABLED) {
+			UnitCrush crushing = new UnitCrush(table, this, id, x, y);
 			crushingList.add(crushing);
 			units.add(crushing);
 		}
+
+		if (ConfigLoader.MACHINES.ALLOY_ENABLED) {
+			UnitAlloy alloy = new UnitAlloy(table, this, id, x, y);
+			alloyList.add(alloy);
+			units.add(alloy);
+		}
 	}
 
-	public List<UnitSmelting> getSmeltingList() {
+	public List<UnitSmelt> getSmeltingList() {
 		return smeltingList;
 	}
 
-	public List<UnitCrafting> getCraftingList() {
+	public List<UnitCraft> getCraftingList() {
 		return craftingList;
 	}
-	
-	public List<UnitCrushing> getCrushingList() {
+
+	public List<UnitCrush> getCrushingList() {
 		return crushingList;
+	}
+
+	public List<UnitAlloy> getAlloyList() {
+		return alloyList;
 	}
 
 	@Override
@@ -96,9 +110,11 @@ public class PageMain extends Page {
 			}
 		}
 		if (drawHorizontal())
-        	gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH, BAR_THICKNESS);
+			gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH,
+					BAR_THICKNESS);
 		if (drawVertical())
-    		gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS, BAR_HEIGHT);
+			gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS,
+					BAR_HEIGHT);
 
 		if (enabledUnits == 0) {
 			gui.drawString("ADD A CRAFTING TABLE OR FURNACE", 45, 30, 0x1E1E1E);
@@ -121,12 +137,19 @@ public class PageMain extends Page {
 		return "Workshop Area";
 	}
 
-	public boolean[] makeUnitMap() {
+	private boolean[] makeUnitMap() {
 		boolean[] out = new boolean[4];
 		for (int i = 0; i < out.length; i++) {
-			out[i] = craftingList.get(i).isEnabled() || smeltingList.get(i).isEnabled() || (ConfigLoader.MACHINES.CRUSHER_ENABLED && crushingList.get(i).isEnabled());
+			out[i] = isUnitLoaded(i);
 		}
 		return out;
+	}
+
+	private boolean isUnitLoaded(int id) {
+		return (craftingList.get(id) != null && craftingList.get(id).isEnabled())
+				|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled())
+				|| (crushingList.get(id) != null && crushingList.get(id).isEnabled())
+				|| (alloyList.get(id) != null && alloyList.get(id).isEnabled());
 	}
 
 	public boolean drawVertical() {

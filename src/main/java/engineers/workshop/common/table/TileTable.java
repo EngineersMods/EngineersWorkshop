@@ -16,7 +16,7 @@ import engineers.workshop.client.page.setting.Setting;
 import engineers.workshop.client.page.setting.Side;
 import engineers.workshop.client.page.setting.Transfer;
 import engineers.workshop.client.page.unit.Unit;
-import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.client.page.unit.UnitCraft;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
@@ -539,7 +539,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public void onUpgradeChange() {
 		reloadTransferSides();
 		getUpgradePage().onUpgradeChange();
-        getMainPage().getCraftingList().forEach(UnitCrafting::onUpgradeChange);
+        getMainPage().getCraftingList().forEach(UnitCraft::onUpgradeChange);
 		maxPower = (ConfigLoader.TWEAKS.MIN_POWER + (ConfigLoader.UPGRADES.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
 		fuelDelay = (ConfigLoader.TWEAKS.FUEL_DELAY - (ConfigLoader.UPGRADES.FUEL_DELAY_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
 		sendDataToAllPlayer(DataType.POWER);
@@ -758,7 +758,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void clearGrid(EntityPlayer player, int id) {
-		UnitCrafting crafting = getMainPage().getCraftingList().get(id);
+		UnitCraft crafting = getMainPage().getCraftingList().get(id);
 		if (crafting.isEnabled()) {
 			int[] from = new int[9];
 			for (int i = 0; i < from.length; i++) {

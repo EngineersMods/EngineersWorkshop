@@ -4,13 +4,13 @@ import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.container.slot.SlotUnit;
 import engineers.workshop.client.page.Page;
-import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.client.page.unit.UnitCraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public class SlotUnitCraftingResult extends SlotUnit {
 
-    public SlotUnitCraftingResult(TileTable table, Page page, int id, int x, int y, UnitCrafting unit) {
+    public SlotUnitCraftingResult(TileTable table, Page page, int id, int x, int y, UnitCraft unit) {
         super(table, page, id, x, y, unit);
     }
 
@@ -27,7 +27,7 @@ public class SlotUnitCraftingResult extends SlotUnit {
     @Override
     public void onPickupFromSlot(EntityPlayer player, ItemStack item) {
         super.onPickupFromSlot(player, item);
-        ((UnitCrafting)unit).onCrafting(player, item);
+        ((UnitCraft)unit).onCrafting(player, item);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class SlotUnitCraftingResult extends SlotUnit {
     public int getY() {
         int offset = 0;
         if (table.getUpgradePage().hasUpgrade(unit.getId(), Upgrade.AUTO_CRAFTER)) {
-            offset = UnitCrafting.RESULT_AUTO_OFFSET;
+            offset = UnitCraft.RESULT_AUTO_OFFSET;
         }
         return super.getY() + offset;
     }

@@ -3,19 +3,19 @@ package engineers.workshop.client.container.slot.crafting;
 import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.container.slot.SlotUnit;
 import engineers.workshop.client.page.Page;
-import engineers.workshop.client.page.unit.UnitCrafting;
+import engineers.workshop.client.page.unit.UnitCraft;
 import net.minecraft.item.ItemStack;
 
 public class SlotUnitCraftingGrid extends SlotUnit {
 
-	public SlotUnitCraftingGrid(TileTable table, Page page, int id, int x, int y, UnitCrafting unit) {
+	public SlotUnitCraftingGrid(TileTable table, Page page, int id, int x, int y, UnitCraft unit) {
 		super(table, page, id, x, y, unit);
 	}
 
 	@Override
 	public boolean canAcceptItem(ItemStack item) {
 		if (getHasStack() && item != null) {
-			UnitCrafting crafting = (UnitCrafting) unit;
+			UnitCraft crafting = (UnitCraft) unit;
 
 			int own = getCount(item, getStack());
 
@@ -48,7 +48,7 @@ public class SlotUnitCraftingGrid extends SlotUnit {
 	@Override
 	public void onSlotChanged() {
 		super.onSlotChanged();
-		((UnitCrafting) unit).onGridChanged();
+		((UnitCraft) unit).onGridChanged();
 	}
 
 	@Override
