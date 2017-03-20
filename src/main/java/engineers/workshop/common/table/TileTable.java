@@ -1,8 +1,5 @@
 package engineers.workshop.common.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
@@ -20,12 +17,7 @@ import engineers.workshop.client.page.unit.UnitCraft;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.DataReader;
-import engineers.workshop.common.network.DataWriter;
-import engineers.workshop.common.network.IBitCount;
-import engineers.workshop.common.network.LengthCount;
-import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.common.network.PacketId;
+import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.entity.item.EntityItem;
@@ -40,6 +32,9 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileTable extends TileEntity implements IInventory, ISidedInventory,  ITickable, /*RF*/ IEnergyReceiver {
 
@@ -499,28 +494,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		if (power > maxPower) power = maxPower;
 		if (power != lastPower) lastPower = power;
 
-		//setState(power, maxPower);
-
 		sendDataToAllPlayer(DataType.POWER);
 	}
-
-	/*private void setState(float power, float maxPower) {
-		float percentage = ((power) / maxPower) * 100;
-		int state = (int) (percentage / (100f / 8));
-
-		switch (state) {
-			case 0: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 0));
-			case 1: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 1));
-			case 2: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 2));
-			case 3: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 3));
-			case 4: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 4));
-			case 5: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 5));
-			case 6: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 6));
-			case 7: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 7));
-
-			default: worldObj.setBlockState(pos, worldObj.getBlockState(pos).getBlock().getDefaultState().withProperty(BlockTable.STATE, 8));
-		}
-	}*/
 
 	public boolean canSeeTheSky() {
 		return worldObj.canSeeSky(pos.up());

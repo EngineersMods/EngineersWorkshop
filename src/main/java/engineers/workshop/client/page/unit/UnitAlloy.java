@@ -49,10 +49,8 @@ public class UnitAlloy extends Unit {
 		queueId = id;
 
 		for (int i = 0; i < QUEUE_MAX_COUNT; i++) {
-			addSlot(new SlotUnitAlloyQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this,
-					QUEUE_ORDER[i]));
+			addSlot(new SlotUnitAlloyQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this, QUEUE_ORDER[i]));
 		}
-
 		return id;
 	}
 
@@ -174,8 +172,7 @@ public class UnitAlloy extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null
-				&& ArrayUtils.contains(ConfigLoader.MACHINES.ALLOY_BLOCKS, item.getItem().getRegistryName().toString());
+		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.ALLOY_BLOCKS, item.getItem().getRegistryName().toString());
 	}
 
 	private static final int ARROW_X = 25;

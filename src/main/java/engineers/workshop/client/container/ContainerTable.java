@@ -16,8 +16,8 @@ public class ContainerTable extends ContainerBase {
         this.table = table;
 
         table.getSlots().forEach(this::addSlotToContainer);
-
         InventoryPlayer inventory = player.inventory;
+
         for (int y = 0; y < NORMAL_ROWS; y++) {
             for (int x = 0; x < SLOTS_PER_ROW; x++) {
                 addSlotToContainer(new SlotPlayer(inventory, table, x + y * SLOTS_PER_ROW + SLOTS_PER_ROW, PLAYER_X + x * SLOT_SIZE, y * SLOT_SIZE + PLAYER_Y));
@@ -54,17 +54,17 @@ public class ContainerTable extends ContainerBase {
                         return null;
                     }
                 }
-            }else if(!mergeItemStack(slotItem, 0, table.getSizeInventory(), false)){
+            } else if(!mergeItemStack(slotItem, 0, table.getSizeInventory(), false)){
                 return null;
             }
             if(slotItem.stackSize == 0){
                 slot.putStack(null);
-            }else{
+            } else {
                 slot.onSlotChanged();
             }
             if(slotItem.stackSize != itemstack.stackSize){
                 slot.onPickupFromSlot(player,slotItem);
-            }else{
+            } else {
                 return null;
             }
         }

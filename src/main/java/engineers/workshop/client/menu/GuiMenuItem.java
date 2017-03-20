@@ -16,6 +16,7 @@ import net.minecraft.item.ItemStack;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GuiMenuItem extends GuiMenu {
@@ -39,7 +40,6 @@ public class GuiMenuItem extends GuiMenu {
     private static final int ITEMS_Y = 80;
     private static final int ITEMS_OFFSET = 20;
     private static final int ITEM_SIZE = 18;
-
 
     private static final int ITEM_X = 10;
     private static final int ITEM_Y = 10;
@@ -174,7 +174,7 @@ public class GuiMenuItem extends GuiMenu {
                 }
             }
 
-            searchItems.addAll(itemStacks.stream().filter(itemStack -> itemStack != null).collect(Collectors.toList()));
+            searchItems.addAll(itemStacks.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
             Iterator<ItemStack> itemIterator = searchItems.iterator();
 

@@ -175,7 +175,7 @@ public abstract class Unit {
                             updatedCharge = true;
                             produce(result, output);
                             result = getProductionResult();
-                        }else {
+                        } else {
                             int powerConsumption = getPowerConsumption(false);
 
                             if (table.getPower() >= powerConsumption) {
@@ -193,15 +193,14 @@ public abstract class Unit {
                                 updatedProgress = true;
                             }
                         }
-                    }else{
+                    } else {
                         canCharge = true;
                     }
-                }while (!done);
-
+                } while (!done);
                 if (updatedCharge) {
                     table.sendDataToAllPlayer(DataType.CHARGED, DataUnit.getId(this));
                 }
-            }else{
+            } else {
                 canCharge = true;
                 canReset = true;
             }
@@ -216,7 +215,6 @@ public abstract class Unit {
                         productionProgress += getProductionSpeed(true);
                         if (productionProgress >= PRODUCTION_TIME) {
                             productionProgress -= PRODUCTION_TIME;
-
                             chargeCount++;
                             table.sendDataToAllPlayer(DataType.CHARGED, DataUnit.getId(this));
                             done = false;
@@ -228,7 +226,6 @@ public abstract class Unit {
                 productionProgress = 0;
                 updatedProgress = true;
             }
-
             if (updatedProgress) {
                 workingTicks = WORKING_COOLDOWN;
                 table.sendDataToAllPlayer(DataType.PROGRESS, DataUnit.getId(this));

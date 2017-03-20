@@ -1,17 +1,14 @@
 package engineers.workshop.client.page.unit;
 
-import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.table.TileTable;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingGrid;
 import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingOutput;
 import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingResult;
 import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingStorage;
 import engineers.workshop.client.page.Page;
+import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.table.TileTable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -20,11 +17,10 @@ import net.minecraft.item.*;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.stats.AchievementList;
-import net.minecraft.stats.StatList;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class UnitCraft extends Unit {
 
@@ -175,9 +171,7 @@ public class UnitCraft extends Unit {
 	@SideOnly(Side.CLIENT)
 	public void onClick(GuiBase gui, int mX, int mY) {
 		super.onClick(gui, mX, mY);
-
-		if (gui.inBounds(this.x + START_X + GRID_WIDTH * SLOT_SIZE + CLEAR_OFFSET_X, this.y + START_Y + CLEAR_OFFSET_Y,
-				CLEAR_SIZE, CLEAR_SIZE, mX, mY)) {
+		if (gui.inBounds(this.x + START_X + GRID_WIDTH * SLOT_SIZE + CLEAR_OFFSET_X, this.y + START_Y + CLEAR_OFFSET_Y, CLEAR_SIZE, CLEAR_SIZE, mX, mY)) {
 			table.clearGridSend(id);
 		}
 	}
@@ -203,8 +197,7 @@ public class UnitCraft extends Unit {
 				crafting.decrStackSize(id, 1);
 				if (itemStack.getItem().hasContainerItem(itemStack)) {
 					ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
-					if (!containerItem.isItemStackDamageable()
-							|| containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
+					if (!containerItem.isItemStackDamageable() || containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
 						// TODO where should the client go?
 						// if (false) {
                             // if (!fake) {
@@ -335,8 +328,7 @@ public class UnitCraft extends Unit {
 		}
 
 		protected int getFullSize() {
-			return INVENTORY_WIDTH * INVENTORY_HEIGHT
-					+ (table.getUpgradePage().hasUpgrade(id, Upgrade.STORAGE) ? STORAGE_COUNT : 0);
+			return INVENTORY_WIDTH * INVENTORY_HEIGHT + (table.getUpgradePage().hasUpgrade(id, Upgrade.STORAGE) ? STORAGE_COUNT : 0);
 		}
 
 		@Override

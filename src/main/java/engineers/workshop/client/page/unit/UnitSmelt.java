@@ -32,7 +32,7 @@ public class UnitSmelt extends Unit {
     @Override
     public int createSlots(int id) {
         inputId = id;
-        addSlot(new SlotUnitFurnaceInput(table, page, id++, this.x + START_X + 10, this.y + START_Y, this));
+        addSlot(new SlotUnitFurnaceInput(table, page, id++, this.x + START_X, this.y + START_Y, this));
         outputId = id;
         addSlot(new SlotUnitFurnaceResult(table, page, id++, this.x + START_X + RESULT_X, this.y + START_Y, this));
         queueId = id;
@@ -83,7 +83,6 @@ public class UnitSmelt extends Unit {
             }
         }
     }
-
 
     @Override
     protected ItemStack getProductionResult() {

@@ -141,10 +141,12 @@ public class PageMain extends Page {
 	}
 
 	private boolean isUnitLoaded(int id) {
-		return (craftingList.get(id) != null && craftingList.get(id).isEnabled())
+		return (
+				craftingList.get(id) != null && craftingList.get(id).isEnabled())
 				|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled())
 				|| (crushingList.get(id) != null && crushingList.get(id).isEnabled())
-				|| (alloyList.get(id) != null && alloyList.get(id).isEnabled());
+				|| (alloyList.get(id) != null && alloyList.get(id).isEnabled()
+		);
 	}
 
 	public boolean drawVertical() {

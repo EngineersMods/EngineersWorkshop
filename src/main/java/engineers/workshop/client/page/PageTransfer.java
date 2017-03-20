@@ -410,7 +410,7 @@ public class PageTransfer extends Page {
 
 	@Override
 	public String getDesc() {
-		return "Manage Exporting / Importing";
+		return "Manage Logistics";
 	}
 
 	// EnumFacing
