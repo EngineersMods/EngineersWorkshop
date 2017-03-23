@@ -4,6 +4,7 @@ import engineers.workshop.client.container.slot.SlotBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -77,6 +78,7 @@ public abstract class GuiBase extends GuiContainer {
 	}
 
 	public void drawItem(ItemStack item, int x, int y) {
+		RenderHelper.enableGUIStandardItemLighting();
 		if (item != null) itemRender.renderItemAndEffectIntoGUI(item, x, y);
 	}
 

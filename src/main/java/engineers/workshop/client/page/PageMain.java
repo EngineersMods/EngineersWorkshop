@@ -15,6 +15,7 @@ public class PageMain extends Page {
 	private List<UnitSmelt> smeltingList;
 	private List<UnitCrush> crushingList;
 	private List<UnitAlloy> alloyList;
+	private List<UnitChest> storageList;
 
 	public PageMain(TileTable table, String name) {
 		super(table, name);
@@ -24,6 +25,7 @@ public class PageMain extends Page {
 		smeltingList = new ArrayList<>();
 		crushingList = new ArrayList<>();
 		alloyList = new ArrayList<>();
+		storageList = new ArrayList<>();
 
 		for (int i = 0; i < 4; i++) {
 			addUnit(i);
@@ -41,6 +43,10 @@ public class PageMain extends Page {
 		UnitSmelt smelting = new UnitSmelt(table, this, id, x, y);
 		smeltingList.add(smelting);
 		units.add(smelting);
+
+		UnitChest storage = new UnitChest(table, this, id, x, y);
+		storageList.add(storage);
+		units.add(storage);
 
 		if (ConfigLoader.MACHINES.CRUSHER_ENABLED) {
 			UnitCrush crushing = new UnitCrush(table, this, id, x, y);
@@ -69,6 +75,10 @@ public class PageMain extends Page {
 
 	public List<UnitAlloy> getAlloyList() {
 		return alloyList;
+	}
+
+	public List<UnitChest> getStorageList() {
+		return storageList;
 	}
 
 	@Override
@@ -100,6 +110,7 @@ public class PageMain extends Page {
 	public void draw(GuiBase gui, int mX, int mY) {
 		gui.prepare();
 		int enabledUnits = 0;
+
 		for (Unit unit : units) {
 			if (unit.isEnabled()) {
 				enabledUnits++;
@@ -108,13 +119,15 @@ public class PageMain extends Page {
 
 		if (drawHorizontal())
 			gui.drawRect(BAR_HORIZONTAL_X, BAR_HORIZONTAL_Y, 0, TEXTURE_SHEET_SIZE - BAR_THICKNESS, BAR_WIDTH, BAR_THICKNESS);
+
 		if (drawVertical())
 			gui.drawRect(BAR_VERTICAL_X, BAR_VERTICAL_Y, TEXTURE_SHEET_SIZE - BAR_THICKNESS, 0, BAR_THICKNESS, BAR_HEIGHT);
 
 		if (enabledUnits == 0) {
-			gui.drawString("ADD A CRAFTING TABLE OR FURNACE", 45, 30, 0x1E1E1E);
+			gui.drawString("ADD A CRAFTING TABLE, CHEST OR FURNACE", 45, 30, 0x1E1E1E);
 			gui.drawString("IN THE UPGRADE PAGE TO GET STARTED", 40, 45, 0x1E1E1E);
 		}
+
 		units.stream().filter(Unit::isEnabled).forEachOrdered(unit -> unit.draw(gui, mX, mY));
 	}
 
@@ -146,6 +159,7 @@ public class PageMain extends Page {
 				|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled())
 				|| (crushingList.get(id) != null && crushingList.get(id).isEnabled())
 				|| (alloyList.get(id) != null && alloyList.get(id).isEnabled()
+				|| (storageList.get(id) != null && storageList.get(id).isEnabled())
 		);
 	}
 

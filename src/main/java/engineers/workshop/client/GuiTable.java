@@ -203,7 +203,6 @@ public class GuiTable extends GuiBase {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        
         if(!closed){
         	PacketHandler.sendToServer(PacketHandler.getWriter(table, PacketId.CLOSE));
         	closed = true;
@@ -215,7 +214,6 @@ public class GuiTable extends GuiBase {
         super.setWorldAndResolution(minecraft, width, height);
         if (closed) {
         	closed = false;
-        	
             PacketHandler.sendToServer(PacketHandler.getWriter(table, PacketId.RE_OPEN));
         }
     }

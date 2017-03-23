@@ -30,10 +30,8 @@ public class SlotUnitCraftingGrid extends SlotUnit {
 					}
 				}
 			}
-
 			return true;
 		}
-
 		return false;
 	}
 

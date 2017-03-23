@@ -11,7 +11,6 @@ import engineers.workshop.common.network.data.DataSide;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
@@ -218,8 +217,6 @@ public class PageTransfer extends Page {
 	@Override
 	public void draw(GuiBase gui, int mX, int mY) {
 		super.draw(gui, mX, mY);
-
-        RenderHelper.enableGUIStandardItemLighting();
 
 		for (Setting setting : settings) {
 			gui.prepare();

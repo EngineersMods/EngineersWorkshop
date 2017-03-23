@@ -18,6 +18,7 @@ public abstract class DataUnit extends DataBase {
     	
     	Unit smelt = table.getMainPage().getSmeltingList().get(id);
     	Unit craft = table.getMainPage().getCraftingList().get(id);
+    	Unit storage = table.getMainPage().getStorageList().get(id);
     	Unit crush = ConfigLoader.MACHINES.CRUSHER_ENABLED ? crush = table.getMainPage().getCrushingList().get(id) : null;
     	Unit alloy = ConfigLoader.MACHINES.ALLOY_ENABLED ? alloy = table.getMainPage().getAlloyList().get(id) : null;
 
@@ -28,9 +29,10 @@ public abstract class DataUnit extends DataBase {
     		return crush;
     	else if(alloy != null && alloy.isEnabled())
     		return alloy;
+		else if (storage.isEnabled())
+			return storage;
     	else
     		return craft;
-        	
     }
 
 	public static int getId(Unit unit) {
@@ -38,6 +40,7 @@ public abstract class DataUnit extends DataBase {
 	}
 
 	public static class Progress extends DataUnit {
+
 		private static final IBitCount BIT_COUNT = new MaxCount(Unit.PRODUCTION_TIME);
 
 		@Override
@@ -52,6 +55,7 @@ public abstract class DataUnit extends DataBase {
 	}
 
 	public static class Charged extends DataUnit {
+
 		private static final IBitCount BIT_COUNT = new MaxCount(Unit.CHARGES_PER_LEVEL * Upgrade.CHARGED.getMaxCount());
 
 		@Override

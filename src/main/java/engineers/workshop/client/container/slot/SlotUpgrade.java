@@ -1,18 +1,16 @@
 package engineers.workshop.client.container.slot;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-
 import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.ItemUpgrade;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.loaders.ItemLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class SlotUpgrade extends SlotTable {
+
 	private SlotUpgrade main;
 	private boolean isMain;
 	private int upgradeSection;
@@ -42,21 +40,24 @@ public class SlotUpgrade extends SlotTable {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		return super.isItemValid(itemstack)
-				&& (itemstack == null || (isMain ? isMainItem(itemstack) : isUpgradeItem(itemstack)));
+		return super.isItemValid(itemstack) && (itemstack == null || (isMain ? isMainItem(itemstack) : isUpgradeItem(itemstack)));
 	}
 
 	private boolean isUpgradeItem(ItemStack itemstack) {
 		Upgrade upgrade = ItemUpgrade.getUpgrade(itemstack);
+
 		return upgrade != null && upgrade.isValid(main != null ? main.getStack() : null);
 	}
 
 	private boolean isMainItem(ItemStack itemstack) {
 		String[] accepted = {};
+
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.FURNACE_BLOCKS);
+		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.STORAGE_BLOCKS);
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
 		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.ALLOY_BLOCKS);
+
 		return ArrayUtils.contains(accepted, itemstack.getItem().getRegistryName().toString());
 	}
 
@@ -74,8 +75,7 @@ public class SlotUpgrade extends SlotTable {
 		} else {
 			Upgrade upgrade = ItemUpgrade.getUpgrade(getStack());
 			if (upgrade != null) {
-				if (table.getUpgradePage().getUpgradeCountRaw(upgradeSection, upgrade) > upgrade.getMaxCount()
-						|| !isUpgradeItem(getStack())) {
+				if (table.getUpgradePage().getUpgradeCountRaw(upgradeSection, upgrade) > upgrade.getMaxCount() || !isUpgradeItem(getStack())) {
 					return 4;
 				}
 			}

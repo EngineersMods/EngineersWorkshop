@@ -74,11 +74,9 @@ public final class ConfigLoader {
 			POWER_CONVERSION = config.getInt("Power Conversion Rate", category, 8, 1, Integer.MAX_VALUE,
 					"Power conversion rate [x:1] [x = external power input]");
 		}
-
 	}
 
 	public static class POWER extends ConfigHandler {
-		public static boolean TESLA_SUPPORT;
 		public static boolean RF_SUPPORT;
 
 		public POWER(Configuration config, String category) {
@@ -87,16 +85,15 @@ public final class ConfigLoader {
 
 		@Override
 		public void load() {
-//			TESLA_SUPPORT = config.getBoolean("Tesla Support", "Power", true,
-//					"Should Tesla upgrades be allowed? (Requires Tesla)");
 			RF_SUPPORT = config.getBoolean("RF Support", "Power", true,
 					"Should RF upgrades be allowed?");
 		}
 	}
 	
 	public static class MACHINES extends ConfigHandler {
+
 		public static boolean CRUSHER_ENABLED, ALLOY_ENABLED;
-		public static String[] CRAFTER_BLOCKS, FURNACE_BLOCKS, CRUSHER_BLOCKS, ALLOY_BLOCKS;
+		public static String[] CRAFTER_BLOCKS, FURNACE_BLOCKS, CRUSHER_BLOCKS, ALLOY_BLOCKS, STORAGE_BLOCKS;
 
 		public MACHINES(Configuration config, String category) {
 			super(config, category);
@@ -108,21 +105,21 @@ public final class ConfigLoader {
 					"Is a crusher allowed as a machine? (Requires EnderIO)") && Loader.isModLoaded("EnderIO");
 			ALLOY_ENABLED = config.getBoolean("Enable Alloy Smelter", "Machines", true,
 					"Is an alloy smelter allowed as a machine? (Requires EnderIO)") && Loader.isModLoaded("EnderIO");
-			
 			CRAFTER_BLOCKS = config.getStringList("Crafter Blocks", "Machines", new String[]{"minecraft:crafting_table"}, "What blocks should the table accept for crafters.");
 			FURNACE_BLOCKS = config.getStringList("Furnace Blocks", "Machines", new String[]{"minecraft:furnace"}, "What blocks should the table accept for furances.");
 			CRUSHER_BLOCKS = config.getStringList("Crusher Blocks", "Machines", new String[]{"enderio:blockSagMill"}, "What blocks should the table accept for crushers.");
 			ALLOY_BLOCKS = config.getStringList  ("Alloy Blocks", "Machines", new String[]{"enderio:blockAlloySmelter"}, "What blocks should the table accept for alloy smelters.");
+			STORAGE_BLOCKS = config.getStringList  ("Storage Blocks", "Machines", new String[]{"minecraft:chest"}, "What blocks should the table accept for storage.");
 		}
 	}
 
 	public static void loadConfig(File file) {
 		Configuration config = new Configuration(file);
 		config.load();
-		new UPGRADES(config, "Upgrades").load();
-		new TWEAKS(config, "Tweaks").load();
-		new POWER(config, "Power").load();
-		new MACHINES(config, "Machines").load();
+            new UPGRADES(config, "Upgrades").load();
+            new TWEAKS(config, "Tweaks").load();
+            new POWER(config, "Power").load();
+            new MACHINES(config, "Machines").load();
 		config.save();
 	}
 }
