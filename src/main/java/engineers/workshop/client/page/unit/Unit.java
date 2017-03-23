@@ -93,8 +93,8 @@ public abstract class Unit {
         }*/
     }
 
-    protected abstract int getArrowX();
-    protected abstract int getArrowY();
+    protected int getArrowX(){return 2147;}
+    protected int getArrowY(){return 2147;}
 
     protected void addSlot(SlotBase slot) {
         table.addSlot(slot);

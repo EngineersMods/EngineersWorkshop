@@ -15,7 +15,7 @@ public class PageMain extends Page {
 	private List<UnitSmelt> smeltingList;
 	private List<UnitCrush> crushingList;
 	private List<UnitAlloy> alloyList;
-	private List<UnitChest> storageList;
+	private List<UnitStorage> storageList;
 
 	public PageMain(TileTable table, String name) {
 		super(table, name);
@@ -44,7 +44,7 @@ public class PageMain extends Page {
 		smeltingList.add(smelting);
 		units.add(smelting);
 
-		UnitChest storage = new UnitChest(table, this, id, x, y);
+		UnitStorage storage = new UnitStorage(table, this, id, x, y);
 		storageList.add(storage);
 		units.add(storage);
 
@@ -77,7 +77,7 @@ public class PageMain extends Page {
 		return alloyList;
 	}
 
-	public List<UnitChest> getStorageList() {
+	public List<UnitStorage> getStorageList() {
 		return storageList;
 	}
 

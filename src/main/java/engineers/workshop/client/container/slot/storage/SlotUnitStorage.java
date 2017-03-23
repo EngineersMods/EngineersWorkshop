@@ -5,9 +5,6 @@ import engineers.workshop.client.page.Page;
 import engineers.workshop.client.page.unit.Unit;
 import engineers.workshop.common.table.TileTable;
 
-/**
- * Created by EwyBoy
- */
 public class SlotUnitStorage extends SlotUnit {
 
     public SlotUnitStorage(TileTable table, Page page, int id, int x, int y, Unit unit) {
