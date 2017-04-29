@@ -6,7 +6,6 @@ import java.util.List;
 import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
-import engineers.workshop.client.container.slot.SlotUpgrade;
 import engineers.workshop.client.menu.GuiMenu;
 import engineers.workshop.client.menu.GuiMenuItem;
 import engineers.workshop.client.page.Page;
@@ -29,6 +28,7 @@ import engineers.workshop.common.network.PacketHandler;
 import engineers.workshop.common.network.PacketId;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -41,8 +41,16 @@ import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 
 public class TileTable extends TileEntity implements IInventory, ISidedInventory, ITickable, /* RF */ IEnergyReceiver {
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		if (oldState.getBlock() != newSate.getBlock())
+			return true;
+		return false;
+	}
 
 	private List<Page> pages;
 	private Page selectedPage;
@@ -337,8 +345,9 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 		if (!worldObj.isRemote && ++slotTick >= SLOT_DELAY) {
 			slotTick = 0;
-//			Logger.info(slots.stream().filter(SlotBase::getHasStack).filter(slot -> slot instanceof SlotUpgrade)
-//					.toArray(SlotUpgrade[]::new).length);
+			// Logger.info(slots.stream().filter(SlotBase::getHasStack).filter(slot
+			// -> slot instanceof SlotUpgrade)
+			// .toArray(SlotUpgrade[]::new).length);
 			slots.stream().filter(SlotBase::isEnabled).forEach(SlotBase::updateServer);
 		}
 	}
@@ -622,25 +631,22 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		super.writeToNBT(compound);
+		compound.setInteger(NBT_POWER, power);
+		compound.setInteger(NBT_MAX_POWER, maxPower);
 
 		NBTTagList itemList = new NBTTagList();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] != null) {
-				NBTTagCompound slotCompound = new NBTTagCompound();
-				slotCompound.setByte(NBT_SLOT, (byte) i);
-				items[i].writeToNBT(slotCompound);
-				itemList.appendTag(slotCompound);
+				NBTTagCompound slotTag = items[i].writeToNBT(new NBTTagCompound());
+				slotTag.setInteger(NBT_SLOT, i);
+				itemList.appendTag(slotTag);
 			}
 		}
-
 		compound.setTag(NBT_ITEMS, itemList);
-		NBTTagList unitList = new NBTTagList();
 
+		NBTTagList unitList = new NBTTagList();
 		for (Unit unit : getMainPage().getUnits()) {
-			NBTTagCompound unitCompound = new NBTTagCompound();
-			unit.writeToNBT(unitCompound);
-			unitList.appendTag(unitCompound);
+			unitList.appendTag(unit.writeToNBT(new NBTTagCompound()));
 		}
 		compound.setTag(NBT_UNITS, unitList);
 
@@ -664,28 +670,26 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			settingCompound.setTag(NBT_SIDES, sideList);
 			settingList.appendTag(settingCompound);
 		}
-
 		compound.setTag(NBT_SETTINGS, settingList);
-		compound.setInteger(NBT_POWER, power);
-		compound.setInteger(NBT_MAX_POWER, maxPower);
 
-		return compound;
+		return super.writeToNBT(compound);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
+		power = compound.getInteger(NBT_POWER);
+		maxPower = compound.getInteger(NBT_MAX_POWER);
 
 		items = new ItemStack[getSizeInventory()];
-		NBTTagList itemList = compound.getTagList(NBT_ITEMS, COMPOUND_ID);
 
+		NBTTagList itemList = compound.getTagList(NBT_ITEMS, COMPOUND_ID);
 		for (int i = 0; i < itemList.tagCount(); i++) {
 			NBTTagCompound slotCompound = itemList.getCompoundTagAt(i);
-			int id = slotCompound.getByte(NBT_SLOT);
+			int id = slotCompound.getInteger(NBT_SLOT);
 			if (id < 0) {
 				id += 256;
 			}
-
 			if (id >= 0 && id < items.length) {
 				items[id] = ItemStack.loadItemStackFromNBT(slotCompound);
 			}
@@ -693,7 +697,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 		NBTTagList unitList = compound.getTagList(NBT_UNITS, COMPOUND_ID);
 		List<Unit> units = getMainPage().getUnits();
-
 		for (int i = 0; i < units.size(); i++) {
 			Unit unit = units.get(i);
 			NBTTagCompound unitCompound = unitList.getCompoundTagAt(i);
@@ -718,9 +721,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				side.getOutput().readFromNBT(outputCompound);
 			}
 		}
-
-		power = compound.getInteger(NBT_POWER);
-		maxPower = compound.getInteger(NBT_MAX_POWER);
 
 	}
 

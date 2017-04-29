@@ -42,14 +42,17 @@ public class UnitAlloy extends Unit {
 	public int createSlots(int id) {
 		inputId = id;
 		addSlot(new SlotUnitAlloyInput(table, page, id++, this.x + START_X, this.y + START_Y, this));
-		addSlot(new SlotUnitAlloyInput(table, page, id++, this.x + START_X - (SLOT_SIZE/2), this.y + START_Y + SLOT_SIZE, this));
-		addSlot(new SlotUnitAlloyInput(table, page, id++, this.x + START_X + (SLOT_SIZE/2), this.y + START_Y + SLOT_SIZE, this));
+		addSlot(new SlotUnitAlloyInput(table, page, id++, this.x + START_X - (SLOT_SIZE / 2),
+				this.y + START_Y + SLOT_SIZE, this));
+		addSlot(new SlotUnitAlloyInput(table, page, id++, this.x + START_X + (SLOT_SIZE / 2),
+				this.y + START_Y + SLOT_SIZE, this));
 		outputId = id;
 		addSlot(new SlotUnitAlloyResult(table, page, id++, this.x + START_X + RESULT_X, this.y + START_Y, this));
 		queueId = id;
 
 		for (int i = 0; i < QUEUE_MAX_COUNT; i++) {
-			addSlot(new SlotUnitAlloyQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this, QUEUE_ORDER[i]));
+			addSlot(new SlotUnitAlloyQueue(table, page, id++, this.x + QUEUE_X, this.y + QUEUE_Y + i * SLOT_SIZE, this,
+					QUEUE_ORDER[i]));
 		}
 		return id;
 	}
@@ -156,10 +159,11 @@ public class UnitAlloy extends Unit {
 		for (ItemStack stack : stacks) {
 			for (int i = 0; i < 3; i++) {
 				ItemStack tableStack = table.getStackInSlot(inputId + i);
-				if (tableStack.getItem() == stack.getItem()) {
-					tableStack.stackSize -= stack.stackSize;
-					break;
-				}
+				if (tableStack != null)
+					if (tableStack.getItem() == stack.getItem()) {
+						tableStack.stackSize -= stack.stackSize;
+						break;
+					}
 			}
 		}
 	}
@@ -172,7 +176,8 @@ public class UnitAlloy extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.ALLOY_BLOCKS, item.getItem().getRegistryName().toString());
+		return item != null
+				&& ArrayUtils.contains(ConfigLoader.MACHINES.ALLOY_BLOCKS, item.getItem().getRegistryName().toString());
 	}
 
 	private static final int ARROW_X = 25;

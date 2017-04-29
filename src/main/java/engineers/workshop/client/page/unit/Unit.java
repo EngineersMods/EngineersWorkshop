@@ -281,9 +281,10 @@ public abstract class Unit {
 
     private static final String NBT_CHARGED = "Charged";
     private static final String NBT_PROGRESS = "Progress";
-    public void writeToNBT(NBTTagCompound compound) {
+    public NBTTagCompound writeToNBT(NBTTagCompound compound) {
         compound.setByte(NBT_CHARGED, (byte)chargeCount);
         compound.setShort(NBT_PROGRESS, (short)productionProgress);
+        return compound;
     }
 
     public void readFromNBT(NBTTagCompound compound) {

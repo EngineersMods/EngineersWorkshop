@@ -44,5 +44,11 @@ public class Logger {
 		log(Level.ERROR, info, data);
 	}
 	
-	public static void stacktrace() throws Exception {}
+	public static void stacktrace(String message) {
+		try{
+			throw new Exception(message != null ? message : "Stacktracing!");
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
 }

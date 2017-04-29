@@ -154,6 +154,10 @@ public class PageMain extends Page {
 	}
 
 	private boolean isUnitLoaded(int id) {
+		
+		if(craftingList.size() <= id || smeltingList.size() <= id || crushingList.size() <= id || alloyList.size() <= id || storageList.size() <= id)
+			return false;
+		
 		return (
 				craftingList.get(id) != null && craftingList.get(id).isEnabled())
 				|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled())
