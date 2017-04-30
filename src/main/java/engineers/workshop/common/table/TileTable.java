@@ -350,6 +350,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			// .toArray(SlotUpgrade[]::new).length);
 			slots.stream().filter(SlotBase::isEnabled).forEach(SlotBase::updateServer);
 		}
+		
 	}
 
 	private void transfer(Setting setting, Side side, Transfer transfer, int transferSize) {
@@ -747,6 +748,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void clearGrid(EntityPlayer player, int id) {
+
 		UnitCraft crafting = getMainPage().getCraftingList().get(id);
 		if (crafting.isEnabled()) {
 			int[] from = new int[9];
@@ -757,7 +759,17 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			for (int i = 0; i < to.length; i++) {
 				to[i] = i;
 			}
-			transfer(this, player.inventory, from, to, EnumFacing.UP, EnumFacing.UP, Integer.MAX_VALUE);
+			
+
+			for (int i = 0; i < 9; i++) {
+				ItemStack fromCrafting = crafting.getSlots().get(i).getStack();
+				if(fromCrafting != null){
+					player.inventory.addItemStackToInventory(fromCrafting);
+				}
+			}
+
+			// transfer(this, player.inventory, from, to, EnumFacing.UP,
+			// EnumFacing.UP, Integer.MAX_VALUE);
 		}
 	}
 

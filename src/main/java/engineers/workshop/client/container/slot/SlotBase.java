@@ -40,6 +40,10 @@ public class SlotBase extends Slot {
 			table.spitOutItem(getStack());
 			putStack(null);
 		}
+		
+		if(getStack().stackSize == 0){
+			putStack(null);
+		}
 	}
 
 	@Override
