@@ -7,7 +7,7 @@ engineersworkshop:upgrade.auto_crafter.name=Auto Crafter Upgrade
 engineersworkshop:upgrade.storage.name=Storage Upgrade
 engineersworkshop:upgrade.charged.name=Charger Upgrade
 engineersworkshop:upgrade.speed.name=Speed Upgrade
-engineersworkshop:upgrade.queue.name=Queueing Upgrade
+engineersworkshop:upgrade.queue.name=Queuing Upgrade
 engineersworkshop:upgrade.efficiency.name=Efficiency Upgrade
 engineersworkshop:upgrade.lava.name=Lava Power Upgrade
 engineersworkshop:upgrade.eu.name=EU Acceptor Upgrade
@@ -18,6 +18,7 @@ engineersworkshop:upgrade.filter.name=Filter Upgrade
 engineersworkshop:upgrade.transfer.name=Transfer Capacity Upgrade
 engineersworkshop:upgrade.max_power.name=Power Capacity Upgrade
 engineersworkshop:upgrade.fuel_delay.name=Fuel Burner Upgrade
+engineersworkshop:upgrade.axe.name=Axe Upgrade
 
 #Upgrade Descriptions
 engineersworkshop:upgrade.blank.description=Crafting component
@@ -36,6 +37,7 @@ engineersworkshop:upgrade.filter.description=Enables transfer filters
 engineersworkshop:upgrade.transfer.description=Increases the automatic transfer capacities
 engineersworkshop:upgrade.max_power.description=Increases the max power capacities
 engineersworkshop:upgrade.fuel_delay.description=Decreases the time between power consummations
+engineersworkshop:upgrade.axe.description=Allow your crusher to chop up logs into planks
 
 #Upgrade Info
 engineersworkshop:upgrade.unstackable=Doesn't stack very well

@@ -16,8 +16,6 @@ public class UnitStorage extends Unit {
     private static final int GRID_HEIGHT = 4;
     public static final int GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
-    private int startID;
-
     public UnitStorage(TileTable table, Page page, int id, int x, int y) {
         super(table, page, id, x, y);
     }
@@ -25,8 +23,6 @@ public class UnitStorage extends Unit {
 
     @Override
     public int createSlots(int id) {
-    	startID = id;
-
         for (int y = 0; y < GRID_HEIGHT; y++) {
             for (int x = 0;  x < GRID_WIDTH; x++) {
                 addSlot(new SlotUnitStorage(table, page, id++, this.x + START_X + x * SLOT_SIZE, this.y + START_Y + y * SLOT_SIZE, this));
@@ -53,4 +49,5 @@ public class UnitStorage extends Unit {
         ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
         return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.STORAGE_BLOCKS, item.getItem().getRegistryName().toString());
     }
+
 }

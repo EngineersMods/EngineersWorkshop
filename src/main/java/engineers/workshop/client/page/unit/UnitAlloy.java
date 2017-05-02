@@ -192,4 +192,5 @@ public class UnitAlloy extends Unit {
 	public int getArrowY() {
 		return START_Y + ARROW_Y;
 	}
+
 }

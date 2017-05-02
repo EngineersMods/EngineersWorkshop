@@ -9,7 +9,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.3.0-1.10.2"
+version = "1.3.2-1.10.2"
 group= "engineers.workshop"
 archivesBaseName = "EngineersWorkshop"
 
@@ -169,7 +169,27 @@ def createJSONsForTextures(File directory, String directoryPath) {
     }
 	}
 }
+
+
+//task updateMajor << {
+	//update([1,0,0]);
+//}
+//task updateMinor << {
+//	update([0,1,0]);
+//}
+//task updatePatch << {
+//	update([0,0,1]);
+//}
+
+
 task makeJSONItems << {
 	createItemJSON();
 	print 'Finished making JSON for existing item textures';
 }
+
+//def update(int[] newVersion) {
+//	int major = version.split("-")[0].split("\\.")[0].toInteger() + newVersion[0];
+//	int minor = version.split("-")[0].split("\\.")[1].toInteger() + newVersion[1];
+//	int patch = version.split("-")[0].split("\\.")[2].toInteger() + newVersion[2];
+//    println(sprintf("Updating from %s to %s.%s.%s-%s", version, major, minor, patch, project.minecraft.version))
+//}

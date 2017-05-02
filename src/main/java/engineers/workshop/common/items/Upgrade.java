@@ -6,16 +6,11 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.enderio.core.common.config.annot.Config;
-
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.loaders.ItemLoader;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-@SuppressWarnings("unchecked")
 public enum Upgrade {
     BLANK			(new MaxCount(0), 			    ParentType.NULL), 		// Max count = 0  (Not usable as an upgrade)
     AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 	// Max count = 1
@@ -30,7 +25,9 @@ public enum Upgrade {
     FILTER			(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
     TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),		// Max count = 6  (Configable upto 20)
     MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),		// Max count = 16 (Configable)
-    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL);		// Max count = 5  (Configable)
+    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL),		// Max count = 5  (Configable)
+	
+    AXE		(new MaxCount(1), 	    ParentType.CRUSHING);					// Max count = 1
 	
 
     /**
@@ -178,7 +175,7 @@ public enum Upgrade {
 
         protected abstract boolean isValidParent(ItemStack item);
         
-    	private static final EnumSet MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING, ParentType.ALLOY);
+    	private static final EnumSet<ParentType> MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING, ParentType.ALLOY);
     }
 
     public static class MaxCount {

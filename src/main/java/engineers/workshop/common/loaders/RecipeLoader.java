@@ -1,5 +1,6 @@
 package engineers.workshop.common.loaders;
 
+import engineers.workshop.client.page.unit.UnitCrush;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.init.Blocks;
@@ -29,6 +30,8 @@ public class RecipeLoader {
         addRecipe(Upgrade.RF, "ORO", "RDR", "ORO", 'O', IRON_INGOT, 'R', REDSTONE_BLOCK, 'D', Upgrade.CHARGED.getItemStack());
         addRecipe(Upgrade.FUEL_DELAY, "IRI", "LUL", "IRI", 'I', IRON_INGOT, 'R', REDSTONE, 'L', new ItemStack(DYE, 1, 4), 'U', Upgrade.SPEED.getItemStack());
         addRecipe(Upgrade.MAX_POWER, "GRG", "RTR", "GUG", 'G', GOLD_INGOT, 'T', TRAPPED_CHEST, 'R', REDSTONE_BLOCK, 'U', Upgrade.STORAGE.getItemStack());
+        
+    	UnitCrush.addLogSawRecipies();
     }
 
     private static void addRecipe(Upgrade upgrade, Object ... recipe) {

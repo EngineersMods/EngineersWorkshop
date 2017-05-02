@@ -40,6 +40,8 @@ public class PacketHandler {
             int y = dr.readSignedInteger();
             int z = dr.readSignedInteger();
             World world = player.worldObj;
+            if(!world.isBlockLoaded(new BlockPos(x,y,z)))
+            	return;
             TileEntity te = world.getTileEntity(new BlockPos(x,y,z));
             if (te instanceof TileTable) {
                 table = (TileTable)te;

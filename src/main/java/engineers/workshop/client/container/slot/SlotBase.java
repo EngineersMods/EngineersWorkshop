@@ -41,7 +41,7 @@ public class SlotBase extends Slot {
 			putStack(null);
 		}
 		
-		if(getStack().stackSize == 0){
+		if(getHasStack() && getStack().stackSize == 0){
 			putStack(null);
 		}
 	}

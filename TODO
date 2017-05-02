@@ -1,5 +1,4 @@
 *** FEATURE ***
-* Chest Support
 * Liquid Storage
 
 *** GUI **
@@ -7,10 +6,6 @@
 
 *** Transfer Tab ***
 Shift Select and CTRL Select in search function
-
-*** BUG ***
-* Ghost Items in the EnderIO furnace
-* Fix clear grid not working
 
 *** SUPPORT ***
 * JEI / NEI support

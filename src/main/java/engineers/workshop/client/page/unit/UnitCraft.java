@@ -53,19 +53,23 @@ public class UnitCraft extends Unit {
 
 		for (int y = 0; y < GRID_HEIGHT; y++) {
 			for (int x = 0; x < GRID_WIDTH; x++) {
-				addSlot(new SlotUnitCraftingGrid(table, page, id++, this.x + START_X + x * SLOT_SIZE, this.y + START_Y + y * SLOT_SIZE, this));
+				addSlot(new SlotUnitCraftingGrid(table, page, id++, this.x + START_X + x * SLOT_SIZE,
+						this.y + START_Y + y * SLOT_SIZE, this));
 			}
 		}
 
 		for (int i = 0; i < STORAGE_COUNT; i++) {
-			addSlot(new SlotUnitCraftingStorage(table, page, id++, this.x + START_X + i * SLOT_SIZE, this.y + STORAGE_Y, this));
+			addSlot(new SlotUnitCraftingStorage(table, page, id++, this.x + START_X + i * SLOT_SIZE, this.y + STORAGE_Y,
+					this));
 		}
 
 		resultId = id;
-		addSlot(new SlotUnitCraftingResult(table, page, id++, this.x + START_X + RESULT_OFFSET_X, this.y + START_Y + RESULT_OFFSET_Y, this));
+		addSlot(new SlotUnitCraftingResult(table, page, id++, this.x + START_X + RESULT_OFFSET_X,
+				this.y + START_Y + RESULT_OFFSET_Y, this));
 
 		outputId = id;
-		addSlot(new SlotUnitCraftingOutput(table, page, id++, this.x + START_X + RESULT_OFFSET_X, this.y + START_Y + 2 * SLOT_SIZE, this));
+		addSlot(new SlotUnitCraftingOutput(table, page, id++, this.x + START_X + RESULT_OFFSET_X,
+				this.y + START_Y + 2 * SLOT_SIZE, this));
 
 		return id;
 	}
@@ -73,7 +77,8 @@ public class UnitCraft extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRAFTER_BLOCKS, item.getItem().getRegistryName().toString());
+		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRAFTER_BLOCKS,
+				item.getItem().getRegistryName().toString());
 	}
 
 	@Override
@@ -171,7 +176,8 @@ public class UnitCraft extends Unit {
 	@SideOnly(Side.CLIENT)
 	public void onClick(GuiBase gui, int mX, int mY) {
 		super.onClick(gui, mX, mY);
-		if (gui.inBounds(this.x + START_X + GRID_WIDTH * SLOT_SIZE + CLEAR_OFFSET_X, this.y + START_Y + CLEAR_OFFSET_Y, CLEAR_SIZE, CLEAR_SIZE, mX, mY)) {
+		if (gui.inBounds(this.x + START_X + GRID_WIDTH * SLOT_SIZE + CLEAR_OFFSET_X, this.y + START_Y + CLEAR_OFFSET_Y,
+				CLEAR_SIZE, CLEAR_SIZE, mX, mY)) {
 			table.clearGridSend(id);
 		}
 	}
@@ -186,8 +192,10 @@ public class UnitCraft extends Unit {
 						continue;
 
 					ItemStack other = crafting.getStackInSlot(j);
-					// TODO support ore dictionary and fuzzy etc?. Problem is that it needs to figure out if the recipe supports it
-					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize) && itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
+					// TODO support ore dictionary and fuzzy etc?. Problem is
+					// that it needs to figure out if the recipe supports it
+					if (other != null && (j >= GRID_SIZE || other.stackSize > itemStack.stackSize)
+							&& itemStack.isItemEqual(other) && ItemStack.areItemStackTagsEqual(itemStack, other)) {
 						id = j;
 						itemStack = other;
 						break;
@@ -197,12 +205,13 @@ public class UnitCraft extends Unit {
 				crafting.decrStackSize(id, 1);
 				if (itemStack.getItem().hasContainerItem(itemStack)) {
 					ItemStack containerItem = itemStack.getItem().getContainerItem(itemStack);
-					if (!containerItem.isItemStackDamageable() || containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
+					if (!containerItem.isItemStackDamageable()
+							|| containerItem.getItemDamage() <= containerItem.getMaxDamage()) {
 						// TODO where should the client go?
 						// if (false) {
-                            // if (!fake) {
-                            // table.spitOutItem(containerItem);
-                            // }
+						// if (!fake) {
+						// table.spitOutItem(containerItem);
+						// }
 						// }
 						crafting.setInventorySlotContents(id, containerItem);
 					}
@@ -328,7 +337,8 @@ public class UnitCraft extends Unit {
 		}
 
 		protected int getFullSize() {
-			return INVENTORY_WIDTH * INVENTORY_HEIGHT + (table.getUpgradePage().hasUpgrade(id, Upgrade.STORAGE) ? STORAGE_COUNT : 0);
+			return INVENTORY_WIDTH * INVENTORY_HEIGHT
+					+ (table.getUpgradePage().hasUpgrade(id, Upgrade.STORAGE) ? STORAGE_COUNT : 0);
 		}
 
 		@Override
@@ -385,10 +395,13 @@ public class UnitCraft extends Unit {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj) return true;
-			if (!(obj instanceof CraftingBase)) return false;
+			if (this == obj)
+				return true;
+			if (!(obj instanceof CraftingBase))
+				return false;
 			CraftingBase crafting = (CraftingBase) obj;
-			if (getFullSize() != crafting.getFullSize()) return false;
+			if (getFullSize() != crafting.getFullSize())
+				return false;
 
 			for (int i = 0; i < getFullSize(); i++) {
 				if (!ItemStack.areItemStacksEqual(getStackInSlot(i), crafting.getStackInSlot(i))) {
@@ -493,4 +506,5 @@ public class UnitCraft extends Unit {
 	protected void onProduction(ItemStack result) {
 		onCrafting(null, result);
 	}
+
 }

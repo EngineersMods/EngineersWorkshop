@@ -1,6 +1,5 @@
 package engineers.workshop.client.container.slot.crushing;
 
-import crazypants.enderio.machine.sagmill.SagMillRecipeManager;
 import engineers.workshop.client.container.slot.SlotUnit;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.client.page.unit.Unit;
@@ -15,7 +14,7 @@ public class SlotUnitCrusherInput extends SlotUnit {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		return super.isItemValid(itemstack) && SagMillRecipeManager.getInstance().getRecipeForInput(itemstack) != null;
+		return super.isItemValid(itemstack) ;//&& (SagMillRecipeManager.getInstance().getRecipeForInput(itemstack) != null) ;
 	}
 
 	@Override
