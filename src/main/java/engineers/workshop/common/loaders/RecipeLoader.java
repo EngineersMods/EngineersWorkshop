@@ -30,6 +30,7 @@ public class RecipeLoader {
         addRecipe(Upgrade.RF, "ORO", "RDR", "ORO", 'O', IRON_INGOT, 'R', REDSTONE_BLOCK, 'D', Upgrade.CHARGED.getItemStack());
         addRecipe(Upgrade.FUEL_DELAY, "IRI", "LUL", "IRI", 'I', IRON_INGOT, 'R', REDSTONE, 'L', new ItemStack(DYE, 1, 4), 'U', Upgrade.SPEED.getItemStack());
         addRecipe(Upgrade.MAX_POWER, "GRG", "RTR", "GUG", 'G', GOLD_INGOT, 'T', TRAPPED_CHEST, 'R', REDSTONE_BLOCK, 'U', Upgrade.STORAGE.getItemStack());
+        addRecipe(Upgrade.AXE, "FAF", "RUR", "III", 'F', FLINT, 'A', IRON_AXE, 'R', REDSTONE, 'U', Upgrade.BLANK.getItemStack(), 'I', IRON_BARS);
         
     	UnitCrush.addLogSawRecipies();
     }
@@ -37,7 +38,7 @@ public class RecipeLoader {
     private static void addRecipe(Upgrade upgrade, Object ... recipe) {
         if (upgrade.isEnabled()) {
             GameRegistry.addRecipe(new ShapedOreRecipe(upgrade.getItemStack(), recipe));
-            Logger.info(upgrade + " recipe loaded");
+            Logger.info(upgrade + " recipe loaded.");
         }
     }
 }

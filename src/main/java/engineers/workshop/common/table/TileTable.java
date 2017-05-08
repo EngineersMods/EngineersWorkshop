@@ -10,6 +10,7 @@ import engineers.workshop.client.menu.GuiMenu;
 import engineers.workshop.client.menu.GuiMenuItem;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.client.page.PageMain;
+import engineers.workshop.client.page.PageSecurity;
 import engineers.workshop.client.page.PageTransfer;
 import engineers.workshop.client.page.PageUpgrades;
 import engineers.workshop.client.page.setting.Setting;
@@ -81,6 +82,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		pages.add(new PageMain(this, "main"));
 		pages.add(new PageTransfer(this, "transfer"));
 		pages.add(new PageUpgrades(this, "upgrade"));
+//		pages.add(new PageSecurity(this, "security")); 		DO NOT UN COMMENT!
 
 		slots = new ArrayList<>();
 		int id = 0;
