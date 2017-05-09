@@ -19,4 +19,9 @@ public class SlotPlayer extends SlotBase {
 	public boolean shouldSlotHighlightItems() {
 		return false;
 	}
+	
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

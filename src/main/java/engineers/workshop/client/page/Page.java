@@ -12,41 +12,49 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public abstract class Page {
 
-    private String name;
-    protected TileTable table;
-    private int id;
+	private String name;
+	protected TileTable table;
+	private int id;
 
-    public Page(TileTable table, String name) {
-        this.id = table.getPages().size();
-        this.table = table;
-        this.name = name;
-    }
+	public Page(TileTable table, String name) {
+		this.id = table.getPages().size();
+		this.table = table;
+		this.name = name;
+	}
 
-    public String getName() {
-        return name.toUpperCase();
-    }
+	public String getName() {
+		return name.toUpperCase();
+	}
 
-    public abstract int createSlots(int id);
-    public abstract String getDesc();
+	public int createSlots(int id) {
+		return id;
+	}
 
-    protected void addSlot(SlotBase slot) {
-        table.addSlot(slot);
-    }
+	public String getDesc() {
+		return "Add a description!";
+	}
 
-    @SideOnly(Side.CLIENT)
-    public void draw(GuiBase gui, int mX, int mY) {
-        gui.drawString(StringUtils.capitalize(name), 8, 6, 0x1E1E1E);
-    }
+	protected void addSlot(SlotBase slot) {
+		table.addSlot(slot);
+	}
 
-    @SideOnly(Side.CLIENT)
-    public void onClick(GuiBase gui, int mX, int mY, int button) {}
+	@SideOnly(Side.CLIENT)
+	public void draw(GuiBase gui, int mX, int mY) {
+		gui.drawString(StringUtils.capitalize(name), 8, 6, 0x1E1E1E);
+	}
 
-    public int getId() {
-        return id;
-    }
+	@SideOnly(Side.CLIENT)
+	public void onClick(GuiBase gui, int mX, int mY, int button) {
+	}
 
-    public void onUpdate() {}
+	public int getId() {
+		return id;
+	}
 
-    @SideOnly(Side.CLIENT)
-    public void onRelease(GuiTable gui, int mX, int mY, int button) {}
+	public void onUpdate() {
+	}
+
+	@SideOnly(Side.CLIENT)
+	public void onRelease(GuiTable gui, int mX, int mY, int button) {
+	}
 }

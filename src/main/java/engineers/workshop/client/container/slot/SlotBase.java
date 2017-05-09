@@ -54,9 +54,14 @@ public class SlotBase extends Slot {
 	public boolean isVisible() {
 		return table.getMenu() == null;
 	}
-
+	
+	protected boolean isEnabled = true;
 	public boolean isEnabled() {
-		return true;
+		return isEnabled;
+	}
+	
+	public void setEnabled(boolean f){
+		isEnabled = f;
 	}
 
 	public int getX() {

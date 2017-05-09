@@ -12,22 +12,23 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemStack;
 public enum Upgrade {
-    BLANK			(new MaxCount(0), 			    ParentType.NULL), 		// Max count = 0  (Not usable as an upgrade)
-    AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 	// Max count = 1
-    STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 	// Max count = 1
-    CHARGED			(new ConfigurableMax(8),	  	ParentType.MachineSet),		// Max count = 8  (Configable)
-	SPEED			(new ConfigurableMax(8),	    ParentType.MachineSet),		// Max count = 8  (Configable)
+    BLANK			(new MaxCount(0), 			    ParentType.NULL), 						// Max count = 0  (Not usable as an upgrade)
+    AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 					// Max count = 1
+    COMPACTOR		(new MaxCount(1), 			    ParentType.CRAFTING, AUTO_CRAFTER), 	// Max count = 1
+    STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 					// Max count = 1
+    CHARGED			(new ConfigurableMax(8),	  	ParentType.MachineSet),					// Max count = 8  (Configable)
+	SPEED			(new ConfigurableMax(8),	    ParentType.MachineSet),					// Max count = 8  (Configable)
     QUEUE			(new MaxCount(3), 			    EnumSet.of(ParentType.CRUSHING, ParentType.SMELTING)),	// Max count = 3
-    EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),		// Max count = 4  (Configable)
-    RF  			(new MaxCount(1), 			    ParentType.GLOBAL),		// Max count = 1
-    SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),		// Max count = 4  (Configable)
-    AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
-    FILTER			(new MaxCount(1),			    ParentType.GLOBAL),		// Max count = 1
-    TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),		// Max count = 6  (Configable upto 20)
-    MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),		// Max count = 16 (Configable)
-    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL),		// Max count = 5  (Configable)
+    EFFICIENCY		(new ConfigurableMax(4), 	    ParentType.GLOBAL),						// Max count = 4  (Configable)
+    RF  			(new MaxCount(1), 			    ParentType.GLOBAL),						// Max count = 1
+    SOLAR			(new ConfigurableMax(4),	    ParentType.GLOBAL),						// Max count = 4  (Configable)
+    AUTO_TRANSFER	(new MaxCount(1),			    ParentType.GLOBAL),						// Max count = 1
+    FILTER			(new MaxCount(1),			    ParentType.GLOBAL),						// Max count = 1
+    TRANSFER		(new ConfigurableMax(6, 20),    ParentType.GLOBAL),						// Max count = 6  (Configable upto 20)
+    MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),						// Max count = 16 (Configable)
+    FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL),						// Max count = 5  (Configable)
 	
-    AXE		(new MaxCount(1), 	    ParentType.CRUSHING);					// Max count = 1
+    AXE		(new MaxCount(1), 	    ParentType.CRUSHING);									// Max count = 1
 	
 
     /**
@@ -39,17 +40,31 @@ public enum Upgrade {
     private String description;
     private MaxCount maxCount;
     private EnumSet<ParentType> validParents;
-
-    Upgrade(MaxCount maxCount, EnumSet<ParentType> validParents) {
+    private Upgrade dep;
+    
+    Upgrade(MaxCount maxCount, EnumSet<ParentType> validParents, Upgrade dep) {
         this.validParents = validParents;
         this.name = toString().toLowerCase();
         this.description = String.format(MODID + ":"  + "upgrade" + "." + "%s" + "." + "description", name);
         this.maxCount = maxCount;
         maxCount.init(this);
+        this.dep = dep;
+    }
+    
+    Upgrade(MaxCount maxCount, EnumSet<ParentType> validParents) {
+    	this(maxCount, validParents, null);
     }
 
     Upgrade(MaxCount maxCount, ParentType type) {
-        this(maxCount, type == null ? EnumSet.of(ParentType.NULL) : EnumSet.of((type)));
+        this(maxCount, type == null ? EnumSet.of(ParentType.NULL) : EnumSet.of((type)), null);
+    }
+    
+    Upgrade(MaxCount maxCount, ParentType type, Upgrade dep) {
+        this(maxCount, type == null ? EnumSet.of(ParentType.NULL) : EnumSet.of((type)), dep);
+    }
+    
+    public Upgrade getDependency(){
+    	return dep;
     }
 
     public String getName() {

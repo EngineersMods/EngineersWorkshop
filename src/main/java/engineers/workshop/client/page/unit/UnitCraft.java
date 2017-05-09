@@ -266,19 +266,19 @@ public class UnitCraft extends Unit {
 		}
 	}
 
-	private boolean hadAutoCraft;
-	private boolean firstAutoCraftCheck = true;
 
 	public void onUpgradeChange() {
-		boolean autoCraft = table.getUpgradePage().hasUpgrade(id, Upgrade.AUTO_CRAFTER);
-		boolean update = firstAutoCraftCheck || (autoCraft && !hadAutoCraft);
-
-		hadAutoCraft = autoCraft;
-		firstAutoCraftCheck = false;
-
-		if (update) {
-			onGridChanged();
+		if(table.getUpgradePage().getUpgradeCount(id, Upgrade.COMPACTOR) > 0 && table.getUpgradePage().getUpgradeCount(id, Upgrade.AUTO_CRAFTER) > 0){
+			for(int i = 0; i < 9; i++){
+				table.getSlots().get(i + gridId).setEnabled(false);
+			}
+			table.getSlots().get(gridId + 4).setEnabled(true);
+		}else{
+			for(int i = 0; i < 9; i++){
+				table.getSlots().get(i + gridId).setEnabled(true);
+			}
 		}
+		onGridChanged();
 	}
 
 	private class CraftingWrapper extends CraftingBase {

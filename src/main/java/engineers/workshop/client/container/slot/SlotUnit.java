@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 public class SlotUnit extends SlotTable {
 
 	protected Unit unit;
-
+	
 	public SlotUnit(TileTable table, Page page, int id, int x, int y, Unit unit) {
 		super(table, page, id, x, y);
 
@@ -22,9 +22,9 @@ public class SlotUnit extends SlotTable {
 
 	@Override
 	public boolean isEnabled() {
-		return unit.isEnabled();
+		return unit.isEnabled() && isEnabled;
 	}
-
+	
 	@Override
 	public boolean canSupplyItems() {
 		return false;
