@@ -1,13 +1,8 @@
 package engineers.workshop.common.table;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
-
-import java.util.Random;
-
-import javax.annotation.Nonnull;
-
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.slot.SlotBase;
+import engineers.workshop.client.renderer.PowerTESR;
 import engineers.workshop.common.loaders.CreativeTabLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
@@ -31,10 +26,16 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nonnull;
+import java.util.Random;
+
+import static engineers.workshop.common.util.Reference.Info.MODID;
 
 public class BlockTable extends Block implements ITileEntityProvider {
 
@@ -55,14 +56,12 @@ public class BlockTable extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
-			ItemStack stack) {
+	public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
 		world.setBlockState(pos, state.withProperty(FACING, getFacingFromEntity(pos, placer)), 2);
 	}
 
 	public static EnumFacing getFacingFromEntity(BlockPos clickedBlock, EntityLivingBase entity) {
-		return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()),
-				(float) (entity.posY - clickedBlock.getY()), (float) (entity.posZ - clickedBlock.getZ()));
+		return EnumFacing.getFacingFromVector((float) (entity.posX - clickedBlock.getX()), (float) (entity.posY - clickedBlock.getY()), (float) (entity.posZ - clickedBlock.getZ()));
 	}
 
 	@Override
@@ -89,8 +88,7 @@ public class BlockTable extends Block implements ITileEntityProvider {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos,
-			EnumFacing side) {
+	public boolean shouldSideBeRendered(IBlockState blockState, IBlockAccess blockAccess, BlockPos pos, EnumFacing side) {
 		return false;
 	}
 
@@ -111,8 +109,8 @@ public class BlockTable extends Block implements ITileEntityProvider {
 
 	@SideOnly(Side.CLIENT)
 	public void registerModel() {
-		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0,
-				new ModelResourceLocation(getRegistryName(), "inventory"));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileTable.class, new PowerTESR());
+		ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(this), 0, new ModelResourceLocation(getRegistryName(), "inventory"));
 	}
 
 	@Override
@@ -126,19 +124,16 @@ public class BlockTable extends Block implements ITileEntityProvider {
 	}
 
 	@Override
-	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn,
-			EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
+	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (!worldIn.isRemote) {
-			FMLNetworkHandler.openGui(playerIn, EngineersWorkshop.instance, 0, worldIn, pos.getX(), pos.getY(),
-					pos.getZ());
+			FMLNetworkHandler.openGui(playerIn, EngineersWorkshop.instance, 0, worldIn, pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;
 	}
 	
 
 	@Override
-	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player,
-			boolean willHarvest) {
+	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
 		if (!world.isRemote) {
 			if (!player.isCreative()) {
 				dropInventory(world, pos);

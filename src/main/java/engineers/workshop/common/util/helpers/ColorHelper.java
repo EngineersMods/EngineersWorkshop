@@ -27,6 +27,24 @@ public class ColorHelper {
         }
     }
 
+    public static int getRGB(float power, float maxPower) {
+        float percentage = ((power) / maxPower) * 100;
+        int color = (int) (percentage / (100f / 8));
+
+        switch (color) {
+            case 0: return 0xff8c0000;
+            case 1: return 0xffff0000;
+            case 2: return 0xffffc800;
+            case 3: return 0xffffff00;
+            case 4: return 0xff009600;
+            case 5: return 0xff00ff00;
+            case 6: return 0xff0055ff;
+            case 7: return 0xff00aaff;
+
+            default: return 0xff00aaff;
+        }
+    }
+
     public static float getRed(float power, float maxPower) {
         float percentage = ((power) / maxPower) * 100;
         int color = (int) (percentage / (100f / 8));

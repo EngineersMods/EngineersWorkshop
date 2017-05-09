@@ -1,8 +1,5 @@
 package engineers.workshop.common.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
@@ -20,12 +17,7 @@ import engineers.workshop.client.page.unit.UnitCraft;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.DataReader;
-import engineers.workshop.common.network.DataWriter;
-import engineers.workshop.common.network.IBitCount;
-import engineers.workshop.common.network.LengthCount;
-import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.common.network.PacketId;
+import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.block.state.IBlockState;
@@ -42,6 +34,9 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TileTable extends TileEntity implements IInventory, ISidedInventory, ITickable, /* RF */ IEnergyReceiver {
 
@@ -841,8 +836,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate) {
 		int energyToPower = Math.min(getCapacity() - getStoredPower(), (energy / ConfigLoader.TWEAKS.POWER_CONVERSION));
-		if (!simulate)
-			power += energyToPower;
+		if (!simulate) power += energyToPower;
 
 		return energyToPower * ConfigLoader.TWEAKS.POWER_CONVERSION;
 	}
