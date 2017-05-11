@@ -425,8 +425,8 @@ public class UnitCraft extends Unit {
 		@Override
 		public ItemStack getCraftingResult(InventoryCrafting crafting) {
 			Item repairItem = null;
-			int count = 0;
-			int units = 0;
+			int count = 0, units = 0;
+
 			for (int i = 0; i < crafting.getSizeInventory(); i++) {
 				ItemStack item = crafting.getStackInSlot(i);
 				if (item != null) {
@@ -506,5 +506,4 @@ public class UnitCraft extends Unit {
 	protected void onProduction(ItemStack result) {
 		onCrafting(null, result);
 	}
-
 }

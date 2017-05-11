@@ -35,7 +35,7 @@ public class PacketHandler {
             if (player.openContainer instanceof ContainerTable) {
                 table = ((ContainerTable)player.openContainer).getTable();
             }
-        }else{
+        } else {
             int x = dr.readSignedInteger();
             int y = dr.readSignedInteger();
             int z = dr.readSignedInteger();
@@ -46,11 +46,10 @@ public class PacketHandler {
             if (te instanceof TileTable) {
                 table = (TileTable)te;
             }
-        }
-        if (table != null) {
+        } if (table != null) {
             if (onServer) {
                 table.receiveServerPacket(dr, id, player);
-            }else{
+            } else {
                 table.receiveClientPacket(dr, id);
             }
         }

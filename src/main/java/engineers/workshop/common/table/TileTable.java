@@ -7,7 +7,6 @@ import engineers.workshop.client.menu.GuiMenu;
 import engineers.workshop.client.menu.GuiMenuItem;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.client.page.PageMain;
-import engineers.workshop.client.page.PageSecurity;
 import engineers.workshop.client.page.PageTransfer;
 import engineers.workshop.client.page.PageUpgrades;
 import engineers.workshop.client.page.setting.Setting;
@@ -29,6 +28,8 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
@@ -36,6 +37,7 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,9 +45,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	@Override
 	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		if (oldState.getBlock() != newSate.getBlock())
-			return true;
-		return false;
+		return oldState.getBlock() != newSate.getBlock();
 	}
 
 	private List<Page> pages;
@@ -72,12 +72,11 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	public TileTable() {
-
 		pages = new ArrayList<>();
 		pages.add(new PageMain(this, "main"));
 		pages.add(new PageTransfer(this, "transfer"));
 		pages.add(new PageUpgrades(this, "upgrade"));
-//		pages.add(new PageSecurity(this, "security")); 		DO NOT UN COMMENT!
+		//pages.add(new PageSecurity(this, "security"));
 
 		slots = new ArrayList<>();
 		int id = 0;
@@ -225,8 +224,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void sendToAllPlayersExcept(DataWriter dw, EntityPlayer ignored) {
-		players.stream().filter(player -> !player.equals(ignored))
-				.forEach(player -> PacketHandler.sendToPlayer(dw, player));
+		players.stream().filter(player -> !player.equals(ignored)).forEach(player -> PacketHandler.sendToPlayer(dw, player));
 	}
 
 	public void updateServer(DataType dataType) {
@@ -247,56 +245,56 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	public void receiveServerPacket(DataReader dr, PacketId id, EntityPlayer player) {
 		switch (id) {
-		case TYPE:
-			DataType dataType = dr.readEnum(DataType.class);
-			int index = dataType.load(this, dr, false);
-			if (index != -1 && dataType.shouldBounce(this)) {
-				sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player);
-			}
-			if (dataType == DataType.SIDE_ENABLED) {
-				onSideChange();
-			}
-			markDirty();
-			break;
-		case CLOSE:
-			removePlayer(player);
-			break;
-		case RE_OPEN:
-			addPlayer(player);
-			break;
-		case CLEAR:
-			clearGrid(player, dr.readData(GRID_ID_BITS));
-			break;
-		case ALL:
-			break;
-		case UPGRADE_CHANGE:
-			onUpgradeChange();
-			break;
-		default:
-			break;
+			case TYPE:
+				DataType dataType = dr.readEnum(DataType.class);
+				int index = dataType.load(this, dr, false);
+				if (index != -1 && dataType.shouldBounce(this)) {
+					sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player);
+				}
+				if (dataType == DataType.SIDE_ENABLED) {
+					onSideChange();
+				}
+				markDirty();
+				break;
+			case CLOSE:
+				removePlayer(player);
+				break;
+			case RE_OPEN:
+				addPlayer(player);
+				break;
+			case CLEAR:
+				clearGrid(player, dr.readData(GRID_ID_BITS));
+				break;
+			case ALL:
+				break;
+			case UPGRADE_CHANGE:
+				onUpgradeChange();
+				break;
+			default:
+				break;
 		}
 	}
 
 	public void receiveClientPacket(DataReader dr, PacketId id) {
 		switch (id) {
-		case ALL:
-			for (DataType dataType : DataType.values()) {
-				dataType.load(this, dr, true);
-			}
-			onUpgradeChange();
-			break;
-		case TYPE:
-			DataType dataType = dr.readEnum(DataType.class);
-			dataType.load(this, dr, false);
-			if (dataType == DataType.SIDE_ENABLED) {
-				onSideChange();
-			}
-			break;
-		case UPGRADE_CHANGE:
-			onUpgradeChange();
-			break;
-		default:
-			break;
+			case ALL:
+				for (DataType dataType : DataType.values()) {
+					dataType.load(this, dr, true);
+				}
+				onUpgradeChange();
+				break;
+			case TYPE:
+				DataType dataType = dr.readEnum(DataType.class);
+				dataType.load(this, dr, false);
+				if (dataType == DataType.SIDE_ENABLED) {
+					onSideChange();
+				}
+				break;
+			case UPGRADE_CHANGE:
+				onUpgradeChange();
+				break;
+			default:
+				break;
 		}
 	}
 
@@ -347,7 +345,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			// .toArray(SlotUpgrade[]::new).length);
 			slots.stream().filter(SlotBase::isEnabled).forEach(SlotBase::updateServer);
 		}
-		
 	}
 
 	private void transfer(Setting setting, Side side, Transfer transfer, int transferSize) {
@@ -401,10 +398,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		int oldTransfer = maxTransfer;
 
 		try {
-			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory
-					? (ISidedInventory) from : null;
-			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to
-					: null;
+			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory ? (ISidedInventory) from : null;
+			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to : null;
 
 			for (int fromSlot : fromSlots) {
 				ItemStack fromItem = from.getStackInSlot(fromSlot);
@@ -421,7 +416,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 													to.getInventoryStackLimit());
 											int maxMove = Math.min(maxSize - toItem.stackSize,
 													Math.min(maxTransfer, fromItem.stackSize));
-
 											toItem.stackSize += maxMove;
 											maxTransfer -= maxMove;
 											fromItem.stackSize -= maxMove;
@@ -628,6 +622,24 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private static final int COMPOUND_ID = 10;
 
 	@Override
+	public NBTTagCompound getUpdateTag() {
+		return writeToNBT(new NBTTagCompound());
+	}
+
+	@Nullable
+	@Override
+	public SPacketUpdateTileEntity getUpdatePacket() {
+		NBTTagCompound nbt = new NBTTagCompound();
+		this.writeToNBT(nbt);
+		return new SPacketUpdateTileEntity(getPos(), 1, nbt);
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+		this.readFromNBT(packet.getNbtCompound());
+	}
+
+	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
 		compound.setInteger(NBT_POWER, power);
 		compound.setInteger(NBT_MAX_POWER, maxPower);
@@ -727,8 +739,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		float offsetX, offsetY, offsetZ;
 		offsetX = offsetY = offsetZ = worldObj.rand.nextFloat() * 0.8F + 1.0F;
 
-		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY,
-				pos.getZ() + offsetZ, item.copy());
+		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, item.copy());
 		entityItem.motionX = worldObj.rand.nextGaussian() * 0.05F;
 		entityItem.motionY = worldObj.rand.nextGaussian() * 0.05F + 0.2F;
 		entityItem.motionZ = worldObj.rand.nextGaussian() * 0.05F;
