@@ -1,5 +1,10 @@
 package engineers.workshop.common.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nullable;
+
 import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
@@ -17,12 +22,18 @@ import engineers.workshop.client.page.unit.UnitCraft;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.loaders.BlockLoader;
 import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.*;
+import engineers.workshop.common.network.DataReader;
+import engineers.workshop.common.network.DataWriter;
+import engineers.workshop.common.network.IBitCount;
+import engineers.workshop.common.network.LengthCount;
+import engineers.workshop.common.network.PacketHandler;
+import engineers.workshop.common.network.PacketId;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -34,12 +45,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TileTable extends TileEntity implements IInventory, ISidedInventory, ITickable, /* RF */ IEnergyReceiver {
 
@@ -76,7 +84,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		pages.add(new PageMain(this, "main"));
 		pages.add(new PageTransfer(this, "transfer"));
 		pages.add(new PageUpgrades(this, "upgrade"));
-		//pages.add(new PageSecurity(this, "security"));
+		// pages.add(new PageSecurity(this, "security"));
 
 		slots = new ArrayList<>();
 		int id = 0;
@@ -182,6 +190,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	private List<EntityPlayer> players = new ArrayList<>();
 
+	public List<EntityPlayer> getOpenPlayers() {
+		return players;
+	}
+
 	public void addPlayer(EntityPlayer player) {
 		Logger.debug("Trying to add player %s", player.getName());
 		if (!players.contains(player)) {
@@ -207,24 +219,32 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		PacketHandler.sendToPlayer(dw, player);
 	}
 
-	public void sendDataToAllPlayer(DataType dataType) {
-		sendDataToAllPlayer(dataType, 0);
+	private void sendDataToPlayer(DataType type, EntityPlayer player) {
+		DataWriter dw = PacketHandler.getWriter(this, PacketId.RENDER_UPDATE);
+		type.save(this, dw, -1);
+		PacketHandler.sendToPlayer(dw, player);
 	}
 
-	public void sendDataToAllPlayer(DataType dataType, int id) {
-		sendToAllPlayers(getWriterForType(dataType, id));
+	public void sendDataToAllPlayers(DataType dataType, List<EntityPlayer> players) {
+		sendDataToAllPlayers(dataType, 0, players);
 	}
 
-	private void sendDataToAllPlayersExcept(DataType dataType, int id, EntityPlayer ignored) {
-		sendToAllPlayersExcept(getWriterForType(dataType, id), ignored);
+	public void sendDataToAllPlayers(DataType dataType, int id, List<EntityPlayer> players) {
+		sendToAllPlayers(getWriterForType(dataType, id), players);
 	}
 
-	private void sendToAllPlayers(DataWriter dw) {
-		sendToAllPlayersExcept(dw, null);
+	private void sendDataToAllPlayersExcept(DataType dataType, int id, EntityPlayer ignored,
+			List<EntityPlayer> players) {
+		sendToAllPlayersExcept(getWriterForType(dataType, id), ignored, players);
 	}
 
-	private void sendToAllPlayersExcept(DataWriter dw, EntityPlayer ignored) {
-		players.stream().filter(player -> !player.equals(ignored)).forEach(player -> PacketHandler.sendToPlayer(dw, player));
+	private void sendToAllPlayers(DataWriter dw, List<EntityPlayer> players) {
+		sendToAllPlayersExcept(dw, null, players);
+	}
+
+	private void sendToAllPlayersExcept(DataWriter dw, EntityPlayer ignored, List<EntityPlayer> players) {
+		players.stream().filter(player -> !player.equals(ignored))
+				.forEach(player -> PacketHandler.sendToPlayer(dw, player));
 	}
 
 	public void updateServer(DataType dataType) {
@@ -245,56 +265,58 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	public void receiveServerPacket(DataReader dr, PacketId id, EntityPlayer player) {
 		switch (id) {
-			case TYPE:
-				DataType dataType = dr.readEnum(DataType.class);
-				int index = dataType.load(this, dr, false);
-				if (index != -1 && dataType.shouldBounce(this)) {
-					sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player);
-				}
-				if (dataType == DataType.SIDE_ENABLED) {
-					onSideChange();
-				}
-				markDirty();
-				break;
-			case CLOSE:
-				removePlayer(player);
-				break;
-			case RE_OPEN:
-				addPlayer(player);
-				break;
-			case CLEAR:
-				clearGrid(player, dr.readData(GRID_ID_BITS));
-				break;
-			case ALL:
-				break;
-			case UPGRADE_CHANGE:
-				onUpgradeChange();
-				break;
-			default:
-				break;
+		case TYPE:
+			DataType dataType = dr.readEnum(DataType.class);
+			int index = dataType.load(this, dr, false);
+			if (index != -1 && dataType.shouldBounce(this)) {
+				sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player, players);
+			}
+			if (dataType == DataType.SIDE_ENABLED) {
+				onSideChange();
+			}
+			markDirty();
+			break;
+		case CLOSE:
+			removePlayer(player);
+			break;
+		case RE_OPEN:
+			addPlayer(player);
+			break;
+		case CLEAR:
+			clearGrid(player, dr.readData(GRID_ID_BITS));
+			break;
+		case ALL:
+			break;
+		case UPGRADE_CHANGE:
+			onUpgradeChange();
+			break;
+		default:
+			break;
 		}
 	}
 
 	public void receiveClientPacket(DataReader dr, PacketId id) {
 		switch (id) {
-			case ALL:
-				for (DataType dataType : DataType.values()) {
-					dataType.load(this, dr, true);
-				}
-				onUpgradeChange();
-				break;
-			case TYPE:
-				DataType dataType = dr.readEnum(DataType.class);
-				dataType.load(this, dr, false);
-				if (dataType == DataType.SIDE_ENABLED) {
-					onSideChange();
-				}
-				break;
-			case UPGRADE_CHANGE:
-				onUpgradeChange();
-				break;
-			default:
-				break;
+		case ALL:
+			for (DataType dataType : DataType.values()) {
+				dataType.load(this, dr, true);
+			}
+			onUpgradeChange();
+			break;
+		case TYPE:
+			DataType dataType = dr.readEnum(DataType.class);
+			dataType.load(this, dr, false);
+			if (dataType == DataType.SIDE_ENABLED) {
+				onSideChange();
+			}
+			break;
+		case UPGRADE_CHANGE:
+			onUpgradeChange();
+			break;
+		case RENDER_UPDATE:
+			DataType.POWER.load(this, dr, true);
+		default:
+			break;
 		}
 	}
 
@@ -308,8 +330,11 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private int fuelDelay;
 	private boolean firstUpdate = true;
 
+	private int tickCount = 0;
+
 	@Override
 	public void update() {
+		tickCount++;
 		pages.forEach(Page::onUpdate);
 
 		if (firstUpdate) {
@@ -344,6 +369,21 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			// -> slot instanceof SlotUpgrade)
 			// .toArray(SlotUpgrade[]::new).length);
 			slots.stream().filter(SlotBase::isEnabled).forEach(SlotBase::updateServer);
+		}
+
+		if (!worldObj.isRemote) {
+			if (tickCount % 20 == 0) {
+				int x1 = getPos().getX() - 16;
+				int x2 = getPos().getX() + 16;
+				int z1 = getPos().getY() - 16;
+				int z2 = getPos().getY() + 16;
+				AxisAlignedBB aabb = new AxisAlignedBB(x1, 0, z1, x2, 255, z2);
+				List<EntityPlayer> updatePlayers = worldObj.getEntitiesWithinAABB(EntityPlayerMP.class, aabb);
+				updatePlayers.removeAll(players);
+				for (EntityPlayer player : updatePlayers) {
+					sendDataToPlayer(DataType.POWER, player);
+				}
+			}
 		}
 	}
 
@@ -384,7 +424,9 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				if (slots2 == null || slots2.length == 0) {
 					return;
 				}
+				
 				if (transfer.isInput()) {
+					
 					transfer(inventory, this, slots2, slots1, directionReversed, direction, transferSize);
 				} else {
 					transfer(this, inventory, slots1, slots2, direction, directionReversed, transferSize);
@@ -398,8 +440,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		int oldTransfer = maxTransfer;
 
 		try {
-			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory ? (ISidedInventory) from : null;
-			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to : null;
+			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory
+					? (ISidedInventory) from : null;
+			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to
+					: null;
 
 			for (int fromSlot : fromSlots) {
 				ItemStack fromItem = from.getStackInSlot(fromSlot);
@@ -475,7 +519,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private void updateFuel() {
 		if (lastLit != lit) {
 			lastLit = lit;
-			sendDataToAllPlayer(DataType.LIT);
+			sendDataToAllPlayers(DataType.LIT, players);
 		}
 
 		int weatherModifier;
@@ -507,7 +551,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		if (power != lastPower)
 			lastPower = power;
 
-		sendDataToAllPlayer(DataType.POWER);
+		sendDataToAllPlayers(DataType.POWER, players);
 	}
 
 	public boolean canSeeTheSky() {
@@ -518,7 +562,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		if (!worldObj.isRemote) {
 			onUpgradeChange();
 			worldObj.notifyNeighborsOfStateChange(pos, BlockLoader.blockTable);
-			sendToAllPlayers(PacketHandler.getWriter(this, PacketId.UPGRADE_CHANGE));
+			sendToAllPlayers(PacketHandler.getWriter(this, PacketId.UPGRADE_CHANGE), players);
 		} else {
 			getUpgradePage().onUpgradeChange();
 		}
@@ -532,7 +576,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				+ (ConfigLoader.UPGRADES.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
 		fuelDelay = (ConfigLoader.TWEAKS.FUEL_DELAY - (ConfigLoader.UPGRADES.FUEL_DELAY_CHANGE
 				* getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
-		sendDataToAllPlayer(DataType.POWER);
+		sendDataToAllPlayers(DataType.POWER, players);
 	}
 
 	public void onSideChange() {
@@ -739,7 +783,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		float offsetX, offsetY, offsetZ;
 		offsetX = offsetY = offsetZ = worldObj.rand.nextFloat() * 0.8F + 1.0F;
 
-		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY, pos.getZ() + offsetZ, item.copy());
+		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY,
+				pos.getZ() + offsetZ, item.copy());
 		entityItem.motionX = worldObj.rand.nextGaussian() * 0.05F;
 		entityItem.motionY = worldObj.rand.nextGaussian() * 0.05F + 0.2F;
 		entityItem.motionZ = worldObj.rand.nextGaussian() * 0.05F;
@@ -767,11 +812,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			for (int i = 0; i < to.length; i++) {
 				to[i] = i;
 			}
-			
 
 			for (int i = 0; i < 9; i++) {
 				ItemStack fromCrafting = crafting.getSlots().get(i).getStack();
-				if(fromCrafting != null){
+				if (fromCrafting != null) {
 					player.inventory.addItemStackToInventory(fromCrafting);
 				}
 			}
@@ -849,7 +893,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	public int receiveEnergy(EnumFacing from, int energy, boolean simulate) {
 		int energyToPower = Math.min(getCapacity() - getStoredPower(), (energy / ConfigLoader.TWEAKS.POWER_CONVERSION));
-		if (!simulate) power += energyToPower;
+		if (!simulate)
+			power += energyToPower;
 
 		return energyToPower * ConfigLoader.TWEAKS.POWER_CONVERSION;
 	}

@@ -7,7 +7,8 @@ public enum PacketId {
     CLOSE(false),
     UPGRADE_CHANGE(true),
     RE_OPEN(true),
-    CLEAR(true);
+    CLEAR(true),
+    RENDER_UPDATE(false);
 
     private boolean inInterface;
 

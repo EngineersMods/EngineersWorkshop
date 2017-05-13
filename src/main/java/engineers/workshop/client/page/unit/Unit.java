@@ -204,7 +204,7 @@ public abstract class Unit {
 					}
 				} while (!done);
 				if (updatedCharge) {
-					table.sendDataToAllPlayer(DataType.CHARGED, DataUnit.getId(this));
+					table.sendDataToAllPlayers(DataType.CHARGED, DataUnit.getId(this), table.getOpenPlayers());
 				}
 			} else {
 				canCharge = true;
@@ -222,7 +222,7 @@ public abstract class Unit {
 						if (productionProgress >= PRODUCTION_TIME) {
 							productionProgress -= PRODUCTION_TIME;
 							chargeCount++;
-							table.sendDataToAllPlayer(DataType.CHARGED, DataUnit.getId(this));
+							table.sendDataToAllPlayers(DataType.CHARGED, DataUnit.getId(this), table.getOpenPlayers());
 							done = false;
 						}
 						updatedProgress = true;
@@ -234,7 +234,7 @@ public abstract class Unit {
 			}
 			if (updatedProgress) {
 				workingTicks = WORKING_COOLDOWN;
-				table.sendDataToAllPlayer(DataType.PROGRESS, DataUnit.getId(this));
+				table.sendDataToAllPlayers(DataType.PROGRESS, DataUnit.getId(this), table.getOpenPlayers());
 			} else if (workingTicks > 0) {
 				workingTicks--;
 			}

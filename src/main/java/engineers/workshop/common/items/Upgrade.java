@@ -126,10 +126,22 @@ public enum Upgrade {
 		CRAFTING("Works with Crafting Tables") {
 			@Override
 			protected boolean isValidParent(ItemStack item) {
-				if (item != null)
-					for (String parent : ConfigLoader.MACHINES.CRAFTER_BLOCKS)
-						if (item.getItem().getRegistryName().toString().equals(parent))
-							return true;
+				if (item != null){
+					for (String parent : ConfigLoader.MACHINES.CRAFTER_BLOCKS){
+						String[] _s = parent.split("\\");
+						String regName = "";
+						int meta = -1;
+						if(_s.length > 1){
+							regName = _s[0];
+							meta = Integer.parseInt(_s[1]);
+						}
+						if (item.getItem().getRegistryName().toString().equals(parent)){
+							if(meta == -1 || item.getMetadata() == meta)
+								return true;
+						}
+					}
+				}
+					
 				return false;
 			}
 		},

@@ -1,5 +1,8 @@
 package engineers.workshop.common.network;
 
+import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.proxy.CommonProxy.packetHandler;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -8,9 +11,6 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
-
-import static engineers.workshop.common.util.Reference.Info.MODID;
-import static engineers.workshop.proxy.CommonProxy.packetHandler;
 
 public class DataWriter {
 
@@ -101,7 +101,8 @@ public class DataWriter {
 	}
 
 	void sendToPlayer(EntityPlayerMP player) {
-		packetHandler.sendTo(createPacket(), player);
+		FMLProxyPacket packet = createPacket();
+		packetHandler.sendTo(packet, player);
 	}
 
 	void sendToServer() {
