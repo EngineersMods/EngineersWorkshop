@@ -4,10 +4,8 @@ import engineers.workshop.client.GuiBase;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.ItemUpgrade;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class SlotUpgrade extends SlotTable {
 
@@ -49,16 +47,8 @@ public class SlotUpgrade extends SlotTable {
 		return upgrade != null && upgrade.isValid(main != null ? main.getStack() : null) && (upgrade.getDependency() == null || table.getUpgradePage().getUpgradeCount(upgradeSection, upgrade.getDependency()) > 0);
 	}
 
-	private boolean isMainItem(ItemStack itemstack) {
-		String[] accepted = {};
-
-		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
-		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.FURNACE_BLOCKS);
-		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.STORAGE_BLOCKS);
-		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
-		accepted = ArrayUtils.addAll(accepted, ConfigLoader.MACHINES.ALLOY_BLOCKS);
-
-		return ArrayUtils.contains(accepted, itemstack.getItem().getRegistryName().toString());
+	private boolean isMainItem(ItemStack stack) {
+		return Upgrade.ParentType.CRAFTING.isValidParent(stack) || Upgrade.ParentType.SMELTING.isValidParent(stack) || Upgrade.ParentType.CRUSHING.isValidParent(stack) || Upgrade.ParentType.ALLOY.isValidParent(stack) || Upgrade.ParentType.STORAGE.isValidParent(stack);
 	}
 
 	@Override

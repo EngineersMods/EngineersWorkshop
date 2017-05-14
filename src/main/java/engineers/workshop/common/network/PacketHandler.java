@@ -32,6 +32,7 @@ public class PacketHandler {
 		DataReader dr = new DataReader(event.getPacket().payload());
 		PacketId id = dr.readEnum(PacketId.class);
 		TileTable table = null;
+		
 		if (id.isInInterface()) {
 			if (player.openContainer instanceof ContainerTable) {
 				table = ((ContainerTable) player.openContainer).getTable();

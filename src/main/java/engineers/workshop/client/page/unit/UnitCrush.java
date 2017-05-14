@@ -3,8 +3,6 @@ package engineers.workshop.client.page.unit;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import crazypants.enderio.machine.recipe.IRecipe;
 import crazypants.enderio.machine.sagmill.SagMillRecipeManager;
 import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherInput;
@@ -12,7 +10,6 @@ import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherQueue;
 import engineers.workshop.client.container.slot.crushing.SlotUnitCrusherResult;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.entity.player.EntityPlayer;
@@ -137,8 +134,7 @@ public class UnitCrush extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRUSHER_BLOCKS,
-				item.getItem().getRegistryName().toString());
+		return item != null && Upgrade.ParentType.CRUSHING.isValidParent(item);
 	}
 
 	private static final int ARROW_X = 25;

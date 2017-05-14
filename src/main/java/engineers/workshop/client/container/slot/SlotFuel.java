@@ -1,11 +1,8 @@
 package engineers.workshop.client.container.slot;
 
-import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.table.TileTable;
-
-import org.apache.commons.lang3.ArrayUtils;
-
 import engineers.workshop.client.page.Page;
+import engineers.workshop.common.items.Upgrade;
+import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntityFurnace;
 
@@ -16,11 +13,8 @@ public class SlotFuel extends SlotTable {
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack itemstack) {
+	public boolean isItemValid(ItemStack stack) {
 		String[] upgrades = {};
-		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.CRAFTER_BLOCKS);
-		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.FURNACE_BLOCKS);
-		upgrades = ArrayUtils.addAll(upgrades, ConfigLoader.MACHINES.CRUSHER_BLOCKS);
-		return super.isItemValid(itemstack) && TileEntityFurnace.isItemFuel(itemstack) && !(ArrayUtils.contains(upgrades, itemstack.getItem().getRegistryName().toString()));
+		return super.isItemValid(stack) && TileEntityFurnace.isItemFuel(stack) && !(Upgrade.ParentType.CRAFTING.isValidParent(stack) || Upgrade.ParentType.SMELTING.isValidParent(stack) || Upgrade.ParentType.CRUSHING.isValidParent(stack) || Upgrade.ParentType.ALLOY.isValidParent(stack) || Upgrade.ParentType.STORAGE.isValidParent(stack));
 	}
 }

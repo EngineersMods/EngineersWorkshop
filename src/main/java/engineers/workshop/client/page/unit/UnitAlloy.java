@@ -1,5 +1,8 @@
 package engineers.workshop.client.page.unit;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import crazypants.enderio.machine.MachineRecipeInput;
 import crazypants.enderio.machine.alloy.AlloyRecipeManager;
 import crazypants.enderio.machine.recipe.IRecipe;
@@ -9,15 +12,10 @@ import engineers.workshop.client.container.slot.alloying.SlotUnitAlloyQueue;
 import engineers.workshop.client.container.slot.alloying.SlotUnitAlloyResult;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class UnitAlloy extends Unit {
 
@@ -176,8 +174,7 @@ public class UnitAlloy extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null
-				&& ArrayUtils.contains(ConfigLoader.MACHINES.ALLOY_BLOCKS, item.getItem().getRegistryName().toString());
+		return item != null && Upgrade.ParentType.ALLOY.isValidParent(item);
 	}
 
 	private static final int ARROW_X = 25;

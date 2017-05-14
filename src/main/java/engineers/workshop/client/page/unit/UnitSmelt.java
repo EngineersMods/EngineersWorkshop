@@ -5,11 +5,9 @@ import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceQueue;
 import engineers.workshop.client.container.slot.smelting.SlotUnitFurnaceResult;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class UnitSmelt extends Unit {
 
@@ -103,7 +101,7 @@ public class UnitSmelt extends Unit {
     @Override
     public boolean isEnabled() {
         ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-        return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.FURNACE_BLOCKS, item.getItem().getRegistryName().toString());
+        return item != null && Upgrade.ParentType.SMELTING.isValidParent(item);
     }
 
     private static final int ARROW_X = 25;

@@ -1,5 +1,14 @@
 package engineers.workshop.client;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.opengl.GL11;
+
+import engineers.workshop.client.container.ContainerTable;
+import engineers.workshop.client.container.slot.SlotBase;
+import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.PacketHandler;
 import engineers.workshop.common.network.PacketId;
@@ -7,17 +16,9 @@ import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
 import engineers.workshop.common.util.helpers.ColorHelper;
 import engineers.workshop.common.util.helpers.FormattingHelper;
-import engineers.workshop.client.container.ContainerTable;
-import engineers.workshop.client.container.slot.SlotBase;
-import engineers.workshop.client.page.Page;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.opengl.GL11;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GuiTable extends GuiBase {
 
@@ -173,7 +174,6 @@ public class GuiTable extends GuiBase {
 
     private void drawPower(int mX, int mY) {
     	if(table.getCapacity() == 0) return;
-    	
     	prepare();
 
         drawRect(POWER_X + POWER_INNER_OFFSET_X, POWER_Y + POWER_INNER_OFFSET_Y, POWER_INNER_SRC_X + POWER_INNER_WIDTH, POWER_INNER_SRC_Y, POWER_INNER_WIDTH, POWER_INNER_HEIGHT);

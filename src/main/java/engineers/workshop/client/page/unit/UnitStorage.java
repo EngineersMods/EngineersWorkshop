@@ -2,10 +2,9 @@ package engineers.workshop.client.page.unit;
 
 import engineers.workshop.client.container.slot.storage.SlotUnitStorage;
 import engineers.workshop.client.page.Page;
-import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.item.ItemStack;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class UnitStorage extends Unit {
 
@@ -47,7 +46,7 @@ public class UnitStorage extends Unit {
     @Override
     public boolean isEnabled() {
         ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-        return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.STORAGE_BLOCKS, item.getItem().getRegistryName().toString());
+        return item != null && Upgrade.ParentType.STORAGE.isValidParent(item);
     }
 
 }

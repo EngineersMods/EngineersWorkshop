@@ -14,7 +14,7 @@ import net.minecraft.item.ItemStack;
 public enum Upgrade {
     BLANK			(new MaxCount(0), 			    ParentType.NULL), 						// Max count = 0  (Not usable as an upgrade)
     AUTO_CRAFTER	(new MaxCount(1), 			    ParentType.CRAFTING), 					// Max count = 1
-    COMPACTOR		(new MaxCount(1), 			    ParentType.CRAFTING, AUTO_CRAFTER), 	// Max count = 1
+    
     STORAGE			(new MaxCount(1),			    ParentType.CRAFTING), 					// Max count = 1
     CHARGED			(new ConfigurableMax(8),	  	ParentType.MachineSet),					// Max count = 8  (Configable)
 	SPEED			(new ConfigurableMax(8),	    ParentType.MachineSet),					// Max count = 8  (Configable)
@@ -28,8 +28,8 @@ public enum Upgrade {
     MAX_POWER		(new ConfigurableMax(16), 	    ParentType.GLOBAL),						// Max count = 16 (Configable)
     FUEL_DELAY		(new ConfigurableMax(5), 	    ParentType.GLOBAL),						// Max count = 5  (Configable)
 	
-    AXE		(new MaxCount(1), 	    ParentType.CRUSHING);									// Max count = 1
-	
+    AXE				(new MaxCount(1), 	    		ParentType.CRUSHING), 									// Max count = 1
+	COMPACTOR		(new MaxCount(1), 			    ParentType.CRAFTING, AUTO_CRAFTER); 	// Max count = 1
 
     /**
      * PATTERN("Pattern Crafting", "Remembers old recipes", 4, ParentType.CRAFTING),
@@ -125,17 +125,17 @@ public enum Upgrade {
     public enum ParentType {
 		CRAFTING("Works with Crafting Tables") {
 			@Override
-			protected boolean isValidParent(ItemStack item) {
+			public boolean isValidParent(ItemStack item) {
 				if (item != null){
 					for (String parent : ConfigLoader.MACHINES.CRAFTER_BLOCKS){
-						String[] _s = parent.split("\\");
-						String regName = "";
+						String[] _s = parent.replace(",", "").split("/");
+						String regName = parent;
 						int meta = -1;
 						if(_s.length > 1){
 							regName = _s[0];
 							meta = Integer.parseInt(_s[1]);
 						}
-						if (item.getItem().getRegistryName().toString().equals(parent)){
+						if (item.getItem().getRegistryName().toString().equals(regName)){
 							if(meta == -1 || item.getMetadata() == meta)
 								return true;
 						}
@@ -147,23 +147,46 @@ public enum Upgrade {
 		},
 		SMELTING("Works with Furnaces") {
 			@Override
-			protected boolean isValidParent(ItemStack item) {
-				if (item != null)
-					for (String parent : ConfigLoader.MACHINES.FURNACE_BLOCKS)
-						if (item.getItem().getRegistryName().toString().equals(parent))
-							return true;
-
+			public boolean isValidParent(ItemStack item) {
+				if (item != null){
+					for (String parent : ConfigLoader.MACHINES.FURNACE_BLOCKS){
+						String[] _s = parent.replace(",", "").split("/");
+						String regName = parent;
+						int meta = -1;
+						if(_s.length > 1){
+							regName = _s[0];
+							meta = Integer.parseInt(_s[1]);
+						}
+						if (item.getItem().getRegistryName().toString().equals(regName)){
+							if(meta == -1 || item.getMetadata() == meta)
+								return true;
+						}
+					}
+				}
+					
 				return false;
 			}
 		},
 		CRUSHING("Works with Crushers") {
 			@Override
-			protected boolean isValidParent(ItemStack item) {
-				if (item != null)
-					for (String parent : ConfigLoader.MACHINES.CRUSHER_BLOCKS)
-						if (item.getItem().getRegistryName().toString().equals(parent))
-							return true;
-
+			public boolean isValidParent(ItemStack item) {
+				if (item != null){
+					for (String parent : ConfigLoader.MACHINES.CRUSHER_BLOCKS){
+						String[] _s = parent.replace(",", "").split("/");
+						String regName = parent;
+						int meta = -1;
+						if(_s.length > 1){
+							regName = _s[0];
+							meta = Integer.parseInt(_s[1]);
+						}
+						if (item.getItem().getRegistryName().toString().equals(regName)){
+							
+							if(meta == -1 || item.getMetadata() == meta)
+								return true;
+						}
+					}
+				}
+					
 				return false;
 			}
 
@@ -171,25 +194,61 @@ public enum Upgrade {
 		
 		ALLOY("Works with Alloy Smelters") {
 			@Override
-			protected boolean isValidParent(ItemStack item) {
-				if (item != null)	
-					for (String parent : ConfigLoader.MACHINES.ALLOY_BLOCKS)
-						if (item.getItem().getRegistryName().toString().equals(parent))
-							return true;
-
+			public boolean isValidParent(ItemStack item) {
+				if (item != null){
+					for (String parent : ConfigLoader.MACHINES.ALLOY_BLOCKS){
+						String[] _s = parent.replace(",", "").split("/");
+						String regName = parent;
+						int meta = -1;
+						if(_s.length > 1){
+							regName = _s[0];
+							meta = Integer.parseInt(_s[1]);
+						}
+						if (item.getItem().getRegistryName().toString().equals(regName)){
+							if(meta == -1 || item.getMetadata() == meta)
+								return true;
+						}
+					}
+				}
+					
 				return false;
 			}
 
 		},
+		
+		STORAGE("Works with Chests") {
+			@Override
+			public boolean isValidParent(ItemStack item) {
+				if (item != null){
+					for (String parent : ConfigLoader.MACHINES.STORAGE_BLOCKS){
+						String[] _s = parent.replace(",", "").split("/");
+						String regName = parent;
+						int meta = -1;
+						if(_s.length > 1){
+							regName = _s[0];
+							meta = Integer.parseInt(_s[1]);
+						}
+						if (item.getItem().getRegistryName().toString().equals(regName)){
+							if(meta == -1 || item.getMetadata() == meta)
+								return true;
+						}
+					}
+				}
+					
+				return false;
+			}
+
+		},
+		
         GLOBAL("Upgrades the entire Table") {
             @Override
-            protected boolean isValidParent(ItemStack item) {
+            public boolean isValidParent(ItemStack item) {
                 return item == null;
             }
         },
         NULL("you shouldn't be seeing this.") {
             @Override
-            protected boolean isValidParent(ItemStack item) {
+            public boolean isValidParent(ItemStack item) {
                 return false;
             }
         };
@@ -200,7 +259,7 @@ public enum Upgrade {
             this.description = description;
         }
 
-        protected abstract boolean isValidParent(ItemStack item);
+        public abstract boolean isValidParent(ItemStack item);
         
     	private static final EnumSet<ParentType> MachineSet = EnumSet.of(ParentType.CRAFTING, ParentType.SMELTING, ParentType.CRUSHING, ParentType.ALLOY);
     }

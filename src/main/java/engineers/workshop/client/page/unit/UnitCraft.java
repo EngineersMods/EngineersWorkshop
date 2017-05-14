@@ -7,20 +7,22 @@ import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingResult;
 import engineers.workshop.client.container.slot.crafting.SlotUnitCraftingStorage;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.*;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemHoe;
+import net.minecraft.item.ItemPickaxe;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.commons.lang3.ArrayUtils;
 
 public class UnitCraft extends Unit {
 
@@ -77,8 +79,7 @@ public class UnitCraft extends Unit {
 	@Override
 	public boolean isEnabled() {
 		ItemStack item = table.getUpgradePage().getUpgradeMainItem(id);
-		return item != null && ArrayUtils.contains(ConfigLoader.MACHINES.CRAFTER_BLOCKS,
-				item.getItem().getRegistryName().toString());
+		return item != null && Upgrade.ParentType.CRAFTING.isValidParent(item);
 	}
 
 	@Override
