@@ -214,7 +214,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	private void sendAllDataToPlayer(EntityPlayer player) {
 		DataWriter dw = PacketHandler.getWriter(this, PacketId.ALL);
 		for (DataType dataType : DataType.values()) {
-			dataType.save(this, dw, -1);
+			if(dataType != null && this != null && dw != null)
+				dataType.save(this, dw, -1);
 		}
 		PacketHandler.sendToPlayer(dw, player);
 	}
@@ -523,8 +524,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		}
 
 		int weatherModifier;
-
-		if (canSeeTheSky()) {
+		if (getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR) && canSeeTheSky()) {
 			weatherModifier = worldObj.isRaining() ? ConfigLoader.UPGRADES.SOLAR_GENERATION : 1;
 			if (worldObj.isDaytime())
 				power += (ConfigLoader.UPGRADES.SOLAR_GENERATION
