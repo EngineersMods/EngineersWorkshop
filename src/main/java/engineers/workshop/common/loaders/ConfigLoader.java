@@ -43,9 +43,8 @@ public final class ConfigLoader {
 							max.getConfigurableMax(), "Max amount of the " + upgrade.getName() + " upgrade"));
 				}
 			}
-
-			SOLAR_GENERATION = config.getInt("Solar Generation", category, 4, 0, Integer.MAX_VALUE,
-					"Sets the amount of energy generated per tick per solar panel upgrade in the workshop table");
+			SOLAR_GENERATION = config.getInt("Solar Generation", category, 4, 1, Integer.MAX_VALUE,
+					"Sets the amount of energy generated per fuel-tick per solar panel upgrade in the workshop table");
 			FUEL_EFFICIENCY_CHANGE = config.getInt("Fuel Efficiency Change", category, 4, 0, Integer.MAX_VALUE,
 					"Sets how efficient each upgrade is, formula: 'power = fuel * (upgradeAmount / this)'");
 			MAX_POWER_CHANGE = config.getInt("Max Power Change", category, 1000, 0, Integer.MAX_VALUE,

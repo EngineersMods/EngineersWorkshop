@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 [
     {
       "modid": "engineersworkshop",
@@ -11,17 +10,4 @@
       "credits": "VSWE for original mod Steve's Workshop back in 1.7.2"
     }
 ]
-=======
-[
-    {
-      "modid": "engineersworkshop",
-      "name": "Engineer's Workshop",
-      "description": "Adds a modular crafting station!",
-      "version": "${version}",
-      "mcversion": "${mcversion}",
-      "url": "http://github.com/engineersmods/engineersworkshop",
-      "authorList": ["EwyBoy", "JorVa"],
-      "credits": "VSWE for original mod Steve's Workshop back in 1.7.2"
-    }
-]
->>>>>>> master
+
