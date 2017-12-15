@@ -1,4 +1,4 @@
-package engineers.workshop.common.network;
+package engineers.workshop.common.network.packets;
 
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.ContainerTable;

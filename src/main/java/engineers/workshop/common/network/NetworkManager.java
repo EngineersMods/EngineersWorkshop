@@ -28,6 +28,9 @@
 
 package engineers.workshop.common.network;
 
+import engineers.workshop.common.network.packets.INetworkPacket;
+import engineers.workshop.common.network.packets.PacketWrapper;
+import engineers.workshop.common.network.packets.RegisterPacketEvent;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;

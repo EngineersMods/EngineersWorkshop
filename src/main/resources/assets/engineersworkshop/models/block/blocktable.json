@@ -1,7 +1,7 @@
 {
     "textures": {
         "particle": "engineersworkshop:blocks/top",
-        "0": "engineersworkshop:blocks/front0",
+        "0": "engineersworkshop:blocks/front",
         "1": "engineersworkshop:blocks/bot",
         "2": "engineersworkshop:blocks/top",
         "3": "engineersworkshop:blocks/back",

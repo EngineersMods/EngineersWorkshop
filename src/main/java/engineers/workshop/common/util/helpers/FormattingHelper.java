@@ -10,6 +10,8 @@ import java.util.Locale;
  **/
 public class FormattingHelper {
 
+	//TODO Move to lib
+
 	public static String formatNumber(int number) {
 		return NumberFormat.getIntegerInstance(Locale.forLanguageTag(String.valueOf(Minecraft.getMinecraft().getLanguageManager().getCurrentLanguage()))).format(number);
 	}

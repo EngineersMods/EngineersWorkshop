@@ -1,7 +1,14 @@
-#Blocks
-tile.engineersworkshop:blockTable.name=Мастерской стол
+#############################
+###    Мастерской стол    ###
+#############################
 
-#Upgrade Names
+#  - Creative Tab  - #
+itemGroup.engineersworkshop=Инженерная мастерская
+
+# -  Blocks - #
+tile.engineersworkshop.blocktable.name=Мастерской стол
+
+#  - Items  - #
 engineersworkshop:upgrade.blank.name=Чистое обновление
 engineersworkshop:upgrade.auto_crafter.name=Обновление: Автокрафтер
 engineersworkshop:upgrade.storage.name=Обновление: Хранение
@@ -19,7 +26,7 @@ engineersworkshop:upgrade.transfer.name=Обновление: Ёмкость п�
 engineersworkshop:upgrade.max_power.name=Обновление: Ёмкость энергии
 engineersworkshop:upgrade.fuel_delay.name=Обновление: Топливная горелка
 
-#Upgrade Descriptions
+#  - Descriptions  - #
 engineersworkshop:upgrade.blank.description=Компонент крафта
 engineersworkshop:upgrade.auto_crafter.description=Конвертирует верстак в автоверстак
 engineersworkshop:upgrade.storage.description=Добавляет дополнительное место для хранения
@@ -37,11 +44,11 @@ engineersworkshop:upgrade.transfer.description=Увеличивает ёмкос
 engineersworkshop:upgrade.max_power.description=Увеличивает ёмкость макс. энергии
 engineersworkshop:upgrade.fuel_delay.description=Уменьшает время между потребляемой мощности
 
-#Upgrade Info
+#  - Info  - #
 engineersworkshop:upgrade.unstackable=Не суммируются очень хорошо
 engineersworkshop:upgrade.stackable=Суммируются до %s
 
-#Creative Tabs
-itemGroup.engineersworkshop=Инженерная мастерская
-
-###Translated to russian by Kellixon###
+################################
+# - Translated to Russian by - #
+######## -  Kellixon  - ########
+################################

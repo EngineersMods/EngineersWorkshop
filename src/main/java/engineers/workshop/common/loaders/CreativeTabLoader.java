@@ -4,7 +4,7 @@ import engineers.workshop.common.register.Register;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.ItemStack;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 /**
  * Created by EwyBoy

@@ -1,6 +1,5 @@
 package engineers.workshop.proxy;
 
-import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.common.items.Upgrade;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.entity.player.EntityPlayer;
@@ -11,7 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 public class ClientProxy extends CommonProxy {
 
@@ -22,6 +21,7 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void preInit(FMLPreInitializationEvent event) {
 		super.preInit(event);
+		//TODO Move this over to lib - in some way
 		for (int i = 0; i < Upgrade.values().length; ++i) {
 			Upgrade[] upgrades = Upgrade.values().clone();
 			ModelLoader.setCustomModelResourceLocation(CommonProxy.itemUpgrade, i, new ModelResourceLocation(MODID + ":upgrades/" + upgrades[i].getName()));
@@ -37,7 +37,6 @@ public class ClientProxy extends CommonProxy {
 	public void postInit(FMLPostInitializationEvent event) {
 		super.postInit(event);
 	}
-
 
 	@Override
 	public EntityPlayer getPlayer() {

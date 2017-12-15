@@ -1,4 +1,4 @@
-package engineers.workshop.common.network;
+package engineers.workshop.common.network.count;
 
 public enum StandardCounts implements IBitCount {
 	BOOLEAN(1),

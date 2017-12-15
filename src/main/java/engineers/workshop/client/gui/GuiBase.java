@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 public abstract class GuiBase extends GuiContainer {
 	protected static final ResourceLocation BACKGROUND = new ResourceLocation(MODID, "textures/gui/background.png");

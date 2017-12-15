@@ -1,4 +1,4 @@
-package engineers.workshop.common.network;
+package engineers.workshop.common.network.count;
 
 public class MaxCount implements IBitCount {
 	private int bits;

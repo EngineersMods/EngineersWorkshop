@@ -1,29 +1,31 @@
-package engineers.workshop.common;
+package engineers.workshop.common.loaders;
 
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.io.File;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 @GameRegistry.ObjectHolder(MODID)
-public final class Config {
+public final class ConfigLoader {
+
+	//TODO - Disable configs that is not currently in use.
 
 	public static void loadConfig(File file) {
 		Configuration config = new Configuration(file);
 		config.load();
-		new TWEAKS(config, "Tweaks").load();
-		new POWER(config, "Power").load();
-		new MACHINES(config, "Machines").load();
+			new TWEAKS(config, "Tweaks").load();
+			new POWER(config, "Power").load();
+			new MACHINES(config, "Machines").load();
 		config.save();
 	}
 
 	private abstract static class ConfigHandler {
-		protected String category;
-		protected Configuration config;
+		String category;
+		Configuration config;
 
-		public ConfigHandler(Configuration config, String category) {
+		ConfigHandler(Configuration config, String category) {
 			this.category = category;
 			this.config = config;
 		}
@@ -33,7 +35,6 @@ public final class Config {
 
 	public static class TWEAKS extends ConfigHandler {
 		public static int FUEL_DELAY;
-
 		public TWEAKS(Configuration config, String category) {
 			super(config, category);
 		}
@@ -47,7 +48,6 @@ public final class Config {
 
 	public static class POWER extends ConfigHandler {
 		public static boolean RF_SUPPORT;
-
 		public POWER(Configuration config, String category) {
 			super(config, category);
 		}

@@ -1,7 +1,7 @@
 package engineers.workshop.common.network.data;
 
-import engineers.workshop.common.network.IBitCount;
-import engineers.workshop.common.network.LengthCount;
+import engineers.workshop.common.network.count.IBitCount;
+import engineers.workshop.common.network.count.LengthCount;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.nbt.NBTTagCompound;
 
