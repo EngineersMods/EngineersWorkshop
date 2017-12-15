@@ -1,15 +1,16 @@
 package engineers.workshop.common.util;
 
-import org.apache.logging.log4j.Level;
-
 import net.minecraftforge.fml.common.FMLLog;
+import org.apache.logging.log4j.Level;
 
 import static engineers.workshop.common.util.Reference.Info.MODID;
 
 public class Logger {
 
 	private static void log(Level logLevel, Object info, Object... data) {
-		if (data == null) data = new Object[0]; FMLLog.log(MODID, logLevel, String.valueOf(info), data);
+		if (data == null)
+			data = new Object[0];
+		FMLLog.log(MODID, logLevel, String.valueOf(info), data);
 	}
 
 	public static void debug(Object info) {
@@ -43,11 +44,11 @@ public class Logger {
 	public static void error(String info, Object... data) {
 		log(Level.ERROR, info, data);
 	}
-	
+
 	public static void stacktrace(String message) {
-		try{
+		try {
 			throw new Exception(message != null ? message : "Stacktracing!");
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

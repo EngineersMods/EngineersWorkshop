@@ -1,19 +1,17 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.common.table.TileTable;
-
-import org.apache.commons.lang3.StringUtils;
-
-import engineers.workshop.client.GuiBase;
-import engineers.workshop.client.GuiTable;
+import engineers.workshop.client.gui.GuiBase;
+import engineers.workshop.client.gui.GuiTable;
 import engineers.workshop.client.container.slot.SlotBase;
+import engineers.workshop.common.table.TileTable;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class Page {
 
-	private String name;
 	protected TileTable table;
+	private String name;
 	private int id;
 
 	public Page(TileTable table, String name) {

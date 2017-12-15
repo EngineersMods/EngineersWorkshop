@@ -1,30 +1,37 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.client.GuiBase;
-import engineers.workshop.client.page.unit.*;
-import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.unit.Unit;
+import engineers.workshop.common.unit.UnitCraft;
+import engineers.workshop.common.unit.UnitSmelt;
+import engineers.workshop.common.unit.UnitStorage;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PageMain extends Page {
 
+	public static final int WIDTH = 256;
+	public static final int HEIGHT = 174;
+	private static final int TEXTURE_SHEET_SIZE = 256;
+	private static final int BAR_THICKNESS = 4;
+	private static final int BAR_WIDTH = 240;
+	private static final int BAR_HEIGHT = 162;
+	private static final int BAR_HORIZONTAL_X = (WIDTH - BAR_WIDTH) / 2;
+	private static final int BAR_HORIZONTAL_Y = (HEIGHT - BAR_THICKNESS) / 2;
+	private static final int BAR_VERTICAL_X = (WIDTH - BAR_THICKNESS) / 2;
+	private static final int BAR_VERTICAL_Y = (HEIGHT - BAR_HEIGHT) / 2;
 	private List<Unit> units;
 	private List<UnitCraft> craftingList;
 	private List<UnitSmelt> smeltingList;
-	private List<UnitCrush> crushingList;
-	private List<UnitAlloy> alloyList;
 	private List<UnitStorage> storageList;
-
 	public PageMain(TileTable table, String name) {
 		super(table, name);
 
 		units = new ArrayList<>();
 		craftingList = new ArrayList<>();
 		smeltingList = new ArrayList<>();
-		crushingList = new ArrayList<>();
-		alloyList = new ArrayList<>();
 		storageList = new ArrayList<>();
 
 		for (int i = 0; i < 4; i++) {
@@ -47,18 +54,6 @@ public class PageMain extends Page {
 		UnitStorage storage = new UnitStorage(table, this, id, x, y);
 		storageList.add(storage);
 		units.add(storage);
-
-		if (ConfigLoader.MACHINES.CRUSHER_ENABLED) {
-			UnitCrush crushing = new UnitCrush(table, this, id, x, y);
-			crushingList.add(crushing);
-			units.add(crushing);
-		}
-
-		if (ConfigLoader.MACHINES.ALLOY_ENABLED) {
-			UnitAlloy alloy = new UnitAlloy(table, this, id, x, y);
-			alloyList.add(alloy);
-			units.add(alloy);
-		}
 	}
 
 	public List<UnitSmelt> getSmeltingList() {
@@ -69,21 +64,17 @@ public class PageMain extends Page {
 		return craftingList;
 	}
 
-	public List<UnitCrush> getCrushingList() {
-		return crushingList;
-	}
-
-	public List<UnitAlloy> getAlloyList() {
-		return alloyList;
-	}
-
 	public List<UnitStorage> getStorageList() {
 		return storageList;
 	}
 
 	@Override
 	public void onUpdate() {
-		units.stream().filter(Unit::isEnabled).forEachOrdered(Unit::onUpdate);
+		for (Unit unit : units) {
+			if (unit.isEnabled()) {
+				unit.onUpdate();
+			}
+		}
 	}
 
 	@Override
@@ -93,18 +84,6 @@ public class PageMain extends Page {
 		}
 		return id;
 	}
-
-	public static final int WIDTH = 256;
-	public static final int HEIGHT = 174;
-	private static final int TEXTURE_SHEET_SIZE = 256;
-	private static final int BAR_THICKNESS = 4;
-	private static final int BAR_WIDTH = 240;
-	private static final int BAR_HEIGHT = 162;
-
-	private static final int BAR_HORIZONTAL_X = (WIDTH - BAR_WIDTH) / 2;
-	private static final int BAR_HORIZONTAL_Y = (HEIGHT - BAR_THICKNESS) / 2;
-	private static final int BAR_VERTICAL_X = (WIDTH - BAR_THICKNESS) / 2;
-	private static final int BAR_VERTICAL_Y = (HEIGHT - BAR_HEIGHT) / 2;
 
 	@Override
 	public void draw(GuiBase gui, int mX, int mY) {
@@ -154,16 +133,14 @@ public class PageMain extends Page {
 	}
 
 	private boolean isUnitLoaded(int id) {
-		
-		if(craftingList.size() <= id || smeltingList.size() <= id || crushingList.size() <= id || alloyList.size() <= id || storageList.size() <= id)
+
+		if (craftingList.size() <= id || smeltingList.size() <= id || storageList.size() <= id)
 			return false;
-		
+
 		return (
-				craftingList.get(id) != null && craftingList.get(id).isEnabled())
-				|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled())
-				|| (crushingList.get(id) != null && crushingList.get(id).isEnabled())
-				|| (alloyList.get(id) != null && alloyList.get(id).isEnabled()
-				|| (storageList.get(id) != null && storageList.get(id).isEnabled())
+			craftingList.get(id) != null && craftingList.get(id).isEnabled())
+			|| (smeltingList.get(id) != null && smeltingList.get(id).isEnabled()
+			|| (storageList.get(id) != null && storageList.get(id).isEnabled())
 		);
 	}
 

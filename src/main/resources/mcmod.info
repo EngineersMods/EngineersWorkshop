@@ -5,8 +5,8 @@
       "description": "Adds a modular crafting station!",
       "version": "${version}",
       "mcversion": "${mcversion}",
-      "url": "http://github.com/engineersmods/engineersworkshop",
-      "authorList": ["EwyBoy", "JorVa"],
+      "url": "https://minecraft.curseforge.com/projects/engineers-workshop",
+      "authorList": [EwyBoy", "JorVa", "Modmuss50", "Vswe"],
       "credits": "VSWE for original mod Steve's Workshop back in 1.7.2"
     }
 ]

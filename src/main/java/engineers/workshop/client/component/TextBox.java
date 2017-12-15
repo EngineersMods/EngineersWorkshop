@@ -1,6 +1,6 @@
 package engineers.workshop.client.component;
 
-import engineers.workshop.client.GuiBase;
+import engineers.workshop.client.gui.GuiBase;
 import net.minecraft.util.ChatAllowedCharacters;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

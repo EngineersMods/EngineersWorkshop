@@ -2,34 +2,40 @@ package engineers.workshop.client.page.setting;
 
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
+
 public class ItemSetting {
-    public static final int ITEM_COUNT = 10;
+	public static final int ITEM_COUNT = 10;
 
-    private int id;
-    private ItemStack item;
-    private TransferMode mode = TransferMode.PRECISE;
+	private int id;
+	@Nonnull
+	private ItemStack item = ItemStack.EMPTY;
+	private TransferMode mode = TransferMode.PRECISE;
 
-    public ItemSetting(int id) {
-        this.id = id;
-    }
+	public ItemSetting(int id) {
+		this.id = id;
+	}
 
-    public ItemStack getItem() {
-        return item;
-    }
+	@Nonnull
+	public ItemStack getItem() {
+		return item;
+	}
 
-    public void setItem(ItemStack item) {
-        this.item = item;
-    }
+	public void setItem(
+		@Nonnull
+			ItemStack item) {
+		this.item = item;
+	}
 
-    public int getId() {
-        return id;
-    }
+	public int getId() {
+		return id;
+	}
 
-    public TransferMode getMode() {
-        return mode;
-    }
+	public TransferMode getMode() {
+		return mode;
+	}
 
-    public void setMode(TransferMode mode) {
-        this.mode = mode;
-    }
+	public void setMode(TransferMode mode) {
+		this.mode = mode;
+	}
 }

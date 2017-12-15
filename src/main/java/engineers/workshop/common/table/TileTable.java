@@ -1,11 +1,5 @@
 package engineers.workshop.common.table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.annotation.Nullable;
-
-import cofh.api.energy.IEnergyReceiver;
 import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFuel;
 import engineers.workshop.client.menu.GuiMenu;
@@ -17,18 +11,12 @@ import engineers.workshop.client.page.PageUpgrades;
 import engineers.workshop.client.page.setting.Setting;
 import engineers.workshop.client.page.setting.Side;
 import engineers.workshop.client.page.setting.Transfer;
-import engineers.workshop.client.page.unit.Unit;
-import engineers.workshop.client.page.unit.UnitCraft;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.loaders.BlockLoader;
-import engineers.workshop.common.loaders.ConfigLoader;
-import engineers.workshop.common.network.DataReader;
-import engineers.workshop.common.network.DataWriter;
-import engineers.workshop.common.network.IBitCount;
-import engineers.workshop.common.network.LengthCount;
-import engineers.workshop.common.network.PacketHandler;
-import engineers.workshop.common.network.PacketId;
+import engineers.workshop.common.network.*;
 import engineers.workshop.common.network.data.DataType;
+import engineers.workshop.common.register.Register;
+import engineers.workshop.common.unit.Unit;
+import engineers.workshop.common.unit.UnitCraft;
 import engineers.workshop.common.util.Logger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
@@ -45,39 +33,48 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class TileTable extends TileEntity implements IInventory, ISidedInventory, ITickable, /* RF */ IEnergyReceiver {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
-	@Override
-	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
-		return oldState.getBlock() != newSate.getBlock();
-	}
+public class TileTable extends TileEntity implements IInventory, ISidedInventory, ITickable {
 
+	private static final int MOVE_DELAY = 20;
+	private static final int SLOT_DELAY = 10;
+	private static final String NBT_ITEMS = "item";
+	private static final String NBT_UNITS = "units";
+	private static final String NBT_SETTINGS = "settings";
+	private static final String NBT_SIDES = "sides";
+	private static final String NBT_INPUT = "input";
+	private static final String NBT_OUTPUT = "output";
+	private static final String NBT_SLOT = "slot";
+	private static final String NBT_POWER = "fuel";
+	private static final String NBT_MAX_POWER = "max_power";
+	private static final int COMPOUND_ID = 10;
+	private static final IBitCount GRID_ID_BITS = new LengthCount(4);
+	public int maxFuel = 8000;
 	private List<Page> pages;
 	private Page selectedPage;
 	private List<SlotBase> slots;
-	private ItemStack[] items;
-
+	private NonNullList<ItemStack> items;
 	private GuiMenu menu;
-
-	private int power;
-	public int maxPower = ConfigLoader.TWEAKS.MIN_POWER;
+	private int fuel;
 	private SlotFuel fuelSlot;
-
-	public int getPower() {
-		return power;
-	}
-
-	public void setCapacity(int newCap) {
-		this.maxPower = newCap;
-	}
-
-	public void setPower(int power) {
-		this.power = power;
-	}
+	private List<EntityPlayer> players = new ArrayList<>();
+	private int fuelTick = 0;
+	private int moveTick = 0;
+	private boolean lit;
+	private boolean lastLit;
+	private int slotTick = 0;
+	private boolean firstUpdate = true;
+	private int tickCount = 0;
+	private int[][] sideSlots = new int[6][];
 
 	public TileTable() {
 		pages = new ArrayList<>();
@@ -92,9 +89,21 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		for (Page page : pages) {
 			id = page.createSlots(id);
 		}
-		items = new ItemStack[slots.size()];
+		items = NonNullList.withSize(slots.size(), ItemStack.EMPTY);
 		setSelectedPage(pages.get(0));
 		onUpgradeChange();
+	}
+
+	public int getFuel() {
+		return fuel;
+	}
+
+	public void setFuel(int fuel) {
+		this.fuel = fuel;
+	}
+
+	public void setCapacity(int newCap) {
+		this.maxFuel = newCap;
 	}
 
 	public List<SlotBase> getSlots() {
@@ -113,13 +122,23 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		this.selectedPage = selectedPage;
 	}
 
-	public ItemStack[] getItems() {
+	public NonNullList<ItemStack> getItems() {
 		return items;
 	}
 
 	@Override
 	public int getSizeInventory() {
-		return items.length;
+		return items.size();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		for (ItemStack stack : items) {
+			if (!stack.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public PageMain getMainPage() {
@@ -135,43 +154,42 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack getStackInSlot(int id) {
-		return items[id];
+		return items.get(id);
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack decrStackSize(int id, int count) {
 		ItemStack item = getStackInSlot(id);
-		if (item != null) {
-			if (item.stackSize <= count) {
-				setInventorySlotContents(id, null);
+		if (!item.isEmpty()) {
+			if (item.getCount() <= count) {
+				setInventorySlotContents(id, ItemStack.EMPTY);
 				return item;
 			}
-
-			ItemStack result = item.splitStack(count);
-
-			if (item.stackSize == 0) {
-				setInventorySlotContents(id, null);
-			}
-			return result;
+			return item.splitStack(count);
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
+	@Nonnull
 	public ItemStack getStackInSlotOnClosing(int id) {
 		if (slots.get(id).shouldDropOnClosing()) {
 			ItemStack item = getStackInSlot(id);
-			setInventorySlotContents(id, null);
+			setInventorySlotContents(id, ItemStack.EMPTY);
 			return item;
 		} else {
-			return null;
+			return ItemStack.EMPTY;
 		}
 	}
 
 	@Override
-	public void setInventorySlotContents(int id, ItemStack item) {
-		items[id] = item;
+	public void setInventorySlotContents(int id,
+	                                     @Nonnull
+		                                     ItemStack item) {
+		items.set(id, item);
 	}
 
 	@Override
@@ -180,15 +198,13 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
+	public boolean isUsableByPlayer(EntityPlayer player) {
 		return player.getDistanceSq(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D) <= 64;
 	}
 
 	public void addSlot(SlotBase slot) {
 		slots.add(slot);
 	}
-
-	private List<EntityPlayer> players = new ArrayList<>();
 
 	public List<EntityPlayer> getOpenPlayers() {
 		return players;
@@ -212,18 +228,18 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void sendAllDataToPlayer(EntityPlayer player) {
-		DataWriter dw = PacketHandler.getWriter(this, PacketId.ALL);
+		DataPacket packet = PacketHandler.getPacket(this, PacketId.ALL);
 		for (DataType dataType : DataType.values()) {
-			if(dataType != null && this != null && dw != null)
-				dataType.save(this, dw, -1);
+			if (dataType != null && this != null && packet != null)
+				dataType.save(this, packet.createCompound(), -1);
 		}
-		PacketHandler.sendToPlayer(dw, player);
+		PacketHandler.sendToPlayer(packet, player);
 	}
 
 	private void sendDataToPlayer(DataType type, EntityPlayer player) {
-		DataWriter dw = PacketHandler.getWriter(this, PacketId.RENDER_UPDATE);
-		type.save(this, dw, -1);
-		PacketHandler.sendToPlayer(dw, player);
+		DataPacket packet = PacketHandler.getPacket(this, PacketId.RENDER_UPDATE);
+		type.save(this, packet.createCompound(), -1);
+		PacketHandler.sendToPlayer(packet, player);
 	}
 
 	public void sendDataToAllPlayers(DataType dataType, List<EntityPlayer> players) {
@@ -235,17 +251,17 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void sendDataToAllPlayersExcept(DataType dataType, int id, EntityPlayer ignored,
-			List<EntityPlayer> players) {
+	                                        List<EntityPlayer> players) {
 		sendToAllPlayersExcept(getWriterForType(dataType, id), ignored, players);
 	}
 
-	private void sendToAllPlayers(DataWriter dw, List<EntityPlayer> players) {
+	private void sendToAllPlayers(DataPacket dw, List<EntityPlayer> players) {
 		sendToAllPlayersExcept(dw, null, players);
 	}
 
-	private void sendToAllPlayersExcept(DataWriter dw, EntityPlayer ignored, List<EntityPlayer> players) {
+	private void sendToAllPlayersExcept(DataPacket dw, EntityPlayer ignored, List<EntityPlayer> players) {
 		players.stream().filter(player -> !player.equals(ignored))
-				.forEach(player -> PacketHandler.sendToPlayer(dw, player));
+			.forEach(player -> PacketHandler.sendToPlayer(dw, player));
 	}
 
 	public void updateServer(DataType dataType) {
@@ -256,82 +272,67 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		PacketHandler.sendToServer(getWriterForType(dataType, id));
 	}
 
-	private DataWriter getWriterForType(DataType dataType, int id) {
-		DataWriter dw = PacketHandler.getWriter(this, PacketId.TYPE);
-		dw.writeEnum(dataType);
-		dataType.save(this, dw, id);
-
-		return dw;
+	private DataPacket getWriterForType(DataType dataType, int id) {
+		DataPacket packet = PacketHandler.getPacket(this, PacketId.TYPE);
+		packet.dataType = dataType;
+		dataType.save(this, packet.createCompound(), id);
+		return packet;
 	}
 
-	public void receiveServerPacket(DataReader dr, PacketId id, EntityPlayer player) {
+	public void receiveServerPacket(DataPacket dr, PacketId id, EntityPlayer player) {
 		switch (id) {
-		case TYPE:
-			DataType dataType = dr.readEnum(DataType.class);
-			int index = dataType.load(this, dr, false);
-			if (index != -1 && dataType.shouldBounce(this)) {
-				sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player, players);
-			}
-			if (dataType == DataType.SIDE_ENABLED) {
-				onSideChange();
-			}
-			markDirty();
-			break;
-		case CLOSE:
-			removePlayer(player);
-			break;
-		case RE_OPEN:
-			addPlayer(player);
-			break;
-		case CLEAR:
-			clearGrid(player, dr.readData(GRID_ID_BITS));
-			break;
-		case ALL:
-			break;
-		case UPGRADE_CHANGE:
-			onUpgradeChange();
-			break;
-		default:
-			break;
+			case TYPE:
+				DataType dataType = dr.dataType;
+				int index = dataType.load(this, dr.compound, false);
+				if (index != -1 && dataType.shouldBounce(this)) {
+					sendDataToAllPlayersExcept(dataType, index, dataType.shouldBounceToAll(this) ? null : player, players);
+				}
+				if (dataType == DataType.SIDE_ENABLED) {
+					onSideChange();
+				}
+				markDirty();
+				break;
+			case CLOSE:
+				removePlayer(player);
+				break;
+			case RE_OPEN:
+				addPlayer(player);
+				break;
+			case CLEAR:
+				clearGrid(player, dr.compound.getInteger("clear"));
+				break;
+			case ALL:
+				break;
+			case UPGRADE_CHANGE:
+				onUpgradeChange();
+				break;
+			default:
+				break;
 		}
 	}
 
-	public void receiveClientPacket(DataReader dr, PacketId id) {
+	public void receiveClientPacket(DataPacket dr, PacketId id) {
 		switch (id) {
-		case ALL:
-			for (DataType dataType : DataType.values()) {
-				dataType.load(this, dr, true);
-			}
-			onUpgradeChange();
-			break;
-		case TYPE:
-			DataType dataType = dr.readEnum(DataType.class);
-			dataType.load(this, dr, false);
-			if (dataType == DataType.SIDE_ENABLED) {
-				onSideChange();
-			}
-			break;
-		case UPGRADE_CHANGE:
-			onUpgradeChange();
-			break;
-		case RENDER_UPDATE:
-			DataType.POWER.load(this, dr, true);
-		default:
-			break;
+			case ALL:
+				for (DataType dataType : DataType.values()) {
+					dataType.load(this, dr.compound, true);
+				}
+				onUpgradeChange();
+				break;
+			case TYPE:
+				DataType dataType = dr.dataType;
+				dataType.load(this, dr.compound, false);
+				if (dataType == DataType.SIDE_ENABLED) {
+					onSideChange();
+				}
+				break;
+			case UPGRADE_CHANGE:
+				onUpgradeChange();
+				break;
+			default:
+				break;
 		}
 	}
-
-	private int fuelTick = 0;
-	private int moveTick = 0;
-	private static final int MOVE_DELAY = 20;
-	private boolean lit;
-	private boolean lastLit;
-	private int slotTick = 0;
-	private static final int SLOT_DELAY = 10;
-	private int fuelDelay;
-	private boolean firstUpdate = true;
-
-	private int tickCount = 0;
 
 	@Override
 	public void update() {
@@ -345,13 +346,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			firstUpdate = false;
 		}
 
-		if (!worldObj.isRemote && ++fuelTick >= fuelDelay) {
-			lit = worldObj.canSeeSky(pos.up());
-			fuelTick = 0;
-			updateFuel();
-		}
-
-		if (!worldObj.isRemote && ++moveTick >= MOVE_DELAY) {
+		if (!world.isRemote && ++moveTick >= MOVE_DELAY) {
 			moveTick = 0;
 			if (getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER)) {
 				int transferSize = (int) Math.pow(2, getUpgradePage().getGlobalUpgradeCount(Upgrade.TRANSFER));
@@ -364,27 +359,22 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			}
 		}
 
-		if (!worldObj.isRemote && ++slotTick >= SLOT_DELAY) {
+		if (!world.isRemote && ++slotTick >= SLOT_DELAY) {
 			slotTick = 0;
-			// Logger.info(slots.stream().filter(SlotBase::getHasStack).filter(slot
-			// -> slot instanceof SlotUpgrade)
-			// .toArray(SlotUpgrade[]::new).length);
 			slots.stream().filter(SlotBase::isEnabled).forEach(SlotBase::updateServer);
 		}
 
-		if (!worldObj.isRemote) {
+		if (!world.isRemote) {
 			if (tickCount % 20 == 0) {
 				int x1 = getPos().getX() - 16;
 				int x2 = getPos().getX() + 16;
 				int z1 = getPos().getY() - 16;
 				int z2 = getPos().getY() + 16;
 				AxisAlignedBB aabb = new AxisAlignedBB(x1, 0, z1, x2, 255, z2);
-				List<EntityPlayer> updatePlayers = worldObj.getEntitiesWithinAABB(EntityPlayerMP.class, aabb);
+				List<EntityPlayer> updatePlayers = world.getEntitiesWithinAABB(EntityPlayerMP.class, aabb);
 				updatePlayers.removeAll(players);
-				for (EntityPlayer player : updatePlayers) {
-					sendDataToPlayer(DataType.POWER, player);
-				}
 			}
+			updateFuel();
 		}
 	}
 
@@ -392,8 +382,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		if (transfer.isEnabled() && transfer.isAuto()) {
 			EnumFacing direction = side.getDirection();
 			BlockPos nPos = pos.add(direction.getFrontOffsetX(), direction.getFrontOffsetY(),
-					direction.getFrontOffsetZ());
-			TileEntity te = worldObj.getTileEntity(nPos);
+				direction.getFrontOffsetZ());
+			TileEntity te = world.getTileEntity(nPos);
 			if (te instanceof IInventory) {
 				IInventory inventory = (IInventory) te;
 				/*
@@ -425,9 +415,9 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 				if (slots2 == null || slots2.length == 0) {
 					return;
 				}
-				
+
 				if (transfer.isInput()) {
-					
+
 					transfer(inventory, this, slots2, slots1, directionReversed, direction, transferSize);
 				} else {
 					transfer(this, inventory, slots1, slots2, direction, directionReversed, transferSize);
@@ -437,40 +427,37 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	private void transfer(IInventory from, IInventory to, int[] fromSlots, int[] toSlots, EnumFacing fromSide,
-			EnumFacing toSide, int maxTransfer) {
+	                      EnumFacing toSide, int maxTransfer) {
 		int oldTransfer = maxTransfer;
 
 		try {
 			ISidedInventory fromSided = fromSide.ordinal() != -1 && from instanceof ISidedInventory
-					? (ISidedInventory) from : null;
+			                            ? (ISidedInventory) from : null;
 			ISidedInventory toSided = toSide.ordinal() != -1 && to instanceof ISidedInventory ? (ISidedInventory) to
-					: null;
+			                                                                                  : null;
 
 			for (int fromSlot : fromSlots) {
 				ItemStack fromItem = from.getStackInSlot(fromSlot);
-				if (fromItem != null && fromItem.stackSize > 0) {
+				if (!fromItem.isEmpty() && fromItem.getCount() > 0) {
 					if (fromSided == null || fromSided.canExtractItem(fromSlot, fromItem, fromSide)) {
 						if (fromItem.isStackable()) {
 							for (int toSlot : toSlots) {
 								ItemStack toItem = to.getStackInSlot(toSlot);
-								if (toItem != null && toItem.stackSize > 0) {
+								if (!toItem.isEmpty() && toItem.getCount() > 0) {
 									if (toSided == null || toSided.canInsertItem(toSlot, fromItem, toSide)) {
 										if (fromItem.isItemEqual(toItem)
-												&& ItemStack.areItemStackTagsEqual(toItem, fromItem)) {
+											&& ItemStack.areItemStackTagsEqual(toItem, fromItem)) {
 											int maxSize = Math.min(toItem.getMaxStackSize(),
-													to.getInventoryStackLimit());
-											int maxMove = Math.min(maxSize - toItem.stackSize,
-													Math.min(maxTransfer, fromItem.stackSize));
-											toItem.stackSize += maxMove;
+												to.getInventoryStackLimit());
+											int maxMove = Math.min(maxSize - toItem.getCount(),
+												Math.min(maxTransfer, fromItem.getCount()));
+											toItem.grow(maxMove);
 											maxTransfer -= maxMove;
-											fromItem.stackSize -= maxMove;
-											if (fromItem.stackSize == 0) {
-												from.setInventorySlotContents(fromSlot, null);
-											}
+											fromItem.shrink(maxMove);
 
 											if (maxTransfer == 0) {
 												return;
-											} else if (fromItem.stackSize == 0) {
+											} else if (fromItem.isEmpty()) {
 												break;
 											}
 										}
@@ -478,24 +465,20 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 								}
 							}
 						}
-						if (fromItem.stackSize > 0) {
+						if (fromItem.getCount() > 0) {
 							for (int toSlot : toSlots) {
 								ItemStack toItem = to.getStackInSlot(toSlot);
-								if (toItem == null && to.isItemValidForSlot(toSlot, fromItem)) {
+								if (toItem.isEmpty() && to.isItemValidForSlot(toSlot, fromItem)) {
 									if (toSided == null || toSided.canInsertItem(toSlot, fromItem, toSide)) {
 										toItem = fromItem.copy();
-										toItem.stackSize = Math.min(maxTransfer, fromItem.stackSize);
+										toItem.setCount(Math.min(maxTransfer, fromItem.getCount()));
 										to.setInventorySlotContents(toSlot, toItem);
-										maxTransfer -= toItem.stackSize;
-										fromItem.stackSize -= toItem.stackSize;
-
-										if (fromItem.stackSize == 0) {
-											from.setInventorySlotContents(fromSlot, null);
-										}
+										maxTransfer -= toItem.getCount();
+										fromItem.shrink(toItem.getCount());
 
 										if (maxTransfer == 0) {
 											return;
-										} else if (fromItem.stackSize == 0) {
+										} else if (fromItem.isEmpty()) {
 											break;
 										}
 									}
@@ -514,30 +497,17 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		}
 	}
 
-	// TODO: updateFuel bookmark
-	private int lastPower;
-
 	private void updateFuel() {
 		if (lastLit != lit) {
 			lastLit = lit;
 			sendDataToAllPlayers(DataType.LIT, players);
 		}
 
-		int weatherModifier;
-		if (getUpgradePage().hasGlobalUpgrade(Upgrade.SOLAR) && canSeeTheSky()) {
-			weatherModifier = worldObj.isRaining() ? ConfigLoader.UPGRADES.SOLAR_GENERATION : 1;
-			if (worldObj.isDaytime())
-				power += (ConfigLoader.UPGRADES.SOLAR_GENERATION
-						* getUpgradePage().getGlobalUpgradeCount(Upgrade.SOLAR)) / weatherModifier;
-		}
-
 		ItemStack fuel = fuelSlot.getStack();
-		if (fuel != null && fuelSlot.isItemValid(fuel)) {
+		if (!fuel.isEmpty() && fuelSlot.isItemValid(fuel)) {
 			int fuelLevel = TileEntityFurnace.getItemBurnTime(fuel);
-			fuelLevel *= 1F + getUpgradePage().getGlobalUpgradeCount(Upgrade.EFFICIENCY)
-					/ ConfigLoader.UPGRADES.FUEL_EFFICIENCY_CHANGE;
-			if (fuelLevel > 0 && fuelLevel + power <= maxPower) {
-				power += fuelLevel;
+			if (fuelLevel > 0 && fuelLevel + this.fuel <= maxFuel) {
+				this.fuel += fuelLevel;
 				if (fuel.getItem().hasContainerItem(fuel)) {
 					fuelSlot.putStack(fuel.getItem().getContainerItem(fuel).copy());
 				} else {
@@ -546,23 +516,15 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			}
 		}
 
-		if (power > maxPower)
-			power = maxPower;
-		if (power != lastPower)
-			lastPower = power;
-
-		sendDataToAllPlayers(DataType.POWER, players);
-	}
-
-	public boolean canSeeTheSky() {
-		return worldObj.canSeeSky(pos.up());
+		if (this.fuel > maxFuel)
+			this.fuel = maxFuel;
 	}
 
 	public void onUpgradeChangeDistribute() {
-		if (!worldObj.isRemote) {
+		if (!world.isRemote) {
 			onUpgradeChange();
-			worldObj.notifyNeighborsOfStateChange(pos, BlockLoader.blockTable);
-			sendToAllPlayers(PacketHandler.getWriter(this, PacketId.UPGRADE_CHANGE), players);
+			world.notifyNeighborsOfStateChange(pos, Register.Blocks.table, true);
+			sendToAllPlayers(PacketHandler.getPacket(this, PacketId.UPGRADE_CHANGE), players);
 		} else {
 			getUpgradePage().onUpgradeChange();
 		}
@@ -572,11 +534,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		reloadTransferSides();
 		getUpgradePage().onUpgradeChange();
 		getMainPage().getCraftingList().forEach(UnitCraft::onUpgradeChange);
-		maxPower = (ConfigLoader.TWEAKS.MIN_POWER
-				+ (ConfigLoader.UPGRADES.MAX_POWER_CHANGE * getUpgradePage().getGlobalUpgradeCount(Upgrade.MAX_POWER)));
-		fuelDelay = (ConfigLoader.TWEAKS.FUEL_DELAY - (ConfigLoader.UPGRADES.FUEL_DELAY_CHANGE
-				* getUpgradePage().getGlobalUpgradeCount(Upgrade.FUEL_DELAY)));
-		sendDataToAllPlayers(DataType.POWER, players);
 	}
 
 	public void onSideChange() {
@@ -620,8 +577,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		return result;
 	}
 
-	private int[][] sideSlots = new int[6][];
-
 	@Override
 	public boolean isItemValidForSlot(int id, ItemStack item) {
 		return slots.get(id).isItemValid(item);
@@ -630,7 +585,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	@Override
 	public boolean canInsertItem(int slot, ItemStack item, EnumFacing side) {
 		return isItemValidForSlot(slot, item) && slots.get(slot).canAcceptItem(item)
-				&& slots.get(slot).isInputValid(side.ordinal(), item);
+			&& slots.get(slot).isInputValid(side.ordinal(), item);
 	}
 
 	@Override
@@ -654,17 +609,6 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 		this.lit = lit;
 	}
 
-	private static final String NBT_ITEMS = "item";
-	private static final String NBT_UNITS = "units";
-	private static final String NBT_SETTINGS = "settings";
-	private static final String NBT_SIDES = "sides";
-	private static final String NBT_INPUT = "input";
-	private static final String NBT_OUTPUT = "output";
-	private static final String NBT_SLOT = "slot";
-	private static final String NBT_POWER = "power";
-	private static final String NBT_MAX_POWER = "max_power";
-	private static final int COMPOUND_ID = 10;
-
 	@Override
 	public NBTTagCompound getUpdateTag() {
 		return writeToNBT(new NBTTagCompound());
@@ -685,13 +629,13 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound compound) {
-		compound.setInteger(NBT_POWER, power);
-		compound.setInteger(NBT_MAX_POWER, maxPower);
+		compound.setInteger(NBT_POWER, fuel);
+		compound.setInteger(NBT_MAX_POWER, maxFuel);
 
 		NBTTagList itemList = new NBTTagList();
-		for (int i = 0; i < items.length; i++) {
-			if (items[i] != null) {
-				NBTTagCompound slotTag = items[i].writeToNBT(new NBTTagCompound());
+		for (int i = 0; i < items.size(); i++) {
+			if (!items.get(i).isEmpty()) {
+				NBTTagCompound slotTag = items.get(i).writeToNBT(new NBTTagCompound());
 				slotTag.setInteger(NBT_SLOT, i);
 				itemList.appendTag(slotTag);
 			}
@@ -732,10 +676,10 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	@Override
 	public void readFromNBT(NBTTagCompound compound) {
 		super.readFromNBT(compound);
-		power = compound.getInteger(NBT_POWER);
-		maxPower = compound.getInteger(NBT_MAX_POWER);
+		fuel = compound.getInteger(NBT_POWER);
+		maxFuel = compound.getInteger(NBT_MAX_POWER);
 
-		items = new ItemStack[getSizeInventory()];
+		items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
 
 		NBTTagList itemList = compound.getTagList(NBT_ITEMS, COMPOUND_ID);
 		for (int i = 0; i < itemList.tagCount(); i++) {
@@ -744,8 +688,8 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			if (id < 0) {
 				id += 256;
 			}
-			if (id >= 0 && id < items.length) {
-				items[id] = ItemStack.loadItemStackFromNBT(slotCompound);
+			if (id >= 0 && id < items.size()) {
+				items.set(id, new ItemStack(slotCompound));
 			}
 		}
 
@@ -781,22 +725,20 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public void spitOutItem(ItemStack item) {
 
 		float offsetX, offsetY, offsetZ;
-		offsetX = offsetY = offsetZ = worldObj.rand.nextFloat() * 0.8F + 1.0F;
+		offsetX = offsetY = offsetZ = world.rand.nextFloat() * 0.8F + 1.0F;
 
-		EntityItem entityItem = new EntityItem(worldObj, pos.getX() + offsetX, pos.getY() + offsetY,
-				pos.getZ() + offsetZ, item.copy());
-		entityItem.motionX = worldObj.rand.nextGaussian() * 0.05F;
-		entityItem.motionY = worldObj.rand.nextGaussian() * 0.05F + 0.2F;
-		entityItem.motionZ = worldObj.rand.nextGaussian() * 0.05F;
+		EntityItem entityItem = new EntityItem(world, pos.getX() + offsetX, pos.getY() + offsetY,
+			pos.getZ() + offsetZ, item.copy());
+		entityItem.motionX = world.rand.nextGaussian() * 0.05F;
+		entityItem.motionY = world.rand.nextGaussian() * 0.05F + 0.2F;
+		entityItem.motionZ = world.rand.nextGaussian() * 0.05F;
 
-		worldObj.spawnEntityInWorld(entityItem);
+		world.spawnEntity(entityItem);
 	}
 
-	private static final IBitCount GRID_ID_BITS = new LengthCount(4);
-
 	public void clearGridSend(int id) {
-		DataWriter dw = PacketHandler.getWriter(this, PacketId.CLEAR);
-		dw.writeData(id, GRID_ID_BITS);
+		DataPacket dw = PacketHandler.getPacket(this, PacketId.CLEAR);
+		dw.createCompound().setInteger("clear", id);
 		PacketHandler.sendToServer(dw);
 	}
 
@@ -808,14 +750,14 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			for (int i = 0; i < from.length; i++) {
 				from[i] = crafting.getGridId() + i;
 			}
-			int[] to = new int[player.inventory.mainInventory.length];
+			int[] to = new int[player.inventory.mainInventory.size()];
 			for (int i = 0; i < to.length; i++) {
 				to[i] = i;
 			}
 
 			for (int i = 0; i < 9; i++) {
 				ItemStack fromCrafting = crafting.getSlots().get(i).getStack();
-				if (fromCrafting != null) {
+				if (!fromCrafting.isEmpty()) {
 					player.inventory.addItemStackToInventory(fromCrafting);
 				}
 			}
@@ -823,6 +765,11 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			// transfer(this, player.inventory, from, to, EnumFacing.UP,
 			// EnumFacing.UP, Integer.MAX_VALUE);
 		}
+	}
+
+	@Override
+	public boolean shouldRefresh(World world, BlockPos pos, IBlockState oldState, IBlockState newSate) {
+		return false;
 	}
 
 	@Override
@@ -841,6 +788,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	@Override
+	@Nonnull
 	public ItemStack removeStackFromSlot(int index) {
 		return slots.get(index).getStack().copy();
 	}
@@ -869,33 +817,5 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 
 	@Override
 	public void clear() {
-	}
-
-	public int getStoredPower() {
-		return power;
-	}
-
-	public int getCapacity() {
-		return maxPower;
-	}
-
-	public int getEnergyStored(EnumFacing from) {
-		return 0;
-	}
-
-	public int getMaxEnergyStored(EnumFacing from) {
-		return 8000;
-	}
-
-	public boolean canConnectEnergy(EnumFacing from) {
-		return getUpgradePage().hasGlobalUpgrade(Upgrade.RF);
-	}
-
-	public int receiveEnergy(EnumFacing from, int energy, boolean simulate) {
-		int energyToPower = Math.min(getCapacity() - getStoredPower(), (energy / ConfigLoader.TWEAKS.POWER_CONVERSION));
-		if (!simulate)
-			power += energyToPower;
-
-		return energyToPower * ConfigLoader.TWEAKS.POWER_CONVERSION;
 	}
 }

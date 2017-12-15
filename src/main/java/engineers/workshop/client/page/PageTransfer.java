@@ -1,7 +1,7 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.client.GuiBase;
-import engineers.workshop.client.GuiTable;
+import engineers.workshop.client.gui.GuiBase;
+import engineers.workshop.client.gui.GuiTable;
 import engineers.workshop.client.component.ArrowScroll;
 import engineers.workshop.client.component.CheckBox;
 import engineers.workshop.client.menu.GuiMenuItem;
@@ -21,19 +21,36 @@ import java.util.List;
 
 public class PageTransfer extends Page {
 
+	private static final int SIDE_X = 75;
+	private static final int SIDE_Y = 15;
+	private static final int SIDE_OFFSET = 20;
+	private static final int SIDE_SIZE = 18;
+	private static final int SIDE_SRC_X = 0;
+	private static final int SIDE_SRC_Y = 166;
+	private static final int SETTING_X = 5;
+	private static final int SETTING_Y = 25;
+	private static final int SETTING_OFFSET = 20;
+	private static final int SETTING_SIZE = 18;
+	private static final int SETTING_SRC_X = 0;
+	private static final int SETTING_SRC_Y = 112;
+	private static final int SETTING_ITEM_OFFSET = 1;
+	private static final int ITEM_X = 10;
+	private static final int ITEM_Y = 125;
+	private static final int ITEM_OFFSET = 20;
+	private static final int ITEM_SIZE = 18;
+	private static final int SIDE_ITEM_OFFSET = 1;
+	protected Side selectedSide;
 	private List<Setting> settings;
 	private Setting selectedSetting;
-	protected Side selectedSide;
 	private List<CheckBox> checkBoxes;
 	private List<ArrowScroll> arrows;
 	private boolean selectMode;
 	private Transfer selectedTransfer;
-
 	public PageTransfer(TileTable table, String name) {
 		super(table, name);
 		settings = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < 4; i++) {
 			int x = SETTING_X + (i % 2) * SETTING_OFFSET;
 			int y = SETTING_Y + (i / 2) * SETTING_OFFSET;
 			settings.add(new SettingNormal(table, i, x, y));
@@ -95,20 +112,20 @@ public class PageTransfer extends Page {
 
 		checkBoxes.add(new CheckBox("Auto transfer", 170, 68) {
 			@Override
+			public boolean getValue() {
+				return selectedTransfer.isAuto();
+			}
+
+			@Override
 			public void setValue(boolean value) {
 				selectedTransfer.setAuto(value);
 				PageTransfer.this.table.updateServer(DataType.SIDE_AUTO, getSyncId());
 			}
 
 			@Override
-			public boolean getValue() {
-				return selectedTransfer.isAuto();
-			}
-
-			@Override
 			public boolean isVisible() {
 				return selectedTransfer != null
-						&& PageTransfer.this.table.getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER);
+					&& PageTransfer.this.table.getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER);
 			}
 		});
 
@@ -147,19 +164,19 @@ public class PageTransfer extends Page {
 			}
 
 			@Override
-			public void setId(int id) {
-				selectedTransfer.setUseWhiteList(id == 0);
-			}
-
-			@Override
 			public int getId() {
 				return selectedTransfer.hasWhiteList() ? 0 : 1;
 			}
 
 			@Override
+			public void setId(int id) {
+				selectedTransfer.setUseWhiteList(id == 0);
+			}
+
+			@Override
 			public boolean isVisible() {
 				return selectedTransfer != null
-						&& PageTransfer.this.table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER);
+					&& PageTransfer.this.table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER);
 			}
 
 			@Override
@@ -186,28 +203,6 @@ public class PageTransfer extends Page {
 	private boolean shouldSelectModeBeVisible() {
 		return table.getUpgradePage().hasGlobalUpgrade(Upgrade.AUTO_TRANSFER) || table.getUpgradePage().hasGlobalUpgrade(Upgrade.FILTER);
 	}
-
-	private static final int SIDE_X = 75;
-	private static final int SIDE_Y = 15;
-	private static final int SIDE_OFFSET = 20;
-	private static final int SIDE_SIZE = 18;
-	private static final int SIDE_SRC_X = 0;
-	private static final int SIDE_SRC_Y = 166;
-	private static final int SETTING_X = 5;
-	private static final int SETTING_Y = 25;
-	private static final int SETTING_OFFSET = 20;
-	private static final int SETTING_SIZE = 18;
-	private static final int SETTING_SRC_X = 0;
-	private static final int SETTING_SRC_Y = 112;
-	private static final int SETTING_ITEM_OFFSET = 1;
-
-	private static final int ITEM_X = 10;
-	private static final int ITEM_Y = 125;
-	private static final int ITEM_OFFSET = 20;
-	private static final int ITEM_SIZE = 18;
-    private static final int SIDE_ITEM_OFFSET = 1;
-    
-    
 
 	@Override
 	public int createSlots(int id) {
@@ -292,7 +287,6 @@ public class PageTransfer extends Page {
 			arrow.draw(gui, mX, mY);
 		}
 	}
-	
 
 	@Override
 	public void onClick(GuiBase gui, int mX, int mY, int button) {
@@ -349,12 +343,12 @@ public class PageTransfer extends Page {
 						if (newInput != input) {
 							side.setInputEnabled(newInput);
 							table.updateServer(DataType.SIDE_ENABLED,
-									DataSide.getId(selectedSetting, side, side.getInput()));
+								DataSide.getId(selectedSetting, side, side.getInput()));
 						}
 						if (newOutput != output) {
 							side.setOutputEnabled(newOutput);
 							table.updateServer(DataType.SIDE_ENABLED,
-									DataSide.getId(selectedSetting, side, side.getOutput()));
+								DataSide.getId(selectedSetting, side, side.getOutput()));
 						}
 
 						table.onSideChange();
@@ -368,11 +362,11 @@ public class PageTransfer extends Page {
 					if (gui.inBounds(ITEM_X + i * ITEM_OFFSET, ITEM_Y, ITEM_SIZE, ITEM_SIZE, mX, mY)) {
 						EntityPlayer player = getPlayer();
 						ItemStack itemStack = player.inventory.getItemStack();
-						if (itemStack == null) {
+						if (itemStack.isEmpty()) {
 							table.setMenu(new GuiMenuItem(table, selectedTransfer.getItem(i)));
 						} else {
 							itemStack = itemStack.copy();
-							itemStack.stackSize = 1;
+							itemStack.setCount(1);
 							selectedTransfer.getItem(i).setItem(itemStack);
 							table.updateServer(DataType.SIDE_FILTER, getSyncId(selectedTransfer.getItem(i)));
 						}
@@ -393,7 +387,7 @@ public class PageTransfer extends Page {
 
 	@SideOnly(net.minecraftforge.fml.relauncher.Side.CLIENT)
 	private EntityPlayer getPlayer() {
-		return Minecraft.getMinecraft().thePlayer;
+		return Minecraft.getMinecraft().player;
 	}
 
 	@Override
@@ -413,54 +407,54 @@ public class PageTransfer extends Page {
 	// EnumFacing
 	private int getInterfaceX(EnumFacing enumFacing) {
 		switch (enumFacing) {
-		case DOWN: // BOTTOM
-			return 1;
-		case EAST: // RIGHT
-			return 0;
-		case NORTH: // BACK
-			return 3;
-		case SOUTH: // FRONT
-			return 1;
-		case UP: // TOP
-			return 1;
-		case WEST: // LEFT
-			return 2;
+			case DOWN: // BOTTOM
+				return 1;
+			case EAST: // RIGHT
+				return 0;
+			case NORTH: // BACK
+				return 3;
+			case SOUTH: // FRONT
+				return 1;
+			case UP: // TOP
+				return 1;
+			case WEST: // LEFT
+				return 2;
 		}
 		return -1;
 	}
 
 	private int getInterfaceY(EnumFacing enumFacing) {
 		switch (enumFacing) {
-		case DOWN: // BOTTOM
-			return 2;
-		case EAST: // RIGHT
-			return 1;
-		case NORTH: // BACK
-			return 1;
-		case SOUTH: // FRONT
-			return 1;
-		case UP: // TOP
-			return 0;
-		case WEST: // LEFT
-			return 1;
+			case DOWN: // BOTTOM
+				return 2;
+			case EAST: // RIGHT
+				return 1;
+			case NORTH: // BACK
+				return 1;
+			case SOUTH: // FRONT
+				return 1;
+			case UP: // TOP
+				return 0;
+			case WEST: // LEFT
+				return 1;
 		}
 		return -1;
 	}
-	
-	private int getTextureOffsetFromSide(Side side){
-		switch(side.getDirection()){
-		case WEST:
-			return 0;
-		case SOUTH:
-			return 1;
-		case UP:
-			return 2;
-		case DOWN:
-			return 3;
-		case NORTH:
-			return 4;
-		case EAST:
-			return 5;
+
+	private int getTextureOffsetFromSide(Side side) {
+		switch (side.getDirection()) {
+			case WEST:
+				return 0;
+			case SOUTH:
+				return 1;
+			case UP:
+				return 2;
+			case DOWN:
+				return 3;
+			case NORTH:
+				return 4;
+			case EAST:
+				return 5;
 		}
 		return -1;
 	}

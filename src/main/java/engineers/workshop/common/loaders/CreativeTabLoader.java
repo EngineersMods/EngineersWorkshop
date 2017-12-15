@@ -1,18 +1,19 @@
 package engineers.workshop.common.loaders;
 
+import engineers.workshop.common.register.Register;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import static engineers.workshop.common.util.Reference.Info.MODID;
 
+/**
+ * Created by EwyBoy
+ */
 public class CreativeTabLoader {
 
-   public static CreativeTabs tabWorkshop = new CreativeTabs (MODID) {
-        public ItemStack getIconItemStack() {
-            return new ItemStack(BlockLoader.blockTable);
-        }
+    public static CreativeTabs workshop = new CreativeTabs(MODID) {
         @Override
-        public Item getTabIconItem() {return null;}
+        public ItemStack getTabIconItem() {return new ItemStack(Register.Blocks.table);}
     };
+
 }

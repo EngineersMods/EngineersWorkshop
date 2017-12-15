@@ -1,13 +1,15 @@
 package engineers.workshop.common.items;
 
 import engineers.workshop.common.loaders.CreativeTabLoader;
-import engineers.workshop.common.loaders.ItemLoader;
+import engineers.workshop.proxy.CommonProxy;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraft.world.World;
+import net.minecraftforge.registries.GameData;
 
 import java.util.List;
 
@@ -16,10 +18,18 @@ import static engineers.workshop.common.util.Reference.Info.MODID;
 public class ItemUpgrade extends Item {
 
 	public ItemUpgrade() {
-		setCreativeTab(CreativeTabLoader.tabWorkshop);
+		setCreativeTab(CreativeTabLoader.workshop);
 		setHasSubtypes(true);
 		setRegistryName(MODID + ":" + "upgrade");
-		GameRegistry.register(this);
+		GameData.register_impl(this);
+	}
+
+	public static Upgrade getUpgrade(int dmg) {
+		return dmg >= 0 && dmg < Upgrade.values().length ? Upgrade.values()[dmg] : null;
+	}
+
+	public static Upgrade getUpgrade(ItemStack item) {
+		return !item.isEmpty() && CommonProxy.itemUpgrade.equals(item.getItem()) ? getUpgrade(item.getItemDamage()) : null;
 	}
 
 	@Override
@@ -28,24 +38,19 @@ public class ItemUpgrade extends Item {
 		return MODID + ":" + "upgrade" + "." + (upgrade != null ? upgrade.getName() : "unknown");
 	}
 
-	public static Upgrade getUpgrade(int dmg) {
-		return dmg >= 0 && dmg < Upgrade.values().length ? Upgrade.values()[dmg] : null;
-	}
-
-	public static Upgrade getUpgrade(ItemStack item) {
-        return item != null && ItemLoader.itemUpgrade.equals(item.getItem()) ? getUpgrade(item.getItemDamage()) : null;
-	}
-
 	@Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> lst) {
+	public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
+		if (!isInCreativeTab(tab)) {
+			return;
+		}
 		for (int i = 0; i < Upgrade.values().length; ++i) {
 			Upgrade[] upgrades = Upgrade.values().clone();
-			lst.add(upgrades[i].getItemStack());
+			list.add(upgrades[i].getItemStack());
 		}
 	}
 
 	@Override
-	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean useExtraInfo) {
+	public void addInformation(ItemStack item, World world, List<String> list, ITooltipFlag useExtraInfo) {
 		Upgrade upgrade = getUpgrade(item);
 		if (upgrade != null) {
 			upgrade.addInfo(list);

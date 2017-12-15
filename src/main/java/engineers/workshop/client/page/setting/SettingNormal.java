@@ -1,8 +1,8 @@
 package engineers.workshop.client.page.setting;
 
-import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.container.slot.SlotBase;
-import engineers.workshop.client.page.unit.Unit;
+import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.unit.Unit;
 import net.minecraft.item.ItemStack;
 
 import java.util.List;
@@ -24,12 +24,6 @@ public class SettingNormal extends Setting {
 		unit = table.getMainPage().getCraftingList().get(id);
 		if (unit != null && !unit.isEnabled()) {
 			unit = table.getMainPage().getSmeltingList().get(id);
-			if (!unit.isEnabled()) {
-				unit = table.getMainPage().getCrushingList().get(id);
-				if (unit == null || !unit.isEnabled()) {
-					return null;
-				}
-			}
 		}
 
 		return unit != null ? unit.getSlots() : null;

@@ -1,8 +1,8 @@
 package engineers.workshop.client.container.slot;
 
-import engineers.workshop.common.table.TileTable;
-import engineers.workshop.client.GuiBase;
+import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.client.page.Page;
+import engineers.workshop.common.table.TileTable;
 
 public class SlotTable extends SlotBase {
 	private Page page;
