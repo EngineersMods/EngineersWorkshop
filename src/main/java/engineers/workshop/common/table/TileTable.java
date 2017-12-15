@@ -12,8 +12,12 @@ import engineers.workshop.client.page.setting.Setting;
 import engineers.workshop.client.page.setting.Side;
 import engineers.workshop.client.page.setting.Transfer;
 import engineers.workshop.common.items.Upgrade;
-import engineers.workshop.common.network.*;
+import engineers.workshop.common.network.count.IBitCount;
+import engineers.workshop.common.network.count.LengthCount;
 import engineers.workshop.common.network.data.DataType;
+import engineers.workshop.common.network.packets.DataPacket;
+import engineers.workshop.common.network.packets.PacketHandler;
+import engineers.workshop.common.network.packets.PacketId;
 import engineers.workshop.common.register.Register;
 import engineers.workshop.common.unit.Unit;
 import engineers.workshop.common.unit.UnitCraft;
@@ -386,6 +390,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 			TileEntity te = world.getTileEntity(nPos);
 			if (te instanceof IInventory) {
 				IInventory inventory = (IInventory) te;
+
 				/*
 				 * if (te instanceof TileEntityChest) { // inventory =
 				 * Blocks.CHEST.func_149951_m(te.getWorld(), //

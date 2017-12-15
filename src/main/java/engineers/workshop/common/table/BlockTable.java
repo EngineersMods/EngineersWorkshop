@@ -28,6 +28,7 @@ public class BlockTable extends BlockBaseModeledFacing implements ITileEntityPro
 		super(Material.ROCK);
 		setHardness(3.5f);
 		setCreativeTab(CreativeTabLoader.workshop);
+		//TODO Donno wat to do with this stuff below
 		//GameData.register_impl(this);
 		//GameData.register_impl(itemBlock);
 	}
@@ -50,6 +51,14 @@ public class BlockTable extends BlockBaseModeledFacing implements ITileEntityPro
 		return true;
 	}
 
+	//TODO fix the double braking of the block
+	//Removes the tile from the world
+	@Override
+	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
+		super.breakBlock(worldIn, pos, state);
+		worldIn.removeTileEntity(pos);
+	}
+
 	@Override
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
 		if (!world.isRemote) {
@@ -61,7 +70,7 @@ public class BlockTable extends BlockBaseModeledFacing implements ITileEntityPro
 		return false;
 	}
 
-	protected void dropInventory(World world, BlockPos pos) {
+	private void dropInventory(World world, BlockPos pos) {
 		if (!world.isRemote) {
 			int x = pos.getX();
 			int y = pos.getY();
@@ -99,12 +108,5 @@ public class BlockTable extends BlockBaseModeledFacing implements ITileEntityPro
 				}
 			}
 		}
-	}
-
-	//Removes the tile from the world
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		super.breakBlock(worldIn, pos, state);
-		worldIn.removeTileEntity(pos);
 	}
 }

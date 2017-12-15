@@ -13,7 +13,7 @@ import net.minecraftforge.registries.GameData;
 
 import java.util.List;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 public class ItemUpgrade extends Item {
 

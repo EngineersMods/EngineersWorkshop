@@ -3,13 +3,12 @@ package engineers.workshop.common.util;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 public class Logger {
 
 	private static void log(Level logLevel, Object info, Object... data) {
-		if (data == null)
-			data = new Object[0];
+		if (data == null) data = new Object[0];
 		FMLLog.log(MODID, logLevel, String.valueOf(info), data);
 	}
 

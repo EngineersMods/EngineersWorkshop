@@ -1,6 +1,6 @@
 package engineers.workshop.common.items;
 
-import engineers.workshop.common.Config;
+import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.proxy.CommonProxy;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -11,7 +11,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static engineers.workshop.common.util.Reference.Info.MODID;
+import static engineers.workshop.common.Reference.Info.MODID;
 
 public enum Upgrade {
 	BLANK(new MaxCount(0), ParentType.NULL),                        // Max count = 0  (Not usable as an upgrade)
@@ -129,7 +129,7 @@ public enum Upgrade {
 				@Nonnull
 					ItemStack item) {
 				if (!item.isEmpty()) {
-					for (String parent : Config.MACHINES.CRAFTER_BLOCKS) {
+					for (String parent : ConfigLoader.MACHINES.CRAFTER_BLOCKS) {
 						String[] _s = parent.replace(",", "").split("/");
 						String regName = parent;
 						int meta = -1;
@@ -153,7 +153,7 @@ public enum Upgrade {
 				@Nonnull
 					ItemStack item) {
 				if (!item.isEmpty()) {
-					for (String parent : Config.MACHINES.FURNACE_BLOCKS) {
+					for (String parent : ConfigLoader.MACHINES.FURNACE_BLOCKS) {
 						String[] _s = parent.replace(",", "").split("/");
 						String regName = parent;
 						int meta = -1;
@@ -177,7 +177,7 @@ public enum Upgrade {
 				@Nonnull
 					ItemStack item) {
 				if (!item.isEmpty()) {
-					for (String parent : Config.MACHINES.CRUSHER_BLOCKS) {
+					for (String parent : ConfigLoader.MACHINES.CRUSHER_BLOCKS) {
 						String[] _s = parent.replace(",", "").split("/");
 						String regName = parent;
 						int meta = -1;
@@ -204,7 +204,7 @@ public enum Upgrade {
 				@Nonnull
 					ItemStack item) {
 				if (!item.isEmpty()) {
-					for (String parent : Config.MACHINES.ALLOY_BLOCKS) {
+					for (String parent : ConfigLoader.MACHINES.ALLOY_BLOCKS) {
 						String[] _s = parent.replace(",", "").split("/");
 						String regName = parent;
 						int meta = -1;
@@ -230,7 +230,7 @@ public enum Upgrade {
 				@Nonnull
 					ItemStack item) {
 				if (!item.isEmpty()) {
-					for (String parent : Config.MACHINES.STORAGE_BLOCKS) {
+					for (String parent : ConfigLoader.MACHINES.STORAGE_BLOCKS) {
 						String[] _s = parent.replace(",", "").split("/");
 						String regName = parent;
 						int meta = -1;
