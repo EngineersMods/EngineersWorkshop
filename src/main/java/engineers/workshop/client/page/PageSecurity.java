@@ -1,12 +1,13 @@
 package engineers.workshop.client.page;
 
-import engineers.workshop.client.GuiBase;
+import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.client.page.security.Security;
 import engineers.workshop.common.table.TileTable;
-import net.minecraft.client.gui.Gui;
 
 public class PageSecurity extends Page {
 
+	private static final int HEADER_WIDTH = 38;
+	private static final int HEADER_HEIGHT = 17;
 	private Security security;
 
 	public PageSecurity(TileTable table, String name) {
@@ -23,16 +24,13 @@ public class PageSecurity extends Page {
 		return "Manage Security";
 	}
 
-	private static final int HEADER_WIDTH = 38;
-	private static final int HEADER_HEIGHT = 17;
-
 	@Override
 	public void draw(GuiBase gui, int mX, int mY) {
 		int x = 0, y = 50;
 
 		if (!hasSecurity()) {
 			gui.prepare();
-			gui.drawRect(100, 10, 2, 0, HEADER_WIDTH+3, HEADER_HEIGHT);
+			gui.drawRect(100, 10, 2, 0, HEADER_WIDTH + 3, HEADER_HEIGHT);
 
 			gui.drawCenteredString("Claim!", 100, 15, HEADER_WIDTH + 3, 1, 0xDECADE);
 		}

@@ -1,9 +1,9 @@
 package engineers.workshop.client.container.slot.crafting;
 
-import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.container.slot.SlotUnit;
 import engineers.workshop.client.page.Page;
-import engineers.workshop.client.page.unit.UnitCraft;
+import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.unit.UnitCraft;
 import net.minecraft.item.ItemStack;
 
 public class SlotUnitCraftingGrid extends SlotUnit {
@@ -14,7 +14,7 @@ public class SlotUnitCraftingGrid extends SlotUnit {
 
 	@Override
 	public boolean canAcceptItem(ItemStack item) {
-		if (getHasStack() && item != null) {
+		if (getHasStack() && !item.isEmpty()) {
 			UnitCraft crafting = (UnitCraft) unit;
 
 			int own = getCount(item, getStack());
@@ -36,8 +36,8 @@ public class SlotUnitCraftingGrid extends SlotUnit {
 	}
 
 	private int getCount(ItemStack item, ItemStack slotItem) {
-		if (slotItem != null && slotItem.isItemEqual(item) && ItemStack.areItemStackTagsEqual(item, slotItem)) {
-			return slotItem.stackSize;
+		if (!slotItem.isEmpty() && slotItem.isItemEqual(item) && ItemStack.areItemStackTagsEqual(item, slotItem)) {
+			return slotItem.getCount();
 		} else {
 			return -1;
 		}

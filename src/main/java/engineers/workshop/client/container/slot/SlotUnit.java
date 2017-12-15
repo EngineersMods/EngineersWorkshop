@@ -1,14 +1,14 @@
 package engineers.workshop.client.container.slot;
 
-import engineers.workshop.common.table.TileTable;
 import engineers.workshop.client.page.Page;
-import engineers.workshop.client.page.unit.Unit;
+import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.unit.Unit;
 import net.minecraft.item.ItemStack;
 
 public class SlotUnit extends SlotTable {
 
 	protected Unit unit;
-	
+
 	public SlotUnit(TileTable table, Page page, int id, int x, int y, Unit unit) {
 		super(table, page, id, x, y);
 
@@ -24,7 +24,7 @@ public class SlotUnit extends SlotTable {
 	public boolean isEnabled() {
 		return unit.isEnabled() && isEnabled;
 	}
-	
+
 	@Override
 	public boolean canSupplyItems() {
 		return false;

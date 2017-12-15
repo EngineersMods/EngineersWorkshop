@@ -1,8 +1,8 @@
 package engineers.workshop.client.container.slot;
 
-import engineers.workshop.common.table.TileTable;
-import engineers.workshop.client.GuiBase;
+import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.client.page.setting.Transfer;
+import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -11,11 +11,12 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class SlotBase extends Slot {
+	protected TileTable table;
+	protected boolean isEnabled = true;
 	private int x;
 	private int y;
 	private Transfer[] input = new Transfer[6];
 	private Transfer[] output = new Transfer[6];
-	protected TileTable table;
 
 	public SlotBase(IInventory inventory, TileTable table, int id, int x, int y) {
 		super(inventory, id, x, y);
@@ -25,24 +26,31 @@ public class SlotBase extends Slot {
 		this.table = table;
 	}
 
+	@SideOnly(Side.CLIENT)
+	protected static boolean shouldHighlight(SlotBase slot, SlotBase other) {
+		return Minecraft.getMinecraft().player.inventory.getItemStack().isEmpty() && slot != null
+			&& !slot.getHasStack() && other != null && other.getHasStack() && slot.isItemValid(other.getStack())
+			&& slot.getSlotStackLimit(other.getStack()) > (slot.getHasStack() ? slot.getStack().getCount() : 0);
+	}
+
 	public void updateClient(boolean visible) {
 		if (visible && isEnabled()) {
-			xDisplayPosition = getX();
-			yDisplayPosition = getY();
+			xPos = getX();
+			yPos = getY();
 		} else {
-			xDisplayPosition = -9000;
-			yDisplayPosition = -9000;
+			xPos = -9000;
+			yPos = -9000;
 		}
 	}
 
 	public void updateServer() {
 		if (!isEnabled() && getHasStack()) {
 			table.spitOutItem(getStack());
-			putStack(null);
+			putStack(ItemStack.EMPTY);
 		}
-		
-		if(getHasStack() && getStack().stackSize == 0){
-			putStack(null);
+
+		if (getHasStack() && getStack().getCount() == 0) {
+			putStack(ItemStack.EMPTY);
 		}
 	}
 
@@ -54,13 +62,12 @@ public class SlotBase extends Slot {
 	public boolean isVisible() {
 		return table.getMenu() == null;
 	}
-	
-	protected boolean isEnabled = true;
+
 	public boolean isEnabled() {
 		return isEnabled;
 	}
-	
-	public void setEnabled(boolean f){
+
+	public void setEnabled(boolean f) {
 		isEnabled = f;
 	}
 
@@ -112,7 +119,7 @@ public class SlotBase extends Slot {
 
 	@Override
 	public int getSlotStackLimit() {
-		return getSlotStackLimit(null);
+		return getSlotStackLimit(ItemStack.EMPTY);
 	}
 
 	public int getSlotStackLimit(ItemStack item) {
@@ -137,13 +144,6 @@ public class SlotBase extends Slot {
 
 	public boolean shouldSlotHighlightSelf() {
 		return true;
-	}
-
-	@SideOnly(Side.CLIENT)
-	protected static boolean shouldHighlight(SlotBase slot, SlotBase other) {
-		return Minecraft.getMinecraft().thePlayer.inventory.getItemStack() == null && slot != null
-				&& !slot.getHasStack() && other != null && other.getHasStack() && slot.isItemValid(other.getStack())
-				&& slot.getSlotStackLimit(other.getStack()) > (slot.getHasStack() ? slot.getStack().stackSize : 0);
 	}
 
 	public boolean shouldDropOnClosing() {
