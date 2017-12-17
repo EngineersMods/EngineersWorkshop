@@ -31,7 +31,7 @@ package engineers.workshop.client.container.slot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-public class SlotFake extends BaseSlot {
+public class SlotFake extends SlotBase {
 
 	public boolean mCanInsertItem;
 	public boolean mCanStackItem;
@@ -39,7 +39,7 @@ public class SlotFake extends BaseSlot {
 
 	public SlotFake(IInventory par1iInventory, int par2, int par3, int par4, boolean aCanInsertItem,
 	                boolean aCanStackItem, int aMaxStacksize) {
-		super(par1iInventory, par2, par3, par4);
+		super(par1iInventory, null, par2, par3, par4);
 		this.mCanInsertItem = aCanInsertItem;
 		this.mCanStackItem = aCanStackItem;
 		this.mMaxStacksize = aMaxStacksize;

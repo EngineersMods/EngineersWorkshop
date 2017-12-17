@@ -50,24 +50,15 @@ public class BlockTable extends BlockBaseModeledFacing implements ITileEntityPro
 		}
 		return true;
 	}
-
-	//TODO fix the double braking of the block
-	//Removes the tile from the world
-	@Override
-	public void breakBlock(World worldIn, BlockPos pos, IBlockState state) {
-		super.breakBlock(worldIn, pos, state);
-		worldIn.removeTileEntity(pos);
-	}
-
+	
 	@Override
 	public boolean removedByPlayer(IBlockState state, World world, BlockPos pos, EntityPlayer player, boolean willHarvest) {
-		if (!world.isRemote) {
-			if (!player.isCreative()) {
+		if(!world.isRemote)
+			if(!player.isCreative())
 				dropInventory(world, pos);
-			}
-			world.destroyBlock(pos, !player.isCreative());
-		}
-		return false;
+		world.removeTileEntity(pos);
+		return super.removedByPlayer(state, world, pos, player, willHarvest);
+		
 	}
 
 	private void dropInventory(World world, BlockPos pos) {

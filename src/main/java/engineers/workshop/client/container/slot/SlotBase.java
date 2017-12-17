@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class SlotBase extends Slot {
+public class SlotBase extends BaseSlot {
 	protected TileTable table;
 	protected boolean isEnabled = true;
 	private int x;
@@ -147,6 +147,10 @@ public class SlotBase extends Slot {
 	}
 
 	public boolean shouldDropOnClosing() {
+		return true;
+	}
+	
+	public boolean canWorldBlockRemove() {
 		return true;
 	}
 }

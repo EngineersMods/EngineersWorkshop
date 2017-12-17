@@ -544,7 +544,7 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	public void onSideChange() {
 		reloadTransferSides();
 	}
-
+	//TODO look at
 	private void reloadTransferSides() {
 		for (int i = 0; i < sideSlots.length; i++) {
 			for (SlotBase slot : slots) {
