@@ -6,7 +6,7 @@ import com.ewyboy.bibliotheca.common.loaders.TileEntityLoader;
 
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.gui.GuiHandler;
-import engineers.workshop.common.Reference;
+import static engineers.workshop.common.Reference.Info.MODID;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.loaders.PacketLoader;
 import engineers.workshop.common.register.Register;
@@ -30,8 +30,8 @@ public class CommonProxy {
 	public void preInit(FMLPreInitializationEvent event) {
 		EWLogger.setLogger(event.getModLog());
 		ConfigLoader.loadConfig(event.getSuggestedConfigurationFile());
-		BlockLoader.init(Reference.Info.MODID, Register.Blocks.class);
-		ItemLoader.init(Reference.Info.MODID, Register.Items.class);
+		BlockLoader.init(MODID, Register.Blocks.class);
+		ItemLoader.registerItem(MODID, Register.Items.itemUpgrade, "upgrade");
 		TileEntityLoader.init(Register.Tiles.class);
 		PacketLoader.loadPackets();
 	}

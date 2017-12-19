@@ -13,15 +13,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
-import net.minecraftforge.registries.GameData;
 
 public class ItemUpgrade extends Item {
 
 	public ItemUpgrade() {
 		setCreativeTab(CreativeTabLoader.workshop);
 		setHasSubtypes(true);
-		setRegistryName(MODID + ":" + "upgrade");
-		GameData.register_impl(this);
 	}
 
 	public static Upgrade getUpgrade(int dmg) {

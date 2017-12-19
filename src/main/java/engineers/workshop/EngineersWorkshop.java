@@ -12,7 +12,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import static engineers.workshop.common.Reference.Info.*;
 import static engineers.workshop.common.Reference.Paths.*;
 
-@Mod(modid = MODID, name = NAME, dependencies = "required-after:bibliotheca@[1.1.1-1.12.2,)")
+@Mod(modid = MODID, name = NAME, dependencies = "required-after:bibliotheca@[1.1.2-1.12.2,)")
 public class EngineersWorkshop {
 
 	@SidedProxy(clientSide = CLIENT_PROXY, serverSide = COMMON_PROXY)
