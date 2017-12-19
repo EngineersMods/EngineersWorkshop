@@ -1,5 +1,6 @@
 package engineers.workshop.common.register;
 
+import engineers.workshop.common.items.ItemUpgrade;
 import engineers.workshop.common.table.BlockTable;
 import engineers.workshop.common.table.TileTable;
 
@@ -13,6 +14,7 @@ public class Register {
     }
 
     public static class Items {
+    	public static ItemUpgrade itemUpgrade = new ItemUpgrade();
 
     }
 

@@ -24,8 +24,6 @@ minecraft {
     mappings = "snapshot_20171003"
 }
 
-dependencies {}
-
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -153,3 +151,18 @@ task makeJSONItems << {
 //	int patch = version.split("-")[0].split("\\.")[2].toInteger() + newVersion[2];
 //    println(sprintf("Updating from %s to %s.%s.%s-%s", version, major, minor, patch, project.minecraft.version))
 //}
+
+
+repositories {
+  maven {
+    url = "http://dvs1.progwml6.com/files/maven"
+  }
+  maven {
+    url = "modmaven.k-4u.nl"
+  }
+}
+
+dependencies {
+  deobfProvided "mezz.jei:jei_1.12.2:4.8.5.138:api"
+  runtime "mezz.jei:jei_1.12.2:4.8.5.138"
+}

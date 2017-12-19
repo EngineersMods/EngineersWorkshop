@@ -1,7 +1,11 @@
 package engineers.workshop.common.items;
 
+import static engineers.workshop.common.Reference.Info.MODID;
+
+import java.util.List;
+
 import engineers.workshop.common.loaders.CreativeTabLoader;
-import engineers.workshop.proxy.CommonProxy;
+import engineers.workshop.common.register.Register;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -10,10 +14,6 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.registries.GameData;
-
-import java.util.List;
-
-import static engineers.workshop.common.Reference.Info.MODID;
 
 public class ItemUpgrade extends Item {
 
@@ -29,7 +29,7 @@ public class ItemUpgrade extends Item {
 	}
 
 	public static Upgrade getUpgrade(ItemStack item) {
-		return !item.isEmpty() && CommonProxy.itemUpgrade.equals(item.getItem()) ? getUpgrade(item.getItemDamage()) : null;
+		return !item.isEmpty() && Register.Items.itemUpgrade.equals(item.getItem()) ? getUpgrade(item.getItemDamage()) : null;
 	}
 
 	@Override

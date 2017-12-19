@@ -1,43 +1,35 @@
 package engineers.workshop.common.util;
 
-import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
-import static engineers.workshop.common.Reference.Info.MODID;
+public class EWLogger {
+	private static Logger logger;
 
-public class Logger {
-
-	private static void log(Level logLevel, Object info, Object... data) {
-		if (data == null) data = new Object[0];
-		FMLLog.log(MODID, logLevel, String.valueOf(info), data);
+	public static void setLogger(Logger _logger) {
+		logger = _logger;
 	}
 
-	public static void debug(Object info) {
-		log(Level.DEBUG, info);
+	private static String format(Object o, Object... data) {
+		return String.format(String.valueOf(o), data);
+	}
+
+	private static void log(Level logLevel, Object info, Object... data) {
+		if (data == null)
+			data = new Object[0];
+		logger.log(logLevel, format(info, data));
 	}
 
 	public static void debug(String info, Object... data) {
 		log(Level.DEBUG, info, data);
 	}
 
-	public static void warn(Object info) {
-		log(Level.WARN, info);
-	}
-
 	public static void warn(String info, Object... data) {
 		log(Level.WARN, info, data);
 	}
 
-	public static void info(Object info) {
-		log(Level.INFO, info);
-	}
-
 	public static void info(String info, Object... data) {
 		log(Level.INFO, info, data);
-	}
-
-	public static void error(Object info) {
-		log(Level.ERROR, info);
 	}
 
 	public static void error(String info, Object... data) {

@@ -21,7 +21,7 @@ import engineers.workshop.common.network.packets.PacketId;
 import engineers.workshop.common.register.Register;
 import engineers.workshop.common.unit.Unit;
 import engineers.workshop.common.unit.UnitCraft;
-import engineers.workshop.common.util.Logger;
+import engineers.workshop.common.util.EWLogger;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -215,19 +215,19 @@ public class TileTable extends TileEntity implements IInventory, ISidedInventory
 	}
 
 	public void addPlayer(EntityPlayer player) {
-		Logger.debug("Trying to add player %s", player.getName());
+		EWLogger.debug("Trying to add player %s", player.getName());
 		if (!players.contains(player)) {
 			players.add(player);
 			sendAllDataToPlayer(player);
 		} else {
-			Logger.error("Trying to add a listening player: " + player.getName());
+			EWLogger.error("Trying to add a listening player: " + player.getName());
 		}
 	}
 
 	public void removePlayer(EntityPlayer player) {
-		Logger.debug("Trying to remove player %s", player.getName());
+		EWLogger.debug("Trying to remove player %s", player.getName());
 		if (!players.remove(player)) {
-			Logger.error("Trying to remove non-listening player: " + player.getName());
+			EWLogger.error("Trying to remove non-listening player: " + player.getName());
 		}
 	}
 

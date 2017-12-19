@@ -1,6 +1,7 @@
 package engineers.workshop.common.items;
 
 import engineers.workshop.common.loaders.ConfigLoader;
+import engineers.workshop.common.register.Register;
 import engineers.workshop.proxy.CommonProxy;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.resources.I18n;
@@ -59,7 +60,7 @@ public enum Upgrade {
 	}
 
 	public static ItemStack getInvalidItemStack() {
-		return new ItemStack(CommonProxy.itemUpgrade, 1, values().length);
+		return new ItemStack(Register.Items.itemUpgrade, 1, values().length);
 	}
 
 	public Upgrade getDependency() {
@@ -76,7 +77,7 @@ public enum Upgrade {
 
 	@Nonnull
 	public ItemStack getItemStack() {
-		return new ItemStack(CommonProxy.itemUpgrade, 1, ordinal());
+		return new ItemStack(Register.Items.itemUpgrade, 1, ordinal());
 	}
 
 	public void addInfo(List<String> info) {
