@@ -5,7 +5,6 @@ import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.ItemUpgrade;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.table.TileTable;
-import engineers.workshop.common.util.EWLogger;
 import net.minecraft.item.ItemStack;
 
 public class SlotUpgrade extends SlotTable {
@@ -39,9 +38,6 @@ public class SlotUpgrade extends SlotTable {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		//System.out.println(isMainItem(itemstack) + ":" + isUpgradeItem(itemstack) + ";" + isMain);
-		if(super.isItemValid(itemstack) && (itemstack.isEmpty() || (isMain ? isMainItem(itemstack) : isUpgradeItem(itemstack))))
-			EWLogger.stacktrace("\n\n\n\n\n\n\n\n\nValid!");
 		return super.isItemValid(itemstack) && (itemstack.isEmpty() || (isMain ? isMainItem(itemstack) : isUpgradeItem(itemstack)));
 	}
 

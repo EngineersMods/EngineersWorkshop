@@ -30,7 +30,12 @@ package engineers.workshop.client.container;
 
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.slot.BaseSlot;
+import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFake;
+import engineers.workshop.client.container.slot.SlotFuel;
+import engineers.workshop.client.container.slot.SlotPlayer;
+import engineers.workshop.common.register.Register.Blocks;
+import engineers.workshop.common.util.EWLogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
@@ -46,13 +51,13 @@ public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
 	public HashMap<Integer, BaseSlot> slotMap = new HashMap<>();
 
-	public static
-	@Nullable
-	RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz, TileEntity tileEntity) {
+	public static @Nullable RebornContainer getContainerFromClass(Class<? extends RebornContainer> clazz,
+			TileEntity tileEntity) {
 		return createContainer(clazz, tileEntity, EngineersWorkshop.proxy.getPlayer());
 	}
 
-	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity, EntityPlayer player) {
+	public static RebornContainer createContainer(Class<? extends RebornContainer> clazz, TileEntity tileEntity,
+			EntityPlayer player) {
 		if (player == null && containerMap.containsKey(clazz.getCanonicalName())) {
 			return containerMap.get(clazz.getCanonicalName());
 		} else {
@@ -69,10 +74,12 @@ public abstract class RebornContainer extends Container {
 					} else if (constructor.getParameterCount() == 2) {
 						Class[] paramTypes = constructor.getParameterTypes();
 						if (paramTypes[0].isInstance(tileEntity) && paramTypes[1] == EntityPlayer.class) {
-							container = clazz.getDeclaredConstructor(tileEntity.getClass(), EntityPlayer.class).newInstance(tileEntity, player);
+							container = clazz.getDeclaredConstructor(tileEntity.getClass(), EntityPlayer.class)
+									.newInstance(tileEntity, player);
 							continue;
 						} else if (paramTypes[0] == EntityPlayer.class && paramTypes[1].isInstance(tileEntity)) {
-							container = clazz.getDeclaredConstructor(EntityPlayer.class, tileEntity.getClass()).newInstance(player, tileEntity);
+							container = clazz.getDeclaredConstructor(EntityPlayer.class, tileEntity.getClass())
+									.newInstance(player, tileEntity);
 							continue;
 						}
 					}
@@ -94,7 +101,7 @@ public abstract class RebornContainer extends Container {
 
 	public static boolean canStacksMerge(ItemStack stack1, ItemStack stack2) {
 		if (stack1.isEmpty() || stack2.isEmpty()) {
-			return false;
+			return true;
 		}
 		if (!stack1.isItemEqual(stack2)) {
 			return false;
@@ -110,45 +117,79 @@ public abstract class RebornContainer extends Container {
 	protected Slot addSlotToContainer(Slot slotIn) {
 		Slot slot = super.addSlotToContainer(slotIn);
 		if (slot instanceof BaseSlot) {
-			//TODO remove player slots
+			// TODO remove player slots
 			slotMap.put(slot.getSlotIndex(), (BaseSlot) slot);
 		}
 		return slot;
 	}
 
+//	@Override
+//	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
+//		ItemStack originalStack = ItemStack.EMPTY;
+//		Slot slot = (Slot) inventorySlots.get(slotIndex);
+//		int numSlots = inventorySlots.size();
+//		if (slot != null && slot.getHasStack()) {
+//			ItemStack stackInSlot = slot.getStack();
+//			originalStack = stackInSlot.copy();
+//			if (slotIndex >= numSlots - 9 * 4 && tryShiftItem(stackInSlot, numSlots)) {
+//				// NOOP
+//			} else if (slotIndex >= numSlots - 9 * 4 && slotIndex < numSlots - 9) {
+//				if (!shiftItemStack(stackInSlot, numSlots - 9, numSlots)) {
+//					return ItemStack.EMPTY;
+//				}
+//			} else if (slotIndex >= numSlots - 9 && slotIndex < numSlots) {
+//				if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots - 9)) {
+//					return ItemStack.EMPTY;
+//				}
+//			} else if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots)) {
+//				return ItemStack.EMPTY;
+//			}
+//			slot.onSlotChange(stackInSlot, originalStack);
+//			if (stackInSlot.getCount() <= 0) {
+//				slot.putStack(ItemStack.EMPTY);
+//			} else {
+//				slot.onSlotChanged();
+//			}
+//			if (stackInSlot.getCount() == originalStack.getCount()) {
+//				return ItemStack.EMPTY;
+//			}
+//			slot.onTake(player, stackInSlot);
+//		}
+//		return originalStack;
+//	}
+
 	@Override
-	public ItemStack transferStackInSlot(EntityPlayer player, int slotIndex) {
-		ItemStack originalStack = ItemStack.EMPTY;
-		Slot slot = (Slot) inventorySlots.get(slotIndex);
-		int numSlots = inventorySlots.size();
-		if (slot != null && slot.getHasStack()) {
-			ItemStack stackInSlot = slot.getStack();
-			originalStack = stackInSlot.copy();
-			if (slotIndex >= numSlots - 9 * 4 && tryShiftItem(stackInSlot, numSlots)) {
-				// NOOP
-			} else if (slotIndex >= numSlots - 9 * 4 && slotIndex < numSlots - 9) {
-				if (!shiftItemStack(stackInSlot, numSlots - 9, numSlots)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (slotIndex >= numSlots - 9 && slotIndex < numSlots) {
-				if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots - 9)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (!shiftItemStack(stackInSlot, numSlots - 9 * 4, numSlots)) {
-				return ItemStack.EMPTY;
-			}
-			slot.onSlotChange(stackInSlot, originalStack);
-			if (stackInSlot.getCount() <= 0) {
-				slot.putStack(ItemStack.EMPTY);
-			} else {
-				slot.onSlotChanged();
-			}
-			if (stackInSlot.getCount() == originalStack.getCount()) {
-				return ItemStack.EMPTY;
-			}
-			slot.onTake(player, stackInSlot);
-		}
-		return originalStack;
+	public ItemStack transferStackInSlot(EntityPlayer playerIn, int index) {
+//		SlotBase in = (SlotBase) inventorySlots.get(index);
+//		int inAmount = in.getStack().getCount();
+//		int inMax = in.getSlotStackLimit();
+//		
+//		ItemStack stackToShift = in.getStack();
+//		boolean changed = false;
+//		if (in != null) {
+//			for (Slot _s : inventorySlots) {
+//				if(in instanceof SlotPlayer && _s instanceof SlotPlayer)
+//					continue; //There's a dupe bug here...
+//				SlotBase slot = (SlotBase)_s;
+//				ItemStack stackInSlot = slot.getStack();
+//				if (!stackInSlot.isEmpty() && canStacksMerge(stackInSlot, stackToShift)) {
+//					int resultingStackSize = stackInSlot.getCount() + stackToShift.getCount();
+//					int max = Math.min(stackToShift.getMaxStackSize(), slot.getSlotStackLimit());
+//					if (resultingStackSize <= max) {
+//						stackToShift.setCount(0);
+//						stackInSlot.setCount(resultingStackSize);
+//						slot.onSlotChanged();
+//						changed = true;
+//					} else if (stackInSlot.getCount() < max) {
+//						stackToShift.setCount(-(max - stackInSlot.getCount()));
+//						stackInSlot.setCount(max);
+//						slot.onSlotChanged();
+//						changed = true;
+//					}
+//				}
+//			}
+//		}
+		return ItemStack.EMPTY;
 	}
 
 	protected boolean shiftItemStack(ItemStack stackToShift, int start, int end) {
@@ -224,24 +265,26 @@ public abstract class RebornContainer extends Container {
 
 	public void drawPlayersInv(EntityPlayer player) {
 		drawPlayersInv(player, 8, 81);
-		//		int i;
-		//		for (i = 0; i < 3; ++i)
-		//        {
-		//			for (int j = 0; j < 9; ++j)
-		//            {
-		//				this.addSlotToContainer(new BaseSlot(player.inventory, j + i * 9 + 9, 8 + j * 18, 81 + i * 18));
-		//			}
-		//		}
+		// int i;
+		// for (i = 0; i < 3; ++i)
+		// {
+		// for (int j = 0; j < 9; ++j)
+		// {
+		// this.addSlotToContainer(new BaseSlot(player.inventory, j + i * 9 + 9,
+		// 8 + j * 18, 81 + i * 18));
+		// }
+		// }
 
 	}
 
 	public void drawPlayersHotBar(EntityPlayer player) {
 		drawPlayersHotBar(player, 8, 139);
-		//		int i;
-		//		for (i = 0; i < 9; ++i)
-		//        {
-		//			this.addSlotToContainer(new BaseSlot(player.inventory, i, 8 + i * 18, 139));
-		//		}
+		// int i;
+		// for (i = 0; i < 9; ++i)
+		// {
+		// this.addSlotToContainer(new BaseSlot(player.inventory, i, 8 + i * 18,
+		// 139));
+		// }
 	}
 
 	public void drawPlayersInv(EntityPlayer player, int x, int y) {
