@@ -9,6 +9,7 @@ import engineers.workshop.client.gui.GuiHandler;
 import static engineers.workshop.common.Reference.Info.MODID;
 import engineers.workshop.common.loaders.ConfigLoader;
 import engineers.workshop.common.loaders.PacketLoader;
+import engineers.workshop.common.loaders.RecipeLoader;
 import engineers.workshop.common.register.Register;
 import engineers.workshop.common.util.EWLogger;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,6 +39,7 @@ public class CommonProxy {
 
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(EngineersWorkshop.instance, new GuiHandler());
+		RecipeLoader.loadRecipes();
 	}
 
 	public void postInit(FMLPostInitializationEvent event) {

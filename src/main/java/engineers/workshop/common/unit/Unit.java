@@ -1,7 +1,10 @@
 package engineers.workshop.common.unit;
 
-import engineers.workshop.client.gui.GuiBase;
+import java.util.ArrayList;
+import java.util.List;
+
 import engineers.workshop.client.container.slot.SlotBase;
+import engineers.workshop.client.gui.GuiBase;
 import engineers.workshop.client.page.Page;
 import engineers.workshop.common.items.Upgrade;
 import engineers.workshop.common.network.data.DataType;
@@ -12,9 +15,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Unit {
 
@@ -52,9 +52,7 @@ public abstract class Unit {
 		int y = getArrowY();
 		gui.drawRect(this.x + x, this.y + y, ARROW_SRC_X, ARROW_SRC_Y, ARROW_WIDTH, ARROW_HEIGHT);
 		int max = getMaxCharges();
-		boolean charging = false;
 		if (max > 0 && chargeCount > 0) {
-			charging = true;
 			GlStateManager.color(0.11F, 0.35F, 0.17F, 1);
 			int count = Math.min(chargeCount, max);
 			gui.drawRect(this.x + x, this.y + y, ARROW_SRC_X, ARROW_SRC_Y + ARROW_HEIGHT, count * ARROW_WIDTH / max,
@@ -62,7 +60,6 @@ public abstract class Unit {
 		}
 
 		if (isCharging()) {
-			charging = true;
 			GlStateManager.color(0.25F, 0.8F, 0.38F, 0.5F);
 			GlStateManager.enableBlend();
 		} else {

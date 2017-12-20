@@ -41,7 +41,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.zip.CRC32;
-
+@SuppressWarnings("rawtypes")
 public class NetworkManager {
 
 	public static HashMap<Class<? extends INetworkPacket>, SimpleNetworkWrapper> packetWrapperMap = new HashMap<>();

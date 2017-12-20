@@ -28,24 +28,20 @@
 
 package engineers.workshop.client.container;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+
+import javax.annotation.Nullable;
+
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.slot.BaseSlot;
-import engineers.workshop.client.container.slot.SlotBase;
 import engineers.workshop.client.container.slot.SlotFake;
-import engineers.workshop.client.container.slot.SlotFuel;
-import engineers.workshop.client.container.slot.SlotPlayer;
-import engineers.workshop.common.register.Register.Blocks;
-import engineers.workshop.common.util.EWLogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-
-import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
 
 public abstract class RebornContainer extends Container {
 	private static HashMap<String, RebornContainer> containerMap = new HashMap<>();
