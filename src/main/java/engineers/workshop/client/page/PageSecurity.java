@@ -26,8 +26,6 @@ public class PageSecurity extends Page {
 
 	@Override
 	public void draw(GuiBase gui, int mX, int mY) {
-		int x = 0, y = 50;
-
 		if (!hasSecurity()) {
 			gui.prepare();
 			gui.drawRect(100, 10, 2, 0, HEADER_WIDTH + 3, HEADER_HEIGHT);
@@ -48,6 +46,11 @@ public class PageSecurity extends Page {
 
 	public boolean hasSecurity() {
 		return security != null;
+	}
+	
+	@Override
+	public boolean isEnabled() {
+		return false;
 	}
 
 }

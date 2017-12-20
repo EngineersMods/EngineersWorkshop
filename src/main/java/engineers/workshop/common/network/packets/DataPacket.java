@@ -1,9 +1,12 @@
 package engineers.workshop.common.network.packets;
 
+import java.io.IOException;
+
 import engineers.workshop.EngineersWorkshop;
 import engineers.workshop.client.container.ContainerTable;
 import engineers.workshop.common.network.data.DataType;
 import engineers.workshop.common.table.TileTable;
+import engineers.workshop.common.util.EWLogger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -11,8 +14,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-
-import java.io.IOException;
 
 public class DataPacket implements INetworkPacket<DataPacket> {
 
@@ -113,6 +114,7 @@ public class DataPacket implements INetworkPacket<DataPacket> {
 			if (onServer) {
 				table.receiveServerPacket(message, id, player);
 			} else {
+				EWLogger.info("%s, %s, %s", message.compound, message.packetId, message.dataType);
 				table.receiveClientPacket(message, id);
 			}
 		}

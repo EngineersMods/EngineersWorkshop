@@ -30,6 +30,16 @@ public abstract class DataSide extends DataBase {
 			return side.getOutput();
 		}
 	}
+	
+	@Override
+	public boolean shouldBounce(TileTable table) {
+		return true;
+	}
+	
+	@Override
+	public boolean shouldBounceToAll(TileTable table) {
+		return true;
+	}
 
 	public static class Enabled extends DataSide {
 		@Override

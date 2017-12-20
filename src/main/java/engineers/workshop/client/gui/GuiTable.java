@@ -125,16 +125,19 @@ public class GuiTable extends GuiBase {
 			int y = HEADER_Y + HEADER_HEIGHT * i;
 			boolean hover = inBounds(HEADER_X, y, HEADER_FULL_WIDTH, HEADER_HEIGHT, mX, mY);
 			if (hover) {
-				drawMouseOver(page.getDesc());
+				drawMouseOver(page.getDesc() + (page.isEnabled() ? "" : " (Coming Soon™)"));
 			}
 			int width = hover ? HEADER_FULL_WIDTH : HEADER_WIDTH;
 			int offset = HEADER_FULL_WIDTH - width;
 
 			prepare();
+			if(!page.isEnabled())
+				GlStateManager.color(.2f, .2f, .2f);
 			drawRect(HEADER_X, y, HEADER_SRC_X + offset, srcY, width, HEADER_HEIGHT);
-
+			GlStateManager.color(1, 1, 1);
+			
 			int invertedOffset = (HEADER_FULL_WIDTH - HEADER_WIDTH) - offset;
-			drawCenteredString(page.getName(), HEADER_X + invertedOffset, y + HEADER_TEXT_Y, HEADER_WIDTH, 0.7F, 0x2E2E2E);
+			drawCenteredString(page.getName(), HEADER_X + invertedOffset, y + HEADER_TEXT_Y, HEADER_WIDTH, 0.7F, page.isEnabled() ? 0x2E2E2E : 0xAE2E2E);
 		}
 	}
 
@@ -142,7 +145,7 @@ public class GuiTable extends GuiBase {
 		for (int i = 0; i < table.getPages().size(); i++) {
 			Page page = table.getPages().get(i);
 			int y = HEADER_Y + HEADER_HEIGHT * i;
-			if (inBounds(HEADER_X, y, HEADER_FULL_WIDTH, HEADER_HEIGHT, mX, mY)) {
+			if (inBounds(HEADER_X, y, HEADER_FULL_WIDTH, HEADER_HEIGHT, mX, mY) && page.isEnabled()) {
 				table.setSelectedPage(page);
 				table.updateServer(DataType.PAGE);
 				break;

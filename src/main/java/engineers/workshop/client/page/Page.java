@@ -55,4 +55,8 @@ public abstract class Page {
 	@SideOnly(Side.CLIENT)
 	public void onRelease(GuiTable gui, int mX, int mY, int button) {
 	}
+
+	public boolean isEnabled() {
+		return true;
+	}
 }

@@ -5,7 +5,6 @@ import engineers.workshop.client.page.setting.Transfer;
 import engineers.workshop.common.table.TileTable;
 import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

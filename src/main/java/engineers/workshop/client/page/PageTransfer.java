@@ -458,4 +458,9 @@ public class PageTransfer extends Page {
 		}
 		return -1;
 	}
+	
+	@Override
+	public boolean isEnabled() {
+		return false;
+	}
 }

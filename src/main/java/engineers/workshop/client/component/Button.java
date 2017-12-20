@@ -1,6 +1,7 @@
 package engineers.workshop.client.component;
 
 import engineers.workshop.client.gui.GuiBase;
+import engineers.workshop.common.util.EWLogger;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -14,14 +15,17 @@ public abstract class Button {
 	private String text;
 	private int x;
 	private int y;
+	private boolean isVisible;
 	protected Button(String text, int x, int y) {
 		this.text = text;
 		this.x = x;
 		this.y = y;
+		isVisible = true;
 	}
 
 	@SideOnly(Side.CLIENT)
 	public void draw(GuiBase gui, int mX, int mY) {
+		EWLogger.stacktrace("Button draw");
 		if (isVisible()) {
 			gui.prepare();
 			boolean hover = gui.inBounds(x, y, WIDTH, HEIGHT, mX, mY);
@@ -40,6 +44,10 @@ public abstract class Button {
 	public abstract void clicked();
 
 	public boolean isVisible() {
-		return true;
+		return isVisible;
+	}
+	
+	public void setVisible(boolean b){
+		isVisible = b;
 	}
 }
